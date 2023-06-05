@@ -3,10 +3,12 @@ import { variable } from '../../Variable';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Loadable from '../../layouts/full/shared/loadable/Loadable';
-import { Login } from '@mui/icons-material';
-import { isNull } from 'lodash';
-const FullLayout = Loadable(lazy(() => import('../../layouts/full/FullLayout')));
+import { ConstructionOutlined, Login } from '@mui/icons-material';
 
+
+
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 class InvoiceCRUD extends React.Component {
     constructor(props) {
         super(props);
@@ -19,7 +21,7 @@ class InvoiceCRUD extends React.Component {
             currentPage: 1,
             IssuedDate: "",
             ShippingAddress: "",
-            ShippingPhone: 0,
+            ShippingPhone: "",
             Total: 0,
             Status: "",
             Pay: "",
@@ -28,7 +30,8 @@ class InvoiceCRUD extends React.Component {
             totalDetailInvoice: 0,
             ChangeId: "",
             startDate: "",
-            endDate: ""
+            endDate: "",
+            value: "", value: "", ID: ""
         }
     }
 
@@ -129,69 +132,48 @@ class InvoiceCRUD extends React.Component {
 
 
     UpdateClick(id) {
-        fetch(variable.API_URL + "ProductTypes/UpdateProductType/" + id, {
-            method: "PUT",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ name: this.state.Name })
-        }).then(res => res.json())
-            .then(result => {
-                alert(result);
-                this.refreshList();
-            }, (error) => {
-                alert("Failed");
-            }
-            )
-    }
-    DeleteClick(id) {
-        if (window.confirm('Are you sure?')) {
-            fetch(variable.API_URL + "ProductTypes/DeleteProductType/" + id, {
-                method: "PUT",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-            }).then(res => res.json())
-                .then(result => {
-                    alert(result);
-                    this.refreshList();
-                }, (error) => {
-                    alert("Failed");
-                }
-                )
-        }
-    }
 
-    DetailsClick(dep) {
         const token = this.getToken();
-
-        fetch(variable.API_URL + "InvoiceDetails/GetAllInvoiceDetails/" + dep.id, {
-            method: "GET",
+        fetch(variable.API_URL + "Inovices/UpdateInovice/" + id, {
+            method: "PUT",
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
                 'Authorization': `Bearer ${token.value}`
-            }
-        })
+            },
+            body: JSON.stringify({
+                shippingphone: this.state.ShippingPhone,
+                shippingadress: this.state.ShippingAddress,
+                pay: this.state.Pay == "True" ? true : false,
+                orderStatus: this.state.OrderStatus == "Chưa xác nhận" ? 1 : this.state.OrderStatus == "Đang chuẩn bị" ? 2 : this.state.OrderStatus == "Đang giao" ? 3 : this.state.OrderStatus == "Đã hủy" ? 4 : this.state.OrderStatus == "Hoàn tất" ? 5 : null,
 
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ DetailsInvoice: data });
             })
+        }).then(res => res.json())
+            .then(result => {
+                alert(result);
+                if (result == "Thành công") {
+                    window.location.reload(false);
+                }
+            }, (error) => {
+                alert("Failed");
+            }
+            )
+
     }
+
     EditClick(dep) {
         this.setState({
             modelTitle: "Edit Invoice",
-            Code: dep.Code,
-            AccountId: dep.AccountId,
-            Total: dep.Total,
-            ShippingPhone: dep.ShippingPhone,
-            IssuedDate: dep.IssuedDate,
-            Pay: dep.Pay,
-            ShippingAddress: dep.ShippingAddress,
-            OrderStatus: dep.OrderStatus,
+            ShippingPhone: dep.shippingPhone,
+            Pay:
+                dep.pay == true ?
+                    "True" : "False"
+            ,
+            ID: dep.id,
+            ShippingAddress: dep.shippingAddress,
+            OrderStatus:
+                dep.orderStatus == 1 ? "Chưa xác nhận" : dep.orderStatus == 2 ? "Đang chuẩn bị" : dep.orderStatus == 3 ? "Đang giao" : dep.orderStatus == 4 ? "Đã hủy" : dep.orderStatus == 5 ? "Hoàn tất" : null
+
         });
     }
     NextPage(id, npage) {
@@ -242,7 +224,7 @@ class InvoiceCRUD extends React.Component {
         const token = this.getToken();
 
 
-        fetch(variable.API_URL + "Inovices/GetAllInoviceFilterByDate/" + this.state.startDate+","+this.state.endDate, {
+        fetch(variable.API_URL + "Inovices/GetAllInoviceFilterByDate/" + this.state.startDate + "," + this.state.endDate, {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
@@ -254,6 +236,17 @@ class InvoiceCRUD extends React.Component {
             .then(data => {
                 this.setState({ Invoice: data });
             })
+    }
+    ChangeShippingPhone(e) {
+        this.setState({
+            ShippingPhone: e.target.value
+        });
+
+    }
+    ChangeShippingAddress(e) {
+        this.setState({
+            ShippingAddress: e.target.value
+        });
     }
     render() {
 
@@ -268,18 +261,23 @@ class InvoiceCRUD extends React.Component {
             ShippingAddress,
             ShippingPhone,
             Total,
-            Status,
-            Pay,
+            Status, value,
+            Pay, value1,
             OrderStatus,
             DetailsInvoice,
             totalDetailInvoice
         } = this.state;
         const recordsPerPage = 5;
+
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
         const a = Invoice.slice(firstIndex, lastIndex);
         const npage = Math.ceil(Invoice.length / recordsPerPage)
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
+        const options = ['True', 'False']
+        const options2 = ['Hoàn tất', 'Đã hủy',
+            'Đang giao', 'Chưa xác nhận', 'Đang chuẩn bị', 'Đã giao']
+        {/* //1 chưa xác nhận //2 la chua đang chuẩn bị //3 đang giao//6 đã giao//4 đã hủy,//5hoàn tất */ }
         return (
             <>
                 <div style={{ display: "flex" }}>
@@ -369,9 +367,7 @@ class InvoiceCRUD extends React.Component {
                                     <th>
                                         Details
                                     </th>
-                                    <th>
-                                        Delete
-                                    </th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -413,7 +409,7 @@ class InvoiceCRUD extends React.Component {
                                             <td>
 
                                                 {
-                                                    dep.orderStatus == 1 ? "Chưa xác nhận" : dep.orderStatus == 2 ? "Đang chuẩn bị" : dep.orderStatus == 3 ? "Đang giao" : dep.orderStatus == 4 ? "Đã hủy" : dep.orderStatus == 5 ? "Hoàn tất" : isNull
+                                                    dep.orderStatus == 1 ? "Chưa xác nhận" : dep.orderStatus == 2 ? "Đang chuẩn bị" : dep.orderStatus == 3 ? "Đang giao" : dep.orderStatus == 4 ? "Đã hủy" : dep.orderStatus == 5 ? "Hoàn tất" : null
                                                 }
                                             </td>
                                             {/* //1 chưa xác nhận //2 la chua đang chuẩn bị //3 đang giao//6 đã giao//4 đã hủy,//5hoàn tất */}
@@ -432,13 +428,7 @@ class InvoiceCRUD extends React.Component {
                                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" > <path d="M2 8C2 7.44772 2.44772 7 3 7H21C21.5523 7 22 7.44772 22 8C22 8.55228 21.5523 9 21 9H3C2.44772 9 2 8.55228 2 8Z" fill="currentColor" /> <path d="M2 12C2 11.4477 2.44772 11 3 11H21C21.5523 11 22 11.4477 22 12C22 12.5523 21.5523 13 21 13H3C2.44772 13 2 12.5523 2 12Z" fill="currentColor" /> <path d="M3 15C2.44772 15 2 15.4477 2 16C2 16.5523 2.44772 17 3 17H15C15.5523 17 16 16.5523 16 16C16 15.4477 15.5523 15 15 15H3Z" fill="currentColor" /> </svg>
                                                 </button>
                                             </td>
-                                            <td>
-                                                <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
-                                                    </svg>
-                                                </button>
-                                            </td>
+
                                         </tr>
                                     )}
                             </tbody>
@@ -510,71 +500,59 @@ class InvoiceCRUD extends React.Component {
                                     <div className='modal-body'>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
-                                                Code
-                                            </span>
-                                            <input type='text' className='form-control' value={Code}
-                                                onChange={(e) => this.ChangeProdcutTypeName(e)} />
-                                            <span className='input-group-text'>
-                                                AccountId
-                                            </span>
-                                            <input type='text' className='form-control' value={AccountId}
-                                                onChange={(e) => this.ChangeProdcutSku(e)} />
-                                        </div>
-
-                                        <div className='input-group mb-3'>
-                                            <span className='input-group-text'>
-                                                IssuedDate
-                                            </span>
-                                            <input type='text' className='form-control' value={IssuedDate}
-                                                onChange={(e) => this.ChangeProdcutDescription(e)} />
-                                        </div>
-                                        <div className='input-group mb-3'>
-                                            <span className='input-group-text'>
                                                 ShippingAddress
                                             </span>
-                                            <input type='text' className='form-control' value={ShippingAddress}
-                                                onChange={(e) => this.ChangeProdcutPrice(e)} />
+                                            <input type='text' className='form-control' value={this.state.ShippingAddress}
+                                                onChange={(e) => this.ChangeShippingAddress(e)} />
                                             <span className='input-group-text'>
                                                 ShippingPhone
                                             </span>
-                                            <input type='text' className='form-control' value={ShippingPhone}
-                                                onChange={(e) => this.ChangeProdcutStock(e)} />
-                                        </div>
-
-                                        <div className='input-group mb-3'>
-                                            <span className='input-group-text'>
-                                                Total
-                                            </span>
-                                            <input type='text' className='form-control' value={Total}
-                                                onChange={(e) => this.ChangeProdcutStock(e)} />
-                                        </div>
-                                        <div className='input-group mb-3'>
-                                            <span className='input-group-text'>
-                                                Status
-                                            </span>
-                                            <input type='text' className='form-control' value={Status}
-                                                onChange={(e) => this.ChangeProdcutProductTypeId(e)} />
+                                            <input type='text' className='form-control' value={this.state.ShippingPhone}
+                                                onChange={(e) => this.ChangeShippingPhone(e)} />
                                         </div>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
                                                 Pay
                                             </span>
-                                            <input type='text' className='form-control' value={Status}
-                                                onChange={(e) => this.ChangeProdcutProductTypeId(e)} />
+                                            <Autocomplete
+                                                value={Pay}
+                                                onChange={(event, newValue) => {
+                                                    this.setState({
+                                                        Pay: newValue
+                                                    });
+                                                }}
+
+                                                options={options}
+                                                style={{ width: 300 }}
+                                                renderInput={(params) =>
+                                                    <TextField {...params}
+                                                        // label="Pay"
+                                                        variant="outlined" />}
+                                            />
+
                                         </div>
+
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
                                                 OrderStatus
                                             </span>
-                                            <input type='text' className='form-control' value={OrderStatus}
-                                                onChange={(e) => this.ChangeProdcutProductTypeId(e)} />
+                                            <Autocomplete
+                                                value={OrderStatus}
+
+                                                onChange={(event, newValue) => {
+                                                    this.setState({
+                                                        OrderStatus: newValue
+                                                    });
+                                                }}
+                                                options={options2}
+                                                style={{ width: 300 }}
+                                                renderInput={(params) =>
+                                                    <TextField {...params}
+                                                        // label="Pay"
+                                                        variant="outlined" />}
+                                            />
                                         </div>
-                                        {id == 0 ?// eslint-disable-next-line
-                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.CreateClick()}>Create</button> : null
-                                        }
-                                        {id != 0 ?// eslint-disable-next-line
-                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.id)}>Update</button> : null
-                                        }
+                                        <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.ID)}>Update</button>
                                     </div>
                                 </div>
                             </div>

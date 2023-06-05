@@ -17,7 +17,7 @@ function App() {
     const userToken = JSON.parse(tokenString);
     if (userToken == null) return null;
     const now = new Date()
-    if (now.getDay() > userToken.expiry) {
+    if (now.getDate() > userToken.expiry) {
       localStorage.clear()
       return null
     }

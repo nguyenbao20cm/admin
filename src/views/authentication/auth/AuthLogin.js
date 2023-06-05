@@ -10,12 +10,15 @@ import {
     Stack,
     Checkbox
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
 
 const AuthLogin = ({ title, subtitle, subtext }) => {
+    const history = useNavigate();
 
+    
     const [username, setusername] = useState("")
     const [password, setpassword] = useState("")
     const ChangeName = (value) => {
@@ -28,7 +31,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
         const now = new Date()
         const item = {
             value: userToken,
-            expiry: now.getDay() + 7,
+            expiry: now.getDate() + 7,
         }
 
         localStorage.setItem('token', JSON.stringify(item));
@@ -53,7 +56,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                 if (result == "Failed") alert("Failed");
                 if (result != "Failed") {
                     setToken(result);
-                    window.location.reload(false);
+                    history('/dashboard')
                 }
             }, (error) => {
                 alert("Failed");

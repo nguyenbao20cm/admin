@@ -10,7 +10,7 @@ const ProductTypeList = () => {
 
     return (
         <>
-
+          
             <PageContainer title="Sample Page" description="this is Sample page">
 
                 <DashboardCard title="Invoices List">
