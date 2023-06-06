@@ -160,7 +160,23 @@ class InvoiceCRUD extends React.Component {
             )
 
     }
+    DetailsClick(dep) {
+        const token = this.getToken();
 
+        fetch(variable.API_URL + "InvoiceDetails/GetAllInvoiceDetails/" + dep.id, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            }
+        })
+
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ DetailsInvoice: data });
+            })
+    }
     EditClick(dep) {
         this.setState({
             modelTitle: "Edit Invoice",
