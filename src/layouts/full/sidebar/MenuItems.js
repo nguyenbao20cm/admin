@@ -16,7 +16,7 @@ const Menuitems = [
     icon: IconLayoutDashboard,
     href: '/dashboard',
   },
- 
+
   {
     navlabel: true,
     subheader: 'Table',
@@ -36,11 +36,36 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+    title: 'ProductSize Page',
+    icon: IconAperture,
+    href: '/ProductSize',
+  },
+  {
+    id: uniqueId(),
     title: 'Invoice Page',
     icon: IconAperture,
     href: '/InvoicePage',
   },
- 
+  {
+    id: uniqueId(),
+    title: 'Review Page',
+    icon: IconAperture,
+    href: '/ReviewPage',
+  },
+  {
+    id: uniqueId(),
+    title: 'AdvertisingPanel Page',
+    icon: IconAperture,
+    href: '/AdvertisingPanel',
+  },
+  {
+    id: uniqueId(),
+    title: 'Disscount Page',
+    icon: IconAperture,
+    href: '/Disscount',
+  },
+
+  
 ];
 
 export default Menuitems;

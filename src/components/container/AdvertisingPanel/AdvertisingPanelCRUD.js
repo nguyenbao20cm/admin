@@ -1,149 +1,100 @@
 import * as React from 'react';
-import { variable } from '../../Variable';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import { result } from 'lodash';
+import { variable } from '../../../Variable';
 
+import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-class CRUDProduct extends React.Component {
 
+class ReviewCRUD extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            ProductType: [],
+            AdvertisingPanel: [],
             modelTitle: "",
             Name: "",
             id: 0,
             currentPage: 1,
-            NameinputProduct: "",
-            Description: "",
-            price: 0,
-            ImportPrice: 0,
-            productTypeId: "",
-            image: "",
-            Iimage: "",
-            ProductTypegetbyid: [], SKU: "", Disscount: "", Status: "", ProductType1:[]
-        }
-    }
-    refreshList() {
-        const token = this.getToken();
-        fetch(variable.API_URL + "Products/GetAllProduct")
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ ProductType: data });
-            })
-        fetch(variable.API_URL + "ProductTypes/GetAllProductType", {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            },
+            NameinputProductType: "", image: "", Iimage: "", Status: ""
 
-        })
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ ProductType1: data });
-            })
+        }
     }
     getToken() {
         const tokenString = localStorage.getItem('token');
         const userToken = JSON.parse(tokenString);
         return userToken
     }
+    refreshList() {
+
+        fetch(variable.API_URL + "AdvertisingPanels/GetAllAdvertisingPanel", {
+            method: "GET",
+
+        })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ AdvertisingPanel: data });
+            })
+    }
     componentDidMount() {
         this.refreshList();
     }
-    ChangeProdcutTypeName = (e) => {
-        this.setState({ Name: e.target.value });
-    }
-    ChangeSKU = (e) => {
-        this.setState({ SKU: e.target.value });
-    }
-    ChangeProdcutDescription = (e) => {
-        this.setState({ Description: e.target.value });
-    }
-    ChangeProdcutPrice = (e) => {
-        this.setState({ price: e.target.value });
-    }
-    ChangeProdcutStock = (e) => {
-        this.setState({ ImportPrice: e.target.value });
-    }
-    ChangeDisscount = (e) => {
-        this.setState({ Disscount: e.target.value });
-    }
-    ChangeProdcutProductTypeId = (e) => {
-        this.setState({ productTypeId: e.target.value });
-    }
-    ChangeProdcutImage = (e) => {
 
-        this.setState({ image: e.target.files[0].name, Iimage: e.target.files[0] });
-
-    }
 
     CreateClick() {
-        const optionProductType = []
-        this.state.ProductType1.forEach(element => {
-            optionProductType.push(element.id)
-        });
-        var a = false;
-        optionProductType.forEach(element => {
-            if (element == this.state.productTypeId) a = true;
-        });
-        if (a == false) return alert("ProductTypeId không tồn tại");;
         if (this.state.image == "") {
             alert("Chua Nhap Image");
-        } else {
-            // const formData = new FormData()
-            // formData.append("model", this.state.Iimage)
-            fetch(variable.API_URL + "Products/CreateProduct", {
+        } if (this.state.Status == "") {
+            alert("Chua Nhap Status");
+        } 
+        else {
+            const token = this.getToken();
+            fetch(variable.API_URL + "AdvertisingPanels/CreateAdvertisingPanel", {
                 method: "POST",
                 headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
                 },
-                body:
-                    JSON.stringify({
-                        name: this.state.Name,
-                        sku: this.state.SKU,
-                        status: this.state.Status == "True" ? true : false,
-                        description: this.state.Description,
-                        price: this.state.price,
-                        ImportPrice: this.state.ImportPrice,
-                        productTypeId: this.state.productTypeId,
-                        image: ""
-                    })
+                body: JSON.stringify({
+
+                    status: this.state.Status == "True" ? true : false,
+                    image: this.state.image
+                })
+
             }).then(res => res.json())
                 .then(result => {
-                    if (result === "Thành công") {
+                    if (result == "Thành công") {
+                        const token = this.getToken();
                         const response = fetch(
-                            variable.API_URL + "Products/GetByName/" + this.state.Name
+                            variable.API_URL + "AdvertisingPanels/GetAdvertisingPanelById/" + this.state.image, {
+                            method: "GET",
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Accept: 'application/json',
+                                'Authorization': `Bearer ${token.value}`
+                            },
+                        }
                         ).then((response) => response.json()).then(result => {
-                            if (result.name != null) {
+                            if (result.advertisingPanelID != null) {
                                 const formData = new FormData()
-                                var imagelName = result.id + ".jpg"
+                                const token = this.getToken();
+                                var imagelName = result.advertisingPanelID + ".jpg"
                                 formData.append("model", this.state.Iimage, imagelName)
-                                fetch(variable.API_URL + "Products/CreateImageProduct", {
+                                fetch(variable.API_URL + "AdvertisingPanels/CreateImageAdvertisingPanel", {
                                     method: "POST",
                                     body: formData
                                 }).then(res => res.json())
-                                fetch(variable.API_URL + "Products/UpdateProduct/" + result.id, {
+                                fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + result.advertisingPanelID, {
                                     method: "PUT",
                                     headers: {
-                                        "Accept": "application/json",
-                                        "Content-Type": "application/json"
+                                        'Content-Type': 'application/json',
+                                        Accept: 'application/json',
+                                        'Authorization': `Bearer ${token.value}`
                                     },
                                     body:
                                         JSON.stringify({
-                                            name: this.state.Name,
-                                            sku: this.state.SKU,
-                                            description: this.state.Description,
-                                            status: this.state.Status == "True" ? true : false,
-                                            price: this.state.price,
-                                            ImportPrice: this.state.ImportPrice,
-                                            productTypeId: this.state.productTypeId,
-                                            image: imagelName
+                                            image: imagelName,
+                                            status: result.status,
+                                          
                                         })
                                 }).then(res => res.json())
                             }
@@ -162,34 +113,24 @@ class CRUDProduct extends React.Component {
 
         }
 
-
-
-
-
-
     }
-
-
     UpdateClick(id) {
-        var imagelName = this.state.id + ".jpg"
+        const token = this.getToken();
+        var imagelName = id + ".jpg"
         if (this.state.image == imagelName) {
-            fetch(variable.API_URL + "Products/UpdateProduct/" + id, {
+            fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + id, {
                 method: "PUT",
                 headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
                 },
                 body:
-                    JSON.stringify({
-                        name: this.state.Name,
-                        sku: this.state.SKU,
-                        status: this.state.Status == "True" ? true : false,
-                        description: this.state.Description,
-                        price: this.state.price,
-                        ImportPrice: this.state.ImportPrice,
-                        productTypeId: this.state.productTypeId,
-                        image: imagelName
-                    })
+                
+                JSON.stringify({
+                    image: imagelName,
+                    status: this.state.Status == "True" ? true : false,
+                })
             }).then(res => res.json())
                 .then(result => {
                     alert(result);
@@ -205,32 +146,28 @@ class CRUDProduct extends React.Component {
         else if (this.state.image == "") {
             alert("Chua Nhap Image");
         } else {
+           
             const formData = new FormData()
-            var imagelName = this.state.id + ".jpg"
+            var imagelName = id + ".jpg"
 
             formData.append("model", this.state.Iimage, imagelName)
 
-            fetch(variable.API_URL + "Products/UpdateProduct/" + id, {
+            fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + id, {
                 method: "PUT",
                 headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
                 },
                 body:
                     JSON.stringify({
-                        name: this.state.Name,
-                        sku: this.state.SKU,
+                        image: imagelName,
                         status: this.state.Status == "True" ? true : false,
-                        description: this.state.Description,
-                        price: this.state.price,
-                        ImportPrice: this.state.ImportPrice,
-                        productTypeId: this.state.productTypeId,
-                        image: imagelName
                     })
             }).then(res => res.json())
                 .then(result => {
                     if (result === "Thành công") {
-                        fetch(variable.API_URL + "Products/CreateImageProduct", {
+                        fetch(variable.API_URL + "AdvertisingPanels/CreateImageAdvertisingPanel", {
                             method: "POST",
                             body: formData
                         }).then(res => res.json())
@@ -248,16 +185,17 @@ class CRUDProduct extends React.Component {
 
         }
 
-
     }
     DeleteClick(id) {
+        const token = this.getToken();
         if (window.confirm('Are you sure?')) {
-            fetch(variable.API_URL + "Products/DeleteProduct/" + id, {
+            fetch(variable.API_URL + "AdvertisingPanels/DeleteAdvertisingPanel/" + id, {
                 method: "PUT",
                 headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
             }).then(res => res.json())
                 .then(result => {
                     alert(result);
@@ -268,38 +206,32 @@ class CRUDProduct extends React.Component {
                 )
         }
     }
+    ChangeProdcutImage = (e) => {
+
+        this.setState({ image: e.target.files[0].name, Iimage: e.target.files[0] });
+    }
 
     addClick() {
         this.setState({
-            modelTitle: "Add Product",
+            modelTitle: "Add AdvertisingPanel",
             id: 0,
-            Name: "",
-
-            Description: "",
-            price: 0,
-            ImportPrice: 0,
-            productTypeId: "",
-            image: "",
+            Name: ""
         });
     }
     EditClick(dep) {
         this.setState({
-            modelTitle: "Edit Product",
-            id: dep.id,
+            modelTitle: "Edit AdvertisingPanel",
+            id: dep.advertisingPanelID,
             Name: dep.name,
+            image: dep.image,
             Status:
                 dep.status == true ?
                     "True" : "False"
             ,
-            Description: dep.description,
-            price: dep.price,
-            ImportPrice: dep.ImportPrice,
-            productTypeId: dep.productTypeId,
-            image: dep.image,
         });
     }
     NextPage(id, npage) {
-        console.log(npage)
+
         if (id !== npage) {
             this.setState({
                 currentPage: this.state.currentPage + 1
@@ -319,73 +251,91 @@ class CRUDProduct extends React.Component {
             currentPage: id
         });
     }
-    ChangeNameinputProduct(value) {
+    ChangeNameinputProductType(value) {
         this.setState({
-            NameinputProduct: value.target.value
+            NameinputProductType: value.target.value
         });
 
     }
-
+    //0 all 1 false 2 true
     CheckAll() {
 
+        const token = this.getToken();
 
-        fetch(variable.API_URL + "Products/GetAllProduct")
+        fetch(variable.API_URL + "AdvertisingPanels/GetAllAdvertisingPanel", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            }
+        })
             .then(response => response.json())
             .then(data => {
-                this.setState({ ProductType: data });
+                this.setState({ AdvertisingPanel: data });
             })
-
     }
     CheckTrue() {
 
-        fetch(variable.API_URL + "Products/GetAllProductStatusTrue")
+        const token = this.getToken();
+
+        fetch(variable.API_URL + "AdvertisingPanels/GetAllAdvertisingPanelStatusTrue", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            }
+        })
             .then(response => response.json())
             .then(data => {
-                this.setState({ ProductType: data });
+                this.setState({ AdvertisingPanel: data });
             })
     }
     CheckFalse() {
-        fetch(variable.API_URL + "Products/GetAllProductStatusFalse")
+        const token = this.getToken();
+
+        fetch(variable.API_URL + "AdvertisingPanels/GetAllAdvertisingPanelStatusFalse", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            }
+        })
             .then(response => response.json())
             .then(data => {
-                this.setState({ ProductType: data });
+                this.setState({ AdvertisingPanel: data });
             })
+
+
     }
     render() {
 
         const {
-            ProductType,
+            AdvertisingPanel,
             modelTitle,
             id,
-            Name,
+            Name, Status,
             currentPage,
-            ProductTypegetbyid, Disscount, ProductType1,
-            Description,
-            price,
-            ImportPrice, SKU,
-            productTypeId, 
-            image, Status
+            image
         } = this.state;
         const options = ['True', 'False']
-        const optionProductType = []
-        ProductType1.forEach(element => {
-            optionProductType.push(element.id)
-        });
         const recordsPerPage = 5;
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
-        const a = ProductType.slice(firstIndex, lastIndex);
-        const npage = Math.ceil(ProductType.length / recordsPerPage)
+        const a = AdvertisingPanel.slice(firstIndex, lastIndex);
+        const npage = Math.ceil(AdvertisingPanel.length / recordsPerPage)
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
         return (
             <>
-                <div style={{ display: "flex" }}>
+                <div style={{ display: "flex", }}>
                     <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
                         <div className="card-body" >
                             <div>
                                 <div className="form-group">
-                                    <label>Search by Id:</label>
-                                    <div><input className="form-control w-100" type="text" onChange={(e) => this.ChangeNameinputProduct(e)} placeholder="Id" />
+                                    <label>Search by AdvertisingPanelId:</label>
+                                    <div><input className="form-control w-100" type="text" onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Id" />
                                     </div>
                                 </div>
 
@@ -410,10 +360,13 @@ class CRUDProduct extends React.Component {
 
                 <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
                     onClick={() => this.addClick()}>
-                    Add Product
+                    Add AdvertisingPanel
                 </button>
                 <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+
                     <div>
+
+
                         <table id="example" className='table table-striped'>
                             <thead>
                                 <tr>
@@ -421,27 +374,7 @@ class CRUDProduct extends React.Component {
                                         Id
                                     </th>
                                     <th>
-                                        SKU
-                                    </th>
-                                    <th>
-                                        Name
-                                    </th>
-
-                                    <th>
-                                        Description
-                                    </th>
-                                    <th>
-                                        Price
-                                    </th>
-                                  
-                                    <th>
-                                        ImportPrice
-                                    </th>
-                                    <th>
                                         Image
-                                    </th>
-                                    <th>
-                                        ProductTypeId
                                     </th>
                                     <th>
                                         Status
@@ -455,40 +388,22 @@ class CRUDProduct extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-
-                                {a.filter((item) => {
-                                    return this.state.NameinputProduct === ""
-                                        ? item
-                                        : item.id.toString().includes(this.state.NameinputProduct);
-                                })
+                                {AdvertisingPanel
+                                    .filter((item) => {
+                                        return this.state.NameinputProductType === ""
+                                            ? item.slice(firstIndex, lastIndex)
+                                            : item.advertisingPanelID.toString().includes(this.state.NameinputProductType).slice(firstIndex, lastIndex);
+                                    })
                                     .map(dep =>
-                                        <tr >
+                                        <tr key={dep.advertisingPanelID}>
                                             <td>
-                                                {dep.id}
+                                                {dep.advertisingPanelID}
                                             </td>
                                             <td>
-                                                {dep.sku}
+                                                <img style={{ width: 50 }} src={require('../../../assets/images/AdvertisingPanel/' + dep.image)} />
                                             </td>
                                             <td>
-                                                {dep.name}
-                                            </td>
-                                            <td>
-                                                {dep.description}
-                                            </td>
-                                            <td>
-                                                {dep.price + "$"} 
-                                            </td>
-                                           
-                                            <td>
-                                                {dep.ImportPrice}
-                                            </td>
-                                            <td>
-                                                <img style={{ width: 50 }} src={require('../../assets/images/products/' + dep.image)} />
-                                            </td>
-                                            <td>
-                                                {dep.productTypeId}
-                                            </td>
-                                            <td>
+
                                                 {dep.status == true ?
                                                     "True" : "False"
                                                 }
@@ -503,7 +418,7 @@ class CRUDProduct extends React.Component {
                                                 </button>
                                             </td>
                                             <td>
-                                                <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
+                                                <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.advertisingPanelID)}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
                                                         <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
                                                     </svg>
@@ -519,45 +434,10 @@ class CRUDProduct extends React.Component {
                                     <div className="modal-header">
                                         <h5 className='modal-title'>{modelTitle}</h5>
                                         <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
+
                                         </button>
                                     </div>
                                     <div className='modal-body'>
-                                        <div className='input-group mb-3'>
-                                            <span className='input-group-text'>
-                                                Name
-                                            </span>
-                                            <input type='text' className='form-control' value={Name}
-                                                onChange={(e) => this.ChangeProdcutTypeName(e)} />
-
-                                        </div>
-                                        <div className='input-group mb-3'>
-                                            <span className='input-group-text'>
-                                                SKU
-                                            </span>
-                                            <input type='text' className='form-control' value={SKU}
-                                                onChange={(e) => this.ChangeSKU(e)} />
-
-                                        </div>
-                                        <div class="form-group">
-                                            <span className='input-group-text'>
-                                                Description
-                                            </span>
-                                            <textarea class="form-control" id="message-text" value={Description} style={{ height: 152 }}
-                                                onChange={(e) => this.ChangeProdcutDescription(e)}></textarea>
-                                        </div>
-                                        <div className='input-group mb-3'>
-                                            <span className='input-group-text'>
-                                                Price
-                                            </span>
-                                            <input type='text' className='form-control' value={price}
-                                                onChange={(e) => this.ChangeProdcutPrice(e)} />
-                                            <span className='input-group-text'>
-                                                ImportPrice
-                                            </span>
-                                            <input type='text' className='form-control' value={ImportPrice}
-                                                onChange={(e) => this.ChangeProdcutStock(e)} />
-                                        </div>
-                                      
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
                                                 Image
@@ -568,29 +448,10 @@ class CRUDProduct extends React.Component {
                                         </div>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
-                                                ProductTypeId
-                                            </span>
-                                            <Autocomplete
-                                                value={productTypeId}
-                                                onChange={(event, newValue) => {
-                                                    this.setState({
-                                                        productTypeId: newValue
-                                                    });
-                                                }}
-
-                                                options={optionProductType}
-                                                style={{ width: 300 }}
-                                                renderInput={(params) =>
-                                                    <TextField {...params}
-                                                        // label="Pay"
-                                                        variant="outlined" />}
-                                            />
-                                        </div>
-                                        <div className='input-group mb-3'>
-                                            <span className='input-group-text'>
                                                 Status
                                             </span>
                                             <Autocomplete
+
                                                 value={Status}
                                                 onChange={(event, newValue) => {
                                                     this.setState({
@@ -607,7 +468,6 @@ class CRUDProduct extends React.Component {
                                             />
 
                                         </div>
-                                      
                                     </div>
                                     <div class="modal-footer">
                                         {id == 0 ?// eslint-disable-next-line
@@ -649,5 +509,5 @@ class CRUDProduct extends React.Component {
 
 
 
-export default CRUDProduct;
+export default ReviewCRUD;
 

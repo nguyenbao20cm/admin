@@ -1,26 +1,49 @@
 import * as React from 'react';
-import { variable } from '../../Variable';
-import Typography from '@mui/material/Typography';
+import { variable } from '../../../Variable';
+
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
-class CRUDProductType extends React.Component {
+class ReviewCRUD extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            ProductType: [],
+            ProductSizes: [], ProductType:[],
             modelTitle: "",
             Name: "",
             id: 0,
             currentPage: 1,
-            NameinputProductType: "", Status: ""
-        
+            NameinputProductType: "", Stock: "", Status: "", ProductId:"",
+            
+
         }
     }
+    getToken() {
+        const tokenString = localStorage.getItem('token');
+        const userToken = JSON.parse(tokenString);
+        return userToken
+    }
     refreshList() {
-        
-        fetch(variable.API_URL + "ProductTypes/GetAllProductType")
+  
+        const token = this.getToken();
+        fetch(variable.API_URL + "ProductSizes/GetAllProductSize", {
+            method: "GET",
+          
+        })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ ProductSizes: data });
+            })
+        fetch(variable.API_URL + "Products/GetAllProduct", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+
+        })
             .then(response => response.json())
             .then(data => {
                 this.setState({ ProductType: data });
@@ -29,73 +52,70 @@ class CRUDProductType extends React.Component {
     componentDidMount() {
         this.refreshList();
     }
-    ChangeProdcutTypeName = (e) => {
-        this.setState({ Name: e.target.value });
-    }
+
 
     CreateClick() {
-        if (this.state.Status == "") alert("Dữ liệu bị trống");
-        else
-            if (this.state.Name == "") alert("Dữ liệu bị trống");
-            else
-        {
-            fetch(variable.API_URL + "ProductTypes/CreateProductType", {
-                method: "POST",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    name: this.state.Name,
-                    status: this.state.Status == "True" ? true : false,
-                })
-            }).then(res => res.json())
-                .then(result => {
-                    alert(result);
-                    if (result == "Thành công") {
-                        window.location.reload(false);
-                    }
-                }, (error) => {
-                    alert("Failed");
-                });
-        }
-    
+        const token = this.getToken();
+        fetch(variable.API_URL + "ProductSizes/CreateProductSize", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+            body: JSON.stringify({
+                name: this.state.Name,
+                stock: this.state.stock,
+                ProductId:this.state.ProductId,
+                status: this.state.Status == "True" ? true : false,
+            })
+        }).then(res => res.json())
+            .then(result => {
+                alert(result);
+                if (result == "Thành công") {
+                    window.location.reload(false);
+                }
+            }, (error) => {
+                alert("Failed");
+            });
     }
     UpdateClick(id) {
+        const token = this.getToken();
         if (this.state.Name == "") return alert("Không được bỏ trống");
-        else
-            if (this.state.Status == null) return alert("Không được bỏ trống");
-            else {
-                fetch(variable.API_URL + "ProductTypes/UpdateProductType/" + id, {
-                    method: "PUT",
-                    headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        name: this.state.Name,
-                        status: this.state.Status == "True" ? true : false,
-                    })
-                }).then(res => res.json())
-                    .then(result => {
-                        alert(result);
-                        if (result == "Thành công") {
-                            window.location.reload(false);
-                        }
-                    }, (error) => {
-                        alert("Failed");
-                    }
-                    )
-        }
-     
+        fetch(variable.API_URL + "ProductSizes/UpdateProductSize/" + id, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+            body: JSON.stringify
+            ({
+                name: this.state.Name,
+                stock: this.state.stock,
+                ProductId: this.state.ProductId,
+                status: this.state.Status == "True" ? true : false,
+            })
+        }).then(res => res.json())
+            .then(result => {
+                alert(result);
+                if (result == "Thành công") {
+                    window.location.reload(false);
+                }
+            }, (error) => {
+                alert("Failed");
+            }
+            )
     }
     DeleteClick(id) {
+        const token = this.getToken();
         if (window.confirm('Are you sure?')) {
-            fetch(variable.API_URL + "ProductTypes/DeleteProductType/" + id, {
+            fetch(variable.API_URL + "ProductSizes/DeleteProductSize/" + id, {
                 method: "PUT",
                 headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
                 },
             }).then(res => res.json())
                 .then(result => {
@@ -110,21 +130,22 @@ class CRUDProductType extends React.Component {
 
     addClick() {
         this.setState({
-            modelTitle: "Add ProductType",
+            modelTitle: "Add ProductSize",
             id: 0,
             Name: ""
         });
     }
     EditClick(dep) {
         this.setState({
-            modelTitle: "Edit ProductType",
+            modelTitle: "Edit ProductSize",
             id: dep.id,
             Name: dep.name,
-                Status:
-                    dep.status == true ?
-                "True" : "False"
+            ProductId: dep.productId,
+            Status:
+                dep.status == true ?
+                    "True" : "False"
             ,
-
+            Stock: this.state.stock,
         });
     }
     NextPage(id, npage) {
@@ -156,45 +177,78 @@ class CRUDProductType extends React.Component {
     }
     //0 all 1 false 2 true
     CheckAll() {
-        
-        
-        fetch(variable.API_URL + "ProductTypes/GetAllProductType")
+
+        const token = this.getToken();
+
+        fetch(variable.API_URL + "ProductSizes/GetAllReview", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            }
+        })
             .then(response => response.json())
             .then(data => {
-                this.setState({ ProductType: data });
+                this.setState({ ProductSizes: data });
             })
-       
     }
     CheckTrue() {
-        fetch(variable.API_URL + "ProductTypes/GetAllProductTypeStatusTrue")
+
+        const token = this.getToken();
+
+        fetch(variable.API_URL + "ProductSizes/GetAllProductSizeStatusTrue", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            }
+        })
             .then(response => response.json())
             .then(data => {
-                this.setState({ ProductType: data });
+                this.setState({ ProductSizes: data });
             })
     }
     CheckFalse() {
-        fetch(variable.API_URL + "ProductTypes/GetAllProductTypeStatusFalse")
+        const token = this.getToken();
+
+        fetch(variable.API_URL + "ProductSizes/GetAllProductSizeStatusFalse", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            }
+        })
             .then(response => response.json())
             .then(data => {
-                this.setState({ ProductType: data });
+                this.setState({ ProductSizes: data });
             })
+
+
     }
     render() {
 
         const {
-            ProductType,
+            ProductSizes,
             modelTitle,
             id,
             Name,
-            currentPage,
+            currentPage, ProductType,
+            Stock,
+            ProductId,
             Status,
         } = this.state;
-        const recordsPerPage = 5;
-        const options = ['True', 'False']
+        const recordsPerPage = 5; const options = ['True', 'False']
+        const optionProductType = []
+        ProductType.forEach(element => {
+            optionProductType.push(element.id)
+        });
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
-        const a = ProductType.slice(firstIndex, lastIndex);
-        const npage = Math.ceil(ProductType.length / recordsPerPage)
+        const a = ProductSizes.slice(firstIndex, lastIndex);
+        const npage = Math.ceil(ProductSizes.length / recordsPerPage)
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
         return (
             <>
@@ -203,11 +257,11 @@ class CRUDProductType extends React.Component {
                         <div className="card-body" >
                             <div>
                                 <div className="form-group">
-                                    <label>Search by Id:</label>
+                                    <label>Search by ProductId:</label>
                                     <div><input className="form-control w-100" type="text" onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Id" />
                                     </div>
                                 </div>
-                             
+
                             </div>
                         </div>
                     </div>
@@ -215,7 +269,7 @@ class CRUDProductType extends React.Component {
                         <div className="card-body">
                             <label>Status:</label>
                             <div className>
-                                <input type="radio" id="All" name="fav_language" value="All" onClick={()=>this.CheckAll()} />
+                                <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
                                 <label for="All">All</label><br />
                                 <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
                                 <label for="True">True</label><br />
@@ -229,7 +283,7 @@ class CRUDProductType extends React.Component {
 
                 <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
                     onClick={() => this.addClick()}>
-                    Add ProductType
+                    Add ProductSize
                 </button>
                 <Paper sx={{ width: '100%', overflow: 'hidden' }}>
 
@@ -240,10 +294,16 @@ class CRUDProductType extends React.Component {
                             <thead>
                                 <tr>
                                     <th>
-                                        id
+                                        Id
                                     </th>
                                     <th>
                                         Name
+                                    </th>
+                                    <th>
+                                        ProductId 
+                                    </th>
+                                    <th>
+                                        Stock
                                     </th>
                                     <th>
                                         Status
@@ -257,11 +317,12 @@ class CRUDProductType extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {a.filter((item) => {
-                                    return this.state.NameinputProductType === ""
-                                        ? item
-                                        : item.id.toString().includes(this.state.NameinputProductType);
-                                })
+                                {ProductSizes
+                                    .filter((item) => {
+                                        return this.state.NameinputProductType === ""
+                                            ? item.slice(firstIndex, lastIndex)
+                                            : item.productId.toString().includes(this.state.NameinputProductType).slice(firstIndex, lastIndex);
+                                    })
                                     .map(dep =>
                                         <tr key={dep.id}>
                                             <td>
@@ -271,9 +332,15 @@ class CRUDProductType extends React.Component {
                                                 {dep.name}
                                             </td>
                                             <td>
-                                               
+                                                {dep.productId}
+                                            </td>
+                                            <td>
+                                                {dep.stock}
+                                            </td>
+                                            <td>
+
                                                 {dep.status == true ?
-                                                    "True": "False"
+                                                    "True" : "False"
                                                 }
                                             </td>
                                             <td>
@@ -286,7 +353,7 @@ class CRUDProductType extends React.Component {
                                                 </button>
                                             </td>
                                             <td>
-                                                <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
+                                                <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.reviewId)}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
                                                         <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
                                                     </svg>
@@ -308,9 +375,36 @@ class CRUDProductType extends React.Component {
                                     <div className='modal-body'>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
-                                                ProductTypeName
+                                                Name
                                             </span>
                                             <input type='text' className='form-control' value={Name}
+                                                onChange={(e) => this.ChangeProdcutTypeName(e)} />
+                                        </div>
+                                        <div className='input-group mb-3'>
+                                            <span className='input-group-text'>
+                                                ProductId
+                                            </span>
+                                            <Autocomplete
+                                                value={ProductId}
+                                                onChange={(event, newValue) => {
+                                                    this.setState({
+                                                        ProductId: newValue
+                                                    });
+                                                }}
+
+                                                options={optionProductType}
+                                                style={{ width: 300 }}
+                                                renderInput={(params) =>
+                                                    <TextField {...params}
+                                                        // label="Pay"
+                                                        variant="outlined" />}
+                                            />
+                                        </div>
+                                        <div className='input-group mb-3'>
+                                            <span className='input-group-text'>
+                                                Stock
+                                            </span>
+                                            <input type='text' className='form-control' value={Stock}
                                                 onChange={(e) => this.ChangeProdcutTypeName(e)} />
                                         </div>
                                         <div className='input-group mb-3'>
@@ -323,7 +417,6 @@ class CRUDProductType extends React.Component {
                                                     this.setState({
                                                         Status: newValue
                                                     });
-                                                    console.log(this.state.Status)
                                                 }}
 
                                                 options={options}
@@ -333,11 +426,7 @@ class CRUDProductType extends React.Component {
                                                         // label="Pay"
                                                         variant="outlined" />}
                                             />
-
                                         </div>
-                                     
-                                    </div>
-                                    <div class="modal-footer">
                                         {id == 0 ?// eslint-disable-next-line
                                             <button type='button' className='btn btn-primary float-start' onClick={() => this.CreateClick()}>Create</button> : null
                                         }
@@ -377,5 +466,5 @@ class CRUDProductType extends React.Component {
 
 
 
-export default CRUDProductType;
+export default ReviewCRUD;
 

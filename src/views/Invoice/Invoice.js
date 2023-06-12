@@ -389,7 +389,7 @@ class InvoiceCRUD extends React.Component {
                             <tbody>
 
                                 {a.filter((item) => {
-                                    return this.state.ChangeId.toLowerCase() === ""
+                                    return this.state.ChangeId === ""
                                         ? item : item.id.toString().includes(this.state.ChangeId)
                                 })
                                     .map(dep =>
@@ -568,6 +568,9 @@ class InvoiceCRUD extends React.Component {
                                                         variant="outlined" />}
                                             />
                                         </div>
+                                      
+                                    </div>
+                                    <div class="modal-footer">
                                         <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.ID)}>Update</button>
                                     </div>
                                 </div>
