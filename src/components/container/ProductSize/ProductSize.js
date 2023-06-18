@@ -4,19 +4,18 @@ import { variable } from '../../../Variable';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-
+import $ from "jquery"
 class ReviewCRUD extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            ProductSizes: [], ProductType:[],
+            ProductSizes: [], ProductType: [],
             modelTitle: "",
             Name: "",
             id: 0,
             currentPage: 1,
-            NameinputProductType: "", Stock: "", Status: "", ProductId:"",
-            
-
+            NameinputProductType: "", Stock: "", Status: "", ProductId: "",
+            IssuedDate: "", ImportPrice: ""
         }
     }
     getToken() {
@@ -25,11 +24,11 @@ class ReviewCRUD extends React.Component {
         return userToken
     }
     refreshList() {
-  
+
         const token = this.getToken();
         fetch(variable.API_URL + "ProductSizes/GetAllProductSize", {
             method: "GET",
-          
+
         })
             .then(response => response.json())
             .then(data => {
@@ -64,9 +63,11 @@ class ReviewCRUD extends React.Component {
                 'Authorization': `Bearer ${token.value}`
             },
             body: JSON.stringify({
+                importPrice: this.state.ImportPrice,
+                // IssuedDate: Date.now(),
                 name: this.state.Name,
-                stock: this.state.stock,
-                ProductId:this.state.ProductId,
+                stock: this.state.Stock,
+                ProductId: this.state.ProductId,
                 status: this.state.Status == "True" ? true : false,
             })
         }).then(res => res.json())
@@ -90,12 +91,13 @@ class ReviewCRUD extends React.Component {
                 'Authorization': `Bearer ${token.value}`
             },
             body: JSON.stringify
-            ({
-                name: this.state.Name,
-                stock: this.state.stock,
-                ProductId: this.state.ProductId,
-                status: this.state.Status == "True" ? true : false,
-            })
+                ({
+                    importPrice: this.state.ImportPrice,
+                    name: this.state.Name,
+                    stock: this.state.Stock,
+                    ProductId: this.state.ProductId,
+                    status: this.state.Status == "True" ? true : false,
+                })
         }).then(res => res.json())
             .then(result => {
                 alert(result);
@@ -132,7 +134,10 @@ class ReviewCRUD extends React.Component {
         this.setState({
             modelTitle: "Add ProductSize",
             id: 0,
-            Name: ""
+            Name: "",
+            ProductId: "", 
+            Status: "",
+            Stock: 0,
         });
     }
     EditClick(dep) {
@@ -145,7 +150,7 @@ class ReviewCRUD extends React.Component {
                 dep.status == true ?
                     "True" : "False"
             ,
-            Stock: this.state.stock,
+            Stock: dep.stock,
         });
     }
     NextPage(id, npage) {
@@ -172,6 +177,24 @@ class ReviewCRUD extends React.Component {
     ChangeNameinputProductType(value) {
         this.setState({
             NameinputProductType: value.target.value
+        });
+
+    }
+    ChangeProdcutTypeName(value) {
+        this.setState({
+            Name: value.target.value
+        });
+
+    }
+    ChangeStock(value) {
+        this.setState({
+            Stock: value.target.value
+        });
+
+    }
+    ChangeImportPrice(value) {
+        this.setState({
+            ImportPrice: value.target.value
         });
 
     }
@@ -238,7 +261,7 @@ class ReviewCRUD extends React.Component {
             currentPage, ProductType,
             Stock,
             ProductId,
-            Status,
+            Status, IssuedDate, ImportPrice
         } = this.state;
         const recordsPerPage = 5; const options = ['True', 'False']
         const optionProductType = []
@@ -252,6 +275,7 @@ class ReviewCRUD extends React.Component {
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
         return (
             <>
+            
                 <div style={{ display: "flex", }}>
                     <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
                         <div className="card-body" >
@@ -300,11 +324,18 @@ class ReviewCRUD extends React.Component {
                                         Name
                                     </th>
                                     <th>
-                                        ProductId 
+                                        ProductId
                                     </th>
                                     <th>
                                         Stock
                                     </th>
+                                    <th>
+                                        IssuedDate
+                                    </th>
+                                    <th>
+                                        ImportPrice
+                                    </th>
+
                                     <th>
                                         Status
                                     </th>
@@ -320,9 +351,9 @@ class ReviewCRUD extends React.Component {
                                 {ProductSizes
                                     .filter((item) => {
                                         return this.state.NameinputProductType === ""
-                                            ? item.slice(firstIndex, lastIndex)
-                                            : item.productId.toString().includes(this.state.NameinputProductType).slice(firstIndex, lastIndex);
-                                    })
+                                            ? item
+                                            : item.productId.toString().includes(this.state.NameinputProductType)
+                                    }).slice(firstIndex, lastIndex)
                                     .map(dep =>
                                         <tr key={dep.id}>
                                             <td>
@@ -336,6 +367,12 @@ class ReviewCRUD extends React.Component {
                                             </td>
                                             <td>
                                                 {dep.stock}
+                                            </td>
+                                            <td>
+                                                {dep.issuedDate}
+                                            </td>
+                                            <td>
+                                                {dep.importPrice}
                                             </td>
                                             <td>
 
@@ -368,7 +405,11 @@ class ReviewCRUD extends React.Component {
                                 <div className="modal-content">
                                     <div className="modal-header">
                                         <h5 className='modal-title'>{modelTitle}</h5>
-                                        <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
+                                        <button id="closeModal" type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
+                                        </button>
+                                        <button onClick={() => {
+                                            document.getElementById("closeModal").click()
+                                        }}>
 
                                         </button>
                                     </div>
@@ -405,8 +446,14 @@ class ReviewCRUD extends React.Component {
                                                 Stock
                                             </span>
                                             <input type='text' className='form-control' value={Stock}
-                                                onChange={(e) => this.ChangeProdcutTypeName(e)} />
+                                                onChange={(e) => this.ChangeStock(e)} />
+                                            <span className='input-group-text'>
+                                                ImportPrice
+                                            </span>
+                                            <input type='text' className='form-control' value={ImportPrice}
+                                                onChange={(e) => this.ChangeImportPrice(e)} />
                                         </div>
+
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
                                                 Status

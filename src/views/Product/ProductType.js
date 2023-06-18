@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-
+import $ from "jquery"
 class CRUDProductType extends React.Component {
     constructor(props) {
         super(props);
@@ -14,12 +14,16 @@ class CRUDProductType extends React.Component {
             Name: "",
             id: 0,
             currentPage: 1,
-            NameinputProductType: "", Status: ""
-        
+            NameinputProductType: "", Status: "", 
+
         }
+      
     }
+    hideModal() {
+    $("#myModal").modal("hide");
+    };
     refreshList() {
-        
+
         fetch(variable.API_URL + "ProductTypes/GetAllProductType")
             .then(response => response.json())
             .then(data => {
@@ -37,29 +41,28 @@ class CRUDProductType extends React.Component {
         if (this.state.Status == "") alert("Dữ liệu bị trống");
         else
             if (this.state.Name == "") alert("Dữ liệu bị trống");
-            else
-        {
-            fetch(variable.API_URL + "ProductTypes/CreateProductType", {
-                method: "POST",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    name: this.state.Name,
-                    status: this.state.Status == "True" ? true : false,
-                })
-            }).then(res => res.json())
-                .then(result => {
-                    alert(result);
-                    if (result == "Thành công") {
-                        window.location.reload(false);
-                    }
-                }, (error) => {
-                    alert("Failed");
-                });
-        }
-    
+            else {
+                fetch(variable.API_URL + "ProductTypes/CreateProductType", {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        name: this.state.Name,
+                        status: this.state.Status == "True" ? true : false,
+                    })
+                }).then(res => res.json())
+                    .then(result => {
+                        alert(result);
+                        if (result == "Thành công") {
+                            window.location.reload(false);
+                        }
+                    }, (error) => {
+                        alert("Failed");
+                    });
+            }
+
     }
     UpdateClick(id) {
         if (this.state.Name == "") return alert("Không được bỏ trống");
@@ -86,8 +89,8 @@ class CRUDProductType extends React.Component {
                         alert("Failed");
                     }
                     )
-        }
-     
+            }
+
     }
     DeleteClick(id) {
         if (window.confirm('Are you sure?')) {
@@ -112,7 +115,8 @@ class CRUDProductType extends React.Component {
         this.setState({
             modelTitle: "Add ProductType",
             id: 0,
-            Name: ""
+            Name: "",
+            Status: "",
         });
     }
     EditClick(dep) {
@@ -120,9 +124,9 @@ class CRUDProductType extends React.Component {
             modelTitle: "Edit ProductType",
             id: dep.id,
             Name: dep.name,
-                Status:
-                    dep.status == true ?
-                "True" : "False"
+            Status:
+                dep.status == true ?
+                    "True" : "False"
             ,
 
         });
@@ -156,14 +160,14 @@ class CRUDProductType extends React.Component {
     }
     //0 all 1 false 2 true
     CheckAll() {
-        
-        
+
+
         fetch(variable.API_URL + "ProductTypes/GetAllProductType")
             .then(response => response.json())
             .then(data => {
                 this.setState({ ProductType: data });
             })
-       
+
     }
     CheckTrue() {
         fetch(variable.API_URL + "ProductTypes/GetAllProductTypeStatusTrue")
@@ -207,7 +211,7 @@ class CRUDProductType extends React.Component {
                                     <div><input className="form-control w-100" type="text" onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Id" />
                                     </div>
                                 </div>
-                             
+
                             </div>
                         </div>
                     </div>
@@ -215,7 +219,7 @@ class CRUDProductType extends React.Component {
                         <div className="card-body">
                             <label>Status:</label>
                             <div className>
-                                <input type="radio" id="All" name="fav_language" value="All" onClick={()=>this.CheckAll()} />
+                                <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
                                 <label for="All">All</label><br />
                                 <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
                                 <label for="True">True</label><br />
@@ -224,18 +228,13 @@ class CRUDProductType extends React.Component {
                             </div>
                         </div>
                     </div>
-
                 </div>
-
                 <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
                     onClick={() => this.addClick()}>
                     Add ProductType
                 </button>
                 <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-
                     <div>
-
-
                         <table id="example" className='table table-striped'>
                             <thead>
                                 <tr>
@@ -257,11 +256,11 @@ class CRUDProductType extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {a.filter((item) => {
+                                {ProductType.filter((item) => {
                                     return this.state.NameinputProductType === ""
                                         ? item
                                         : item.id.toString().includes(this.state.NameinputProductType);
-                                })
+                                }).slice(firstIndex, lastIndex)
                                     .map(dep =>
                                         <tr key={dep.id}>
                                             <td>
@@ -271,9 +270,9 @@ class CRUDProductType extends React.Component {
                                                 {dep.name}
                                             </td>
                                             <td>
-                                               
+
                                                 {dep.status == true ?
-                                                    "True": "False"
+                                                    "True" : "False"
                                                 }
                                             </td>
                                             <td>
@@ -296,58 +295,7 @@ class CRUDProductType extends React.Component {
                                     )}
                             </tbody>
                         </table>
-                        <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
-                            <div className="modal-dialog modal-lg modal-dialog-centered">
-                                <div className="modal-content">
-                                    <div className="modal-header">
-                                        <h5 className='modal-title'>{modelTitle}</h5>
-                                        <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
-
-                                        </button>
-                                    </div>
-                                    <div className='modal-body'>
-                                        <div className='input-group mb-3'>
-                                            <span className='input-group-text'>
-                                                ProductTypeName
-                                            </span>
-                                            <input type='text' className='form-control' value={Name}
-                                                onChange={(e) => this.ChangeProdcutTypeName(e)} />
-                                        </div>
-                                        <div className='input-group mb-3'>
-                                            <span className='input-group-text'>
-                                                Status
-                                            </span>
-                                            <Autocomplete
-                                                value={Status}
-                                                onChange={(event, newValue) => {
-                                                    this.setState({
-                                                        Status: newValue
-                                                    });
-                                                    console.log(this.state.Status)
-                                                }}
-
-                                                options={options}
-                                                style={{ width: 300 }}
-                                                renderInput={(params) =>
-                                                    <TextField {...params}
-                                                        // label="Pay"
-                                                        variant="outlined" />}
-                                            />
-
-                                        </div>
-                                     
-                                    </div>
-                                    <div class="modal-footer">
-                                        {id == 0 ?// eslint-disable-next-line
-                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.CreateClick()}>Create</button> : null
-                                        }
-                                        {id != 0 ?// eslint-disable-next-line
-                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.id)}>Update</button> : null
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        {/* sss */}
                         <nav>
                             <ul className='pagination'>
                                 <li className='page-item'>
@@ -368,8 +316,63 @@ class CRUDProductType extends React.Component {
                             </ul>
                         </nav>
                     </div>
+                    {/* ? */}
 
                 </Paper>
+                <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
+                    <div className="modal-dialog modal-lg modal-dialog-centered">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className='modal-title'>{modelTitle}</h5>
+                                <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
+
+                                </button>
+                            </div>
+                            <div className='modal-body'>
+                               
+                            
+                                <div className='input-group mb-3'>
+                                    <span className='input-group-text'>
+                                        ProductTypeName
+                                    </span>
+                                    <input type='text' className='form-control' value={Name}
+                                        onChange={(e) => this.ChangeProdcutTypeName(e)} />
+                                </div>
+                                <div className='input-group mb-3'>
+                                    <span className='input-group-text'>
+                                        Status
+                                    </span>
+                                    <Autocomplete
+                                        value={Status}
+                                        onChange={(event, newValue) => {
+                                            this.setState({
+                                                Status: newValue
+                                            });
+                                            console.log(this.state.Status)
+                                        }}
+
+                                        options={options}
+                                        style={{ width: 300 }}
+                                        renderInput={(params) =>
+                                            <TextField {...params}
+                                                // label="Pay"
+                                                variant="outlined" />}
+                                    />
+
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                {id == 0 ?// eslint-disable-next-line
+                                    <button type='button' className='btn btn-primary float-start' onClick={() => this.CreateClick()}>Create</button> : null
+                                }
+                                {id != 0 ?// eslint-disable-next-line
+                                    <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.id)}>Update</button> : null
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </>
         )
     }

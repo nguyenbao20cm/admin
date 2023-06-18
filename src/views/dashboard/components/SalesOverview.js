@@ -1,19 +1,57 @@
 import React from 'react';
-import { Select, MenuItem } from '@mui/material';
+import { Select, MenuItem, Container } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import DashboardCard from '../../../components/shared/DashboardCard';
 import Chart from 'react-apexcharts';
-
-
+import { useEffect } from 'react';
+import { variable } from '../../../Variable';
+import { parseNonNullablePickerDate } from '@mui/x-date-pickers/internals';
+import { Stack, Typography, Avatar } from '@mui/material';
 const SalesOverview = () => {
 
     // select
-    const [month, setMonth] = React.useState('1');
-
+    let year = new Date();
+    const [month, setMonth] = React.useState(year.getFullYear());
+    var [InvoiceTotalMonth, setInvoiceTotalMonth] = React.useState([]);
+    var [ImportPrice, setImportPrice] = React.useState([]);
     const handleChange = (event) => {
         setMonth(event.target.value);
     };
+    useEffect(() => {
 
+        const token = getToken();
+        fetch(variable.API_URL + "Inovices/GetAllInoviceTotalMonth/" + month, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                setInvoiceTotalMonth(data)
+            })
+
+        fetch(variable.API_URL + "ProductSizes/GetAllImportPrice/" + month, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                setImportPrice(data)
+            })
+
+    }, [month]);
+    const getToken = (() => {
+        const tokenString = localStorage.getItem('token');
+        const userToken = JSON.parse(tokenString);
+        return userToken
+    })
     // chart color
     const theme = useTheme();
     const primary = theme.palette.primary.main;
@@ -47,7 +85,7 @@ const SalesOverview = () => {
             width: 5,
             lineCap: "butt",
             colors: ["transparent"],
-          },
+        },
         dataLabels: {
             enabled: false,
         },
@@ -67,7 +105,7 @@ const SalesOverview = () => {
             tickAmount: 4,
         },
         xaxis: {
-            categories: ['16/08', '17/08', '18/08', '19/08', '20/08', '21/08', '22/08', '23/08'],
+            categories: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
             axisBorder: {
                 show: false,
             },
@@ -80,36 +118,59 @@ const SalesOverview = () => {
     const seriescolumnchart = [
         {
             name: 'Eanings this month',
-            data: [355, 390, 300, 350, 390, 180, 355, 390],
+            data: Object.values(InvoiceTotalMonth)
         },
         {
             name: 'Expense this month',
-            data: [280, 250, 325, 215, 250, 310, 280, 250],
+            data: Object.values(ImportPrice)
         },
     ];
 
-    return (
 
-        <DashboardCard title="Sales Overview" action={
-            <Select
-                labelId="month-dd"
-                id="month-dd"
-                value={month}
-                size="small"
-                onChange={handleChange}
-            >
-                <MenuItem value={1}>March 2023</MenuItem>
-                <MenuItem value={2}>April 2023</MenuItem>
-                <MenuItem value={3}>May 2023</MenuItem>
-            </Select>
-        }>
-            <Chart
-                options={optionscolumnchart}
-                series={seriescolumnchart}
-                type="bar"
-                height="370px"
-            />
-        </DashboardCard>
+
+    return (
+        <>
+
+            {InvoiceTotalMonth != null ?
+                <DashboardCard height="670" title="Sales Overview" action={
+                    <div>
+                        <Select
+                            labelId="month-dd"
+                            id="month-dd"
+                            value={month}
+                            size="small"
+                            onChange={handleChange}
+                            style={{  margintop: '-32px', }}
+                        >
+                            <MenuItem value={2023}> 2023</MenuItem>
+                            <MenuItem value={2022}> 2022</MenuItem>
+                            <MenuItem value={2021}> 2021</MenuItem>
+                        </Select>
+                        <Container style={{ height: "6px", }}></Container>
+                        <Avatar
+                            sx={{  width: 9, height: 9, bgcolor: primary, svg: { display: 'none' } }}
+                        ></Avatar>
+                        <Typography variant="subtitle2" color="textSecondary">
+                            Eanings
+                        </Typography>
+                        <Avatar
+                            sx={{ width: 9, height: 9, bgcolor: secondary, svg: { display: 'none' } }}
+                        ></Avatar>
+                        <Typography variant="subtitle2" color="textSecondary">
+                            Expense
+                        </Typography>
+                    </div>
+                }>
+                    <Chart
+                        options={optionscolumnchart}
+                        series={seriescolumnchart}
+                        type="bar"
+                        height="445px"
+                    />
+                </DashboardCard>
+                : null
+            }
+        </>
     );
 };
 

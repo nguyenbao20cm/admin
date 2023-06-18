@@ -3,9 +3,10 @@ import Chart from 'react-apexcharts';
 import { useTheme } from '@mui/material/styles';
 import { Grid, Stack, Typography, Avatar } from '@mui/material';
 import { IconArrowUpLeft } from '@tabler/icons';
-
+import { useEffect } from 'react';
+import { variable } from '../../../Variable';
 import DashboardCard from '../../../components/shared/DashboardCard';
-
+import "../components/style.css"
 const YearlyBreakup = () => {
   // chart color
   const theme = useTheme();
@@ -17,20 +18,23 @@ const YearlyBreakup = () => {
   const optionscolumnchart = {
     chart: {
       type: 'donut',
+      width: 380,
       fontFamily: "'Plus Jakarta Sans', sans-serif;",
       foreColor: '#adb0bb',
       toolbar: {
         show: false,
       },
-      height: 155,
+      height: 200,
+
     },
-    colors: [primary, primarylight, '#F9F9FD'],
+    labels: ["2022", "2023", "2021"],
+    // colors: [primary, primarylight, '#F9F9FD'],
     plotOptions: {
       pie: {
         startAngle: 0,
         endAngle: 360,
         donut: {
-          size: '75%',
+          size: '60%',
           background: 'transparent',
         },
       },
@@ -46,30 +50,59 @@ const YearlyBreakup = () => {
       enabled: false,
     },
     legend: {
-      show: false,
+      position: 'bottom'
     },
     responsive: [
       {
         breakpoint: 991,
         options: {
           chart: {
-            width: 120,
+            width: 200,
           },
         },
       },
     ],
   };
-  const seriescolumnchart = [38, 40, 25];
+  const seriescolumnchart = [-15, 6, 7];
+  var [TotalYear, setTotalYear] = React.useState(0);
+  let year = new Date();
+  const getToken = (() => {
+    const tokenString = localStorage.getItem('token');
+    const userToken = JSON.parse(tokenString);
+    return userToken
+  })
+  const VND = new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+  });
+  useEffect(() => {
 
+    const token = getToken();
+    fetch(variable.API_URL + "Inovices/ProfitForyear/" + year.getFullYear(), {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Authorization': `Bearer ${token.value}`
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        setTotalYear(data)
+      })
+  }, []);
   return (
-    <DashboardCard title="Yearly Breakup">
+    <DashboardCard title="Profit for the whole year">
       <Grid container spacing={3}>
+
+
+
         {/* column */}
-        <Grid item xs={7} sm={7}>
-          <Typography variant="h3" fontWeight="700">
-            $36,358
+        <Grid item xs={8} sm={8}>
+          <Typography variant="h5" fontWeight="700" alignContent={'center'}>
+            {VND.format(TotalYear)}
           </Typography>
-          <Stack direction="row" spacing={1} mt={1} alignItems="center">
+          <Stack direction="row" spacing={2} mt={2} alignItems="center">
             <Avatar sx={{ bgcolor: successlight, width: 27, height: 27 }}>
               <IconArrowUpLeft width={20} color="#39B69A" />
             </Avatar>
@@ -80,7 +113,7 @@ const YearlyBreakup = () => {
               last year
             </Typography>
           </Stack>
-          <Stack spacing={3} mt={5} direction="row">
+          {/* <Stack spacing={3} mt={5} direction="row">
             <Stack direction="row" spacing={1} alignItems="center">
               <Avatar
                 sx={{ width: 9, height: 9, bgcolor: primary, svg: { display: 'none' } }}
@@ -97,17 +130,19 @@ const YearlyBreakup = () => {
                 2023
               </Typography>
             </Stack>
-          </Stack>
+          </Stack> */}
         </Grid>
         {/* column */}
-        <Grid item xs={5} sm={5}>
-          <Chart
-            options={optionscolumnchart}
-            series={seriescolumnchart}
-            type="donut"
-            height="150px"
-          />
-        </Grid>
+        <div className='ChartPie'>
+          <Grid item xs={7} sm={7} >
+            <Chart
+              options={optionscolumnchart}
+              series={seriescolumnchart}
+              type="donut"
+              height="900px"
+            />
+          </Grid>
+        </div>
       </Grid>
     </DashboardCard>
   );

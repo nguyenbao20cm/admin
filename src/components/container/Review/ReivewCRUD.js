@@ -286,9 +286,9 @@ class ReviewCRUD extends React.Component {
                                 {ReviewList
                                     .filter((item) => {
                                         return this.state.NameinputProductType === ""
-                                            ? item.slice(firstIndex, lastIndex)
-                                            : item.productId.toString().includes(this.state.NameinputProductType).slice(firstIndex, lastIndex);
-                                    })
+                                            ? item
+                                            : item.productId.toString().includes(this.state.NameinputProductType)
+                                    }).slice(firstIndex, lastIndex)
                                     .map(dep =>
                                         <tr key={dep.reviewId}>
                                             <td>

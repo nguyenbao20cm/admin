@@ -17,28 +17,29 @@ const Menuitems = [
     href: '/dashboard',
   },
 
-  {
-    navlabel: true,
-    subheader: 'Table',
-  },
+
 
   {
     id: uniqueId(),
-    title: 'ProductType Page',
+    title: 'ProductType Page', bbb: false,
     icon: IconAperture,
     href: '/sample-page',
   },
   {
     id: uniqueId(),
-    title: 'Product Page',
+    title: 'Product Page', bbb: false,
     icon: IconAperture,
     href: '/ProductTypepage',
   },
   {
     id: uniqueId(),
     title: 'ProductSize Page',
-    icon: IconAperture,
+    icon: IconAperture, bbb: false,
     href: '/ProductSize',
+  },
+  {
+    navlabel: true,
+    subheader: 'Invoice',
   },
   {
     id: uniqueId(),
@@ -51,18 +52,27 @@ const Menuitems = [
     title: 'Review Page',
     icon: IconAperture,
     href: '/ReviewPage',
+    aaa: true,
   },
   {
     id: uniqueId(),
     title: 'AdvertisingPanel Page',
     icon: IconAperture,
-    href: '/AdvertisingPanel',
+    href: '/AdvertisingPanel', aaa: true,
   },
   {
     id: uniqueId(),
     title: 'Disscount Page',
     icon: IconAperture,
-    href: '/Disscount',
+    href: '/Disscount', aaa: true,
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Report Week Page',
+    icon: IconAperture,
+    href: '/ReportWeekPage',
+    bbb:true
   },
 
   

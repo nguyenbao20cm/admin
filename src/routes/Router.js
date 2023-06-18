@@ -14,6 +14,9 @@ const InvoicePage = Loadable(lazy(() => import('../views/sample-page/InvoicePage
 const ReviewPage = Loadable(lazy(() => import('../views/sample-page/ReviewPage')))
 const AdvertisingPanel = Loadable(lazy(() => import('../views/sample-page/AdvertisingPanel')))
 const Disscount = Loadable(lazy(() => import('../views/sample-page/Disscount')))
+const ProductSize = Loadable(lazy(() => import('../views/sample-page/ProductSize')))
+const ReportWeekPage = Loadable(lazy(() => import('../views/sample-page/ReportWeekPage')))
+
 
 
 const Error = Loadable(lazy(() => import('../views/authentication/Error')));
@@ -33,10 +36,12 @@ const Router = [
       { path: '/ReviewPage', exact: true, element: < ReviewPage /> },
       { path: '/AdvertisingPanel', exact: true, element: < AdvertisingPanel /> },
       { path: '/Disscount', exact: true, element: < Disscount /> },
+      { path: '/ProductSize', exact: true, element: < ProductSize /> },
+      { path: '/ReportWeekPage', exact: true, element: < ReportWeekPage /> },
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },
-  
+
   {
     path: '/auth',
     element: <BlankLayout />,

@@ -341,10 +341,10 @@ class ReviewCRUD extends React.Component {
                                 {Disscounts
                                     .filter((item) => {
                                         return this.state.NameinputProductType === ""
-                                            ? item.slice(firstIndex, lastIndex)
-                                            : item.nameDisscount.toString().includes(this.state.NameinputProductType).slice(firstIndex, lastIndex);
+                                            ? item
+                                            : item.nameDisscount.toString().includes(this.state.NameinputProductType)
                                       
-                                    })
+                                    }).slice(firstIndex, lastIndex)
                                     .map(dep =>
                                         <tr key={dep.id}>
                                             <td>

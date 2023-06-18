@@ -68,6 +68,7 @@ const FullLayout = () => {
     //   </PageWrapper>
     // </MainWrapper>
     <>
+  
       <Header toggleSidebar={() => setSidebarOpen(!isSidebarOpen)} toggleMobileSidebar={() => setMobileSidebarOpen(true)} />
       <Box sx={{ display: 'flex' }}>
         <Sidebar isSidebarOpen={isSidebarOpen}
@@ -79,22 +80,23 @@ const FullLayout = () => {
         >
 
           <Container sx={{
-          paddingTop: "20px",
-          maxWidth: '1200px',
-        }}
-        >
-          {/* ------------------------------------------- */}
-          {/* Page Route */}
-          {/* ------------------------------------------- */}
-          <Box sx={{ minHeight: 'calc(100vh - 170px)' }}>
-            <Outlet />
-          </Box>
-          {/* ------------------------------------------- */}
-          {/* End Page */}
-          {/* ------------------------------------------- */}
-        </Container>
+            paddingTop: "20px",
+            maxWidth: '1200px',
+          }}
+          >
+            {/* ------------------------------------------- */}
+            {/* Page Route */}
+            {/* ------------------------------------------- */}
+            <Box sx={{ minHeight: 'calc(100vh - 170px)' }}>
+              <Outlet />
+            </Box>
+            {/* ------------------------------------------- */}
+            {/* End Page */}
+            {/* ------------------------------------------- */}
+          </Container>
         </Box>
-      </Box>
+        </Box>
+   
     </>
   );
 };

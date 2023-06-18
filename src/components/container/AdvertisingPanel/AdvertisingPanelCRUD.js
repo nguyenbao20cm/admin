@@ -215,7 +215,9 @@ class ReviewCRUD extends React.Component {
         this.setState({
             modelTitle: "Add AdvertisingPanel",
             id: 0,
-            Name: ""
+            Name: "",
+            image: "",
+            Status:"",
         });
     }
     EditClick(dep) {
@@ -391,9 +393,9 @@ class ReviewCRUD extends React.Component {
                                 {AdvertisingPanel
                                     .filter((item) => {
                                         return this.state.NameinputProductType === ""
-                                            ? item.slice(firstIndex, lastIndex)
-                                            : item.advertisingPanelID.toString().includes(this.state.NameinputProductType).slice(firstIndex, lastIndex);
-                                    })
+                                            ? item
+                                            : item.advertisingPanelID.toString().includes(this.state.NameinputProductType)
+                                    }).slice(firstIndex, lastIndex)
                                     .map(dep =>
                                         <tr key={dep.advertisingPanelID}>
                                             <td>

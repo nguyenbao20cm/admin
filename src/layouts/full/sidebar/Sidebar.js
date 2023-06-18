@@ -4,11 +4,8 @@ import SidebarItems from './SidebarItems';
 
 
 const Sidebar = (props) => {
-
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
-
-  const sidebarWidth = '270px';
-
+  const sidebarWidth = '250px';
   if (lgUp) {
     return (
       <Box
@@ -17,48 +14,21 @@ const Sidebar = (props) => {
           flexShrink: 0,
         }}
       >
-        {/* ------------------------------------------- */}
-        {/* Sidebar for desktop */}
-        {/* ------------------------------------------- */}
-        <Drawer
-          anchor="left"
-          open={props.isSidebarOpen}
-          variant="permanent"
-          PaperProps={{
-            sx: {
-              width: sidebarWidth,
-              boxSizing: 'border-box',
-            },
+        <Box
+          sx={{
+            height: '100%',
           }}
         >
-          {/* ------------------------------------------- */}
-          {/* Sidebar Box */}
-          {/* ------------------------------------------- */}
-          <Box
-            sx={{
-              height: '100%',
-            }}
-          >
-            {/* ------------------------------------------- */}
-            {/* Logo */}
-            {/* ------------------------------------------- */}
-            <Box px={3}>
-              <Logo />
-            </Box>
-            <Box>
-              {/* ------------------------------------------- */}
-              {/* Sidebar Items */}
-              {/* ------------------------------------------- */}
-              <SidebarItems />
-          
-            </Box>
-            
+          <Box px={3}>
+            <Logo />
           </Box>
-        </Drawer>
+          <Box>
+            <SidebarItems />
+          </Box>
+        </Box>
       </Box>
     );
   }
-
   return (
     <Drawer
       anchor="left"
@@ -72,19 +42,11 @@ const Sidebar = (props) => {
         },
       }}
     >
-      {/* ------------------------------------------- */}
-      {/* Logo */}
-      {/* ------------------------------------------- */}
       <Box px={2}>
         <Logo />
       </Box>
-      {/* ------------------------------------------- */}
-      {/* Sidebar For Mobile */}
-      {/* ------------------------------------------- */}
       <SidebarItems />
-    
     </Drawer>
   );
 };
-
 export default Sidebar;

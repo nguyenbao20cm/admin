@@ -3,6 +3,7 @@ import { Card, CardContent, Typography, Stack, Box } from '@mui/material';
 
 const DashboardCard = ({
   title,
+  height,
   subtitle,
   children,
   action,
@@ -18,6 +19,7 @@ const DashboardCard = ({
       sx={{ padding: 0 }}
       elevation={9}
       variant={undefined}
+      height={height}
     >
       {cardheading ? (
         <CardContent>

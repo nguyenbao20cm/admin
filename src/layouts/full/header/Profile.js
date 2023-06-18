@@ -46,8 +46,8 @@ const Profile = () => {
           src={ProfileImg}
           alt={ProfileImg}
           sx={{
-            width: 35,
-            height: 35,
+            width: 50,
+            height: 50,
           }}
         />
       </IconButton>

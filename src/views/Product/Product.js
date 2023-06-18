@@ -3,7 +3,7 @@ import { variable } from '../../Variable';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import { result } from 'lodash';
-
+import $ from "jquery";
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 class CRUDProduct extends React.Component {
@@ -19,13 +19,14 @@ class CRUDProduct extends React.Component {
             NameinputProduct: "",
             Description: "",
             price: 0,
-            ImportPrice: 0,
+
             productTypeId: "",
             image: "",
             Iimage: "",
-            ProductTypegetbyid: [], SKU: "", Disscount: "", Status: "", ProductType1:[]
+            ProductTypegetbyid: [], SKU: "", Disscount: "", Status: "", ProductType1: []
         }
     }
+
     refreshList() {
         const token = this.getToken();
         fetch(variable.API_URL + "Products/GetAllProduct")
@@ -67,9 +68,7 @@ class CRUDProduct extends React.Component {
     ChangeProdcutPrice = (e) => {
         this.setState({ price: e.target.value });
     }
-    ChangeProdcutStock = (e) => {
-        this.setState({ ImportPrice: e.target.value });
-    }
+
     ChangeDisscount = (e) => {
         this.setState({ Disscount: e.target.value });
     }
@@ -83,6 +82,7 @@ class CRUDProduct extends React.Component {
     }
 
     CreateClick() {
+        if (this.state.SKU.length > 5) return alert("SKU không được vượt quá 5 ký tự");
         const optionProductType = []
         this.state.ProductType1.forEach(element => {
             optionProductType.push(element.id)
@@ -110,7 +110,7 @@ class CRUDProduct extends React.Component {
                         status: this.state.Status == "True" ? true : false,
                         description: this.state.Description,
                         price: this.state.price,
-                        ImportPrice: this.state.ImportPrice,
+
                         productTypeId: this.state.productTypeId,
                         image: ""
                     })
@@ -141,7 +141,7 @@ class CRUDProduct extends React.Component {
                                             description: this.state.Description,
                                             status: this.state.Status == "True" ? true : false,
                                             price: this.state.price,
-                                            ImportPrice: this.state.ImportPrice,
+
                                             productTypeId: this.state.productTypeId,
                                             image: imagelName
                                         })
@@ -171,6 +171,7 @@ class CRUDProduct extends React.Component {
 
 
     UpdateClick(id) {
+        if (this.state.SKU.length > 5) return alert("SKU không được vượt quá 5 ký tự");
         var imagelName = this.state.id + ".jpg"
         if (this.state.image == imagelName) {
             fetch(variable.API_URL + "Products/UpdateProduct/" + id, {
@@ -186,7 +187,7 @@ class CRUDProduct extends React.Component {
                         status: this.state.Status == "True" ? true : false,
                         description: this.state.Description,
                         price: this.state.price,
-                        ImportPrice: this.state.ImportPrice,
+
                         productTypeId: this.state.productTypeId,
                         image: imagelName
                     })
@@ -223,7 +224,7 @@ class CRUDProduct extends React.Component {
                         status: this.state.Status == "True" ? true : false,
                         description: this.state.Description,
                         price: this.state.price,
-                        ImportPrice: this.state.ImportPrice,
+
                         productTypeId: this.state.productTypeId,
                         image: imagelName
                     })
@@ -277,7 +278,7 @@ class CRUDProduct extends React.Component {
 
             Description: "",
             price: 0,
-            ImportPrice: 0,
+
             productTypeId: "",
             image: "",
         });
@@ -293,7 +294,7 @@ class CRUDProduct extends React.Component {
             ,
             Description: dep.description,
             price: dep.price,
-            ImportPrice: dep.ImportPrice,
+
             productTypeId: dep.productTypeId,
             image: dep.image,
         });
@@ -362,8 +363,8 @@ class CRUDProduct extends React.Component {
             ProductTypegetbyid, Disscount, ProductType1,
             Description,
             price,
-            ImportPrice, SKU,
-            productTypeId, 
+            SKU,
+            productTypeId,
             image, Status
         } = this.state;
         const options = ['True', 'False']
@@ -433,10 +434,8 @@ class CRUDProduct extends React.Component {
                                     <th>
                                         Price
                                     </th>
-                                  
-                                    <th>
-                                        ImportPrice
-                                    </th>
+
+
                                     <th>
                                         Image
                                     </th>
@@ -456,11 +455,11 @@ class CRUDProduct extends React.Component {
                             </thead>
                             <tbody>
 
-                                {a.filter((item) => {
+                                {ProductType.filter((item) => {
                                     return this.state.NameinputProduct === ""
                                         ? item
                                         : item.id.toString().includes(this.state.NameinputProduct);
-                                })
+                                }).slice(firstIndex, lastIndex)
                                     .map(dep =>
                                         <tr >
                                             <td>
@@ -476,12 +475,10 @@ class CRUDProduct extends React.Component {
                                                 {dep.description}
                                             </td>
                                             <td>
-                                                {dep.price + "$"} 
+                                                {dep.price + "$"}
                                             </td>
-                                           
-                                            <td>
-                                                {dep.ImportPrice}
-                                            </td>
+
+
                                             <td>
                                                 <img style={{ width: 50 }} src={require('../../assets/images/products/' + dep.image)} />
                                             </td>
@@ -522,6 +519,7 @@ class CRUDProduct extends React.Component {
                                         </button>
                                     </div>
                                     <div className='modal-body'>
+
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
                                                 Name
@@ -551,13 +549,8 @@ class CRUDProduct extends React.Component {
                                             </span>
                                             <input type='text' className='form-control' value={price}
                                                 onChange={(e) => this.ChangeProdcutPrice(e)} />
-                                            <span className='input-group-text'>
-                                                ImportPrice
-                                            </span>
-                                            <input type='text' className='form-control' value={ImportPrice}
-                                                onChange={(e) => this.ChangeProdcutStock(e)} />
                                         </div>
-                                      
+
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
                                                 Image
@@ -607,7 +600,7 @@ class CRUDProduct extends React.Component {
                                             />
 
                                         </div>
-                                      
+
                                     </div>
                                     <div class="modal-footer">
                                         {id == 0 ?// eslint-disable-next-line
@@ -650,4 +643,3 @@ class CRUDProduct extends React.Component {
 
 
 export default CRUDProduct;
-
