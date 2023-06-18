@@ -1,7 +1,7 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { useRoutes } from 'react-router-dom';
 import Router from './routes/Router';
-
+import jwt_decode from "jwt-decode";
 import { baselightTheme } from "./theme/DefaultColors";
 import Loadable from './layouts/full/shared/loadable/Loadable';
 import React, { lazy } from 'react';
@@ -21,12 +21,15 @@ function App() {
       localStorage.clear()
       return null
     }
-    return userToken
+    return tokenString
   }
   const token = getToken();
   if (token == null) {
     return <Login />
   }
+
+  const decoded = jwt_decode(token);
+  if (decoded.RoleUser =="Admin")
   return (
     <ThemeProvider theme={theme}>
 
@@ -34,7 +37,9 @@ function App() {
       {routing}
 
     </ThemeProvider>
-  );
+    );
+  else
+    return <Login />
 }
 
 export default App;

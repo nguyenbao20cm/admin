@@ -52,7 +52,7 @@ const Login2 = () => {
                     <Typography color="textSecondary" variant="h6" fontWeight="500">
                  
                     </Typography>
-                    <Typography
+                    {/* <Typography
                       component={Link}
                       to="/auth/register"
                       fontWeight="500"
@@ -62,7 +62,7 @@ const Login2 = () => {
                       }}
                     >
                       Create an account
-                    </Typography>
+                    </Typography> */}
                   </Stack>
                 }
               />
