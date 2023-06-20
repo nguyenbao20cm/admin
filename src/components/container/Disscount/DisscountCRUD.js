@@ -196,7 +196,8 @@ class ReviewCRUD extends React.Component {
     }
     ChangeNameinputProductType(value) {
         this.setState({
-            NameinputProductType: value.target.value
+            NameinputProductType: value.target.value,
+            currentPage: 1 
         });
 
     }
@@ -238,7 +239,7 @@ class ReviewCRUD extends React.Component {
         })
             .then(response => response.json())
             .then(data => {
-                this.setState({ Disscounts: data });
+                this.setState({ Disscounts: data, currentPage: 1 });
             })
     }
     CheckFalse() {
@@ -254,7 +255,7 @@ class ReviewCRUD extends React.Component {
         })
             .then(response => response.json())
             .then(data => {
-                this.setState({ Disscounts: data });
+                this.setState({ Disscounts: data, currentPage: 1 });
             })
 
 
@@ -409,6 +410,7 @@ class ReviewCRUD extends React.Component {
                                             </span>
                                             <Autocomplete
                                                 value={ProductId}
+                                                disableClearable
                                                 onChange={(event, newValue) => {
                                                     this.setState({
                                                         ProductId: newValue
@@ -429,6 +431,7 @@ class ReviewCRUD extends React.Component {
                                                 Status
                                             </span>
                                             <Autocomplete
+                                                disableClearable
                                                 value={Status}
                                                 onChange={(event, newValue) => {
                                                     this.setState({

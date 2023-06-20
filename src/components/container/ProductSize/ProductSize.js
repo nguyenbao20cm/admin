@@ -9,7 +9,7 @@ class ReviewCRUD extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            ProductSizes: [], ProductType: [],
+            ProductSizes: [], ProductType: [], StatusCheck: "",
             modelTitle: "",
             Name: "",
             id: 0,
@@ -68,15 +68,17 @@ class ReviewCRUD extends React.Component {
                 name: this.state.Name,
                 stock: this.state.Stock,
                 ProductId: this.state.ProductId,
-                status: this.state.Status == "True" ? true : false,
+                status: this.state.Status == "Hiển thị" ? true : false,
             })
         }).then(res => res.json())
             .then(result => {
-                
+
                 if (result == "Thành công") {
                     message.success(result)
                     message.success("Thành công")
-                    this.refreshList()
+                    this.state.Trangthai == true ? this.CheckTrue()
+                        : this.state.Trangthai == false ? this.CheckFalse()
+                            : this.refreshList()
                     document.getElementById("closeModal").click()
                 }
                 else
@@ -101,13 +103,15 @@ class ReviewCRUD extends React.Component {
                     name: this.state.Name,
                     stock: this.state.Stock,
                     ProductId: this.state.ProductId,
-                    status: this.state.Status == "True" ? true : false,
+                    status: this.state.Status == "Hiển thị" ? true : false,
                 })
         }).then(res => res.json())
             .then(result => {
                 if (result == "Thành công") {
                     message.success("Thành công")
-                    this.refreshList()
+                    this.state.Trangthai == true ? this.CheckTrue()
+                        : this.state.Trangthai == false ? this.CheckFalse()
+                            : this.refreshList()
                     document.getElementById("closeModal").click()
                 }
                 else
@@ -119,28 +123,28 @@ class ReviewCRUD extends React.Component {
     }
     DeleteClick(id) {
         const token = this.getToken();
-        
-            fetch(variable.API_URL + "ProductSizes/DeleteProductSize/" + id, {
-                method: "PUT",
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Authorization': `Bearer ${token.value}`
-                },
-            }).then(res => res.json())
-                .then(result => {
-                    if (result == "Thành công") {
-                        message.success("Thành công")
-                        this.refreshList();
-                    }
-                    else
-                        message.error(result)
-                   
-                }, (error) => {
-                    message.error("Failed")
+
+        fetch(variable.API_URL + "ProductSizes/DeleteProductSize/" + id, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+        }).then(res => res.json())
+            .then(result => {
+                if (result == "Thành công") {
+                    message.success("Thành công")
+                    this.refreshList();
                 }
-                )
-        
+                else
+                    message.error(result)
+
+            }, (error) => {
+                message.error("Failed")
+            }
+            )
+
     }
 
     addClick() {
@@ -148,13 +152,15 @@ class ReviewCRUD extends React.Component {
             modelTitle: "Thêm Size sản phẩm",
             id: 0,
             Name: "",
-            ProductId: "", 
+            ProductId: "",
             Status: "",
             Stock: 0, ImportPrice: 0,
         });
     }
     EditClick(dep) {
         this.setState({
+            StatusCheck: dep.status == true ?
+                "Hiển thị" : "Ẩn",
             modelTitle: "Sửa Size sản phẩm",
             id: dep.id,
             Name: dep.name,
@@ -163,7 +169,7 @@ class ReviewCRUD extends React.Component {
                 dep.status == true ?
                     "Hiển thị" : "Ẩn"
             ,
-            ImportPrice:dep.importPrice,
+            ImportPrice: dep.importPrice,
             Stock: dep.stock,
         });
     }
@@ -190,7 +196,8 @@ class ReviewCRUD extends React.Component {
     }
     ChangeNameinputProductType(value) {
         this.setState({
-            NameinputProductType: value.target.value
+            NameinputProductType: value.target.value,
+            currentPage: 1
         });
 
     }
@@ -214,55 +221,107 @@ class ReviewCRUD extends React.Component {
     }
     //0 all 1 false 2 true
     CheckAll() {
-
         const token = this.getToken();
-
-        fetch(variable.API_URL + "ProductSizes/GetAllReview", {
+        fetch(variable.API_URL + "ProductSizes/GetAllProductSize", {
             method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            }
+
         })
             .then(response => response.json())
             .then(data => {
-                this.setState({ ProductSizes: data });
+                this.setState({
+                    ProductSizes: data, Trangthai: null,
+                    NameinputProductType: ""
+                });
             })
     }
     CheckTrue() {
-
-        const token = this.getToken();
-
-        fetch(variable.API_URL + "ProductSizes/GetAllProductSizeStatusTrue", {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ ProductSizes: data });
+        if (this.state.StatusCheck != this.state.Status) {
+            const token = this.getToken();
+            const recordsPerPage = 5;
+            const lastIndex = this.state.currentPage * recordsPerPage;
+            const firstIndex = lastIndex - recordsPerPage;
+            const a = this.state.ProductSizes.slice(firstIndex, lastIndex);
+            fetch(variable.API_URL + "ProductSizes/GetAllProductSizeStatusTrue", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
             })
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        ProductSizes: data,
+                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : a.length == 1 ? this.state.currentPage - 1 : this.state.currentPage,
+                        Trangthai: true, NameinputProductType: ""
+                    });
+                })
+        }
+        else {
+            const token = this.getToken();
+            fetch(variable.API_URL + "ProductSizes/GetAllProductSizeStatusTrue", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        ProductSizes: data,
+                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : this.state.currentPage,
+                        Trangthai: true, NameinputProductType: ""
+                    });
+                })
+        }
     }
     CheckFalse() {
-        const token = this.getToken();
-
-        fetch(variable.API_URL + "ProductSizes/GetAllProductSizeStatusFalse", {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ ProductSizes: data });
+        if (this.state.StatusCheck != this.state.Status) {
+            const token = this.getToken();
+            const recordsPerPage = 5;
+            const lastIndex = this.state.currentPage * recordsPerPage;
+            const firstIndex = lastIndex - recordsPerPage;
+            const a = this.state.ProductSizes.slice(firstIndex, lastIndex);
+            console.log(a.length)
+            fetch(variable.API_URL + "ProductSizes/GetAllProductSizeStatusFalse", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
             })
-
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        ProductSizes: data
+                        , currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : a.length == 1 ? this.state.currentPage - 1 : this.state.currentPage,
+                        Trangthai: false, NameinputProductType: ""
+                    });
+                })
+        }
+        else {
+            const token = this.getToken();
+            fetch(variable.API_URL + "ProductSizes/GetAllProductSizeStatusFalse", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        ProductSizes: data
+                        , currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : this.state.currentPage,
+                        Trangthai: false, NameinputProductType: ""
+                    });
+                })
+        }
 
     }
     DatetimeFormat(e) {
@@ -282,14 +341,15 @@ class ReviewCRUD extends React.Component {
             Name,
             currentPage, ProductType,
             Stock,
-            ProductId,
+            ProductId, NameinputProductType,
             Status, IssuedDate, ImportPrice
         } = this.state;
-        const recordsPerPage = 5; const options = ['Hiển thị', 'Ẩn']
+        const options = ['Hiển thị', 'Ẩn']
         const optionProductType = []
         ProductType.forEach(element => {
             optionProductType.push(element.id)
         });
+        const recordsPerPage = 5;
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
         const a = ProductSizes.slice(firstIndex, lastIndex);
@@ -297,14 +357,14 @@ class ReviewCRUD extends React.Component {
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
         return (
             <>
-            
+
                 <div style={{ display: "flex", }}>
                     <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
                         <div className="card-body" >
                             <div>
                                 <div className="form-group">
                                     <label>Tìm kiếm Size theo tên sản phẩm</label>
-                                    <div><input className="form-control w-100" type="text" onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Tên sản phẩm" />
+                                    <div><input className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Tên sản phẩm" />
                                     </div>
                                 </div>
 
@@ -327,7 +387,7 @@ class ReviewCRUD extends React.Component {
                 </div>
                 <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
                     onClick={() => this.addClick()}>
-                   Thêm Size sản phẩm
+                    Thêm Size sản phẩm
                 </button>
                 <Paper sx={{ width: '100%', overflow: 'hidden' }}>
 
@@ -344,7 +404,7 @@ class ReviewCRUD extends React.Component {
                                         Size
                                     </th>
                                     <th>
-                                       Của sản phẩm
+                                        Của sản phẩm
                                     </th>
                                     <th>
                                         Số lượng kho
@@ -372,7 +432,7 @@ class ReviewCRUD extends React.Component {
                                     .filter((item) => {
                                         return this.state.NameinputProductType === ""
                                             ? item
-                                            : item.productId.toString().includes(this.state.NameinputProductType)
+                                            : item.product.name.toString().includes(this.state.NameinputProductType)
                                     }).slice(firstIndex, lastIndex)
                                     .map(dep =>
                                         <tr key={dep.id}>
@@ -394,7 +454,7 @@ class ReviewCRUD extends React.Component {
                                                 }
                                             </td>
                                             <td>
-                                                {dep.importPrice+" Đồng"}
+                                                {dep.importPrice + " Đồng"}
                                             </td>
                                             <td>
 
@@ -429,7 +489,7 @@ class ReviewCRUD extends React.Component {
                                         <h5 className='modal-title'>{modelTitle}</h5>
                                         <button id="closeModal" type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
                                         </button>
-                                       
+
                                     </div>
                                     <div className='modal-body'>
                                         <div className='input-group mb-3'>
@@ -444,6 +504,7 @@ class ReviewCRUD extends React.Component {
                                                 Của sản phẩm
                                             </span>
                                             <Autocomplete
+                                                disableClearable
                                                 value={ProductId}
                                                 onChange={(event, newValue) => {
                                                     this.setState({
@@ -477,6 +538,7 @@ class ReviewCRUD extends React.Component {
                                                 Trạng thái
                                             </span>
                                             <Autocomplete
+                                                disableClearable
                                                 value={Status}
                                                 onChange={(event, newValue) => {
                                                     this.setState({

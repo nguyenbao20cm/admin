@@ -18,6 +18,7 @@ class CRUDProduct extends React.Component {
         super(props);
         this.state = {
             ProductType: [],
+            APIProduct: [], APIProductType:[],
             modelTitle: "",
             Name: "",
             id: 0,
@@ -27,18 +28,17 @@ class CRUDProduct extends React.Component {
             price: 0,
             SKU: "",
             productTypeId: "",
-            image: "",
-            Iimage: "", NameCheck:"",
-            ProductTypegetbyid: [], SKU: "", Disscount: "", Status: "", ProductType1: []
+            image: "", StatusCheck:"",
+            Iimage: "", NameCheck:"",SKUCheck:"",
+            ProductTypegetbyid: [], SKU: "", Disscount: "", Status: "", ProductType1: [],Trangthai:""
         }
     }
-
     refreshList() {
         const token = this.getToken();
         fetch(variable.API_URL + "Products/GetAllProduct")
             .then(response => response.json())
             .then(data => {
-                this.setState({ ProductType: data });
+                this.setState({ ProductType: data, APIProduct: data });
             })
         fetch(variable.API_URL + "ProductTypes/GetAllProductType", {
             method: "GET",
@@ -51,7 +51,22 @@ class CRUDProduct extends React.Component {
         })
             .then(response => response.json())
             .then(data => {
-                this.setState({ ProductType1: data });
+                this.setState({
+                    APIProductType: data
+                    , ProductType1: data,Trangthai:null
+                   
+                });
+            })
+    }
+    refreshList1() {
+        const token = this.getToken();
+        fetch(variable.API_URL + "Products/GetAllProduct")
+            .then(response => response.json())
+            .then(data => {
+                this.setState({
+                    ProductType: data, currentPage: this.state.currentPage,Trangthai: null
+                   
+    });
             })
     }
     getToken() {
@@ -101,17 +116,24 @@ class CRUDProduct extends React.Component {
             timer: 1500
         })
     }
+        laSoNguyenDuong(value) {
+    return (Number.isInteger(value) && value > 0);
+}
     CreateClick() {
        
         if (this.state.Name == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
         if (this.state.Description == "") return this.loi("Miêu tả bị rỗng ", "Hãy nhập lại")
         if (this.state.price == "") return this.loi("Giá bán đang bị rỗng ", "Hãy nhập lại")
         if (this.state.Status == "") return this.loi("Dữ liệu trạng thái bị rỗng", "Hãy nhập lại")
-
+        if (this.laSoNguyenDuong(Number(this.state.price))==false) return this.loi("Giá không hợp lệ", "Hãy nhập lại")
+        
         if (this.state.SKU.length > 5) return this.loi("SKU không được vượt quá 5 ký tự", "Hãy nhập lại")
         if (this.state.SKU == "") return this.loi("SKU không được rỗng", "Hãy nhập lại")
+
+      
+
         const optionProductType = []
-        this.state.ProductType1.forEach(element => {
+        this.state.APIProductType.forEach(element => {
             optionProductType.push(element.name)
         });
         var a = false;
@@ -119,9 +141,10 @@ class CRUDProduct extends React.Component {
             if (element == this.state.productTypeId) a = true;
         });
         if (a == false) return this.loi("Loại sản phẩm không tần tại", "Hãy nhập lại")
-        if (this.state.NameCheck != this.state.Name) {
+  
             const ProductCheck = []
-            this.state.ProductType.forEach(element => {
+           
+            this.state.APIProduct.forEach(element => {
                 ProductCheck.push(element.name)
             });
             var ab = false;
@@ -129,7 +152,18 @@ class CRUDProduct extends React.Component {
                 if (element == this.state.Name) ab = true;
             });
             if (ab == true) return this.loi("Tên sản phẩm đã tồn tại", "Hãy nhập lại")
-        }
+       
+        const SKUCheck = []
+
+        this.state.APIProduct.forEach(element => {
+            SKUCheck.push(element.sku)
+        });
+        var abc = false;
+        SKUCheck.forEach(element => {
+            if (element == this.state.SKU) abc = true;
+        });
+        if (abc == true) return this.loi("SKU này đã tồn tại", "Hãy nhập lại")
+
         if (this.state.image == "") {
             return this.loi("Hình ảnh đang bị rỗng", "Hãy nhập lại")
         } else {
@@ -182,15 +216,15 @@ class CRUDProduct extends React.Component {
                                             productTypeId: this.PRID(this.state.productTypeId),
                                             image: imagelName
                                         })
-                                }).then(res => res.json())
+                                }).then(res => res.json()).then((result) => {
+                                    if (result == "Thành công") {
+                                    message.success("Thành công")
+                                        window.location.reload(false);
+                                    document.getElementById("closeModal").click()}
+                                })
                             }
                         });
 
-                    }
-                    if (result == "Thành công") {
-                        message.success("Thành công")
-                        this.refreshList()
-                        document.getElementById("closeModal").click()
                     }
                     else
                         this.loi(result, "")
@@ -210,11 +244,26 @@ class CRUDProduct extends React.Component {
         if (this.state.Description == "") return this.loi("Miêu tả bị rỗng ", "Hãy nhập lại")
         if (this.state.price == "") return this.loi("Giá bán đang bị rỗng ", "Hãy nhập lại")
         if (this.state.Status == "") return this.loi("Dữ liệu trạng thái bị rỗng", "Hãy nhập lại")
+   
+        if (this.laSoNguyenDuong(Number(this.state.price)) == false) return this.loi("Giá không hợp lệ", "Hãy nhập lại")
+       
+        if (this.state.SKUCheck != this.state.SKU) {
+            const ProductCheck = []
+
+            this.state.APIProduct.forEach(element => {
+                ProductCheck.push(element.sku)
+            });
+            var ab = false;
+            ProductCheck.forEach(element => {
+                if (element == this.state.SKU) ab = true;
+            });
+            if (ab == true) return this.loi("SKU này đã tồn tại", "Hãy nhập lại")
+        }
 
         if (this.state.SKU.length > 5) return this.loi("SKU không được vượt quá 5 ký tự", "Hãy nhập lại")
         if (this.state.SKU == "") return this.loi("SKU không được rỗng", "Hãy nhập lại")
         const optionProductType = []
-        this.state.ProductType1.forEach(element => {
+        this.state.APIProductType.forEach(element => {
             optionProductType.push(element.name)
         });
         var a = false;
@@ -226,7 +275,8 @@ class CRUDProduct extends React.Component {
 
         if (this.state.NameCheck != this.state.Name) {
             const ProductCheck = []
-            this.state.ProductType.forEach(element => {
+            console.log(this.state.APIProduct)
+            this.state.APIProduct.forEach(element => {
                 ProductCheck.push(element.name)
             });
             var ab = false;
@@ -259,9 +309,13 @@ class CRUDProduct extends React.Component {
             }).then(res => res.json())
                 .then(result => {
                     if (result == "Thành công") {
-                        message.success("Thành công")
-                        this.refreshList()
+                       
+                        this.state.Trangthai == true ? this.CheckTrue()
+                            : this.state.Trangthai == false ? this.CheckFalse()
+                                :
+                                this.refreshList1()
                         document.getElementById("closeModal").click()
+                        message.success("Thành công")
                     }
                     else
                         this.loi(result, "")
@@ -305,8 +359,9 @@ class CRUDProduct extends React.Component {
 
                     }
                     if (result == "Thành công") {
+                       
+                        window.location.reload(false);
                         message.success("Thành công")
-                        this.refreshList()
                         document.getElementById("closeModal").click()
                     }
                     else
@@ -332,7 +387,7 @@ class CRUDProduct extends React.Component {
         }).then(res => res.json())
             .then(result => {
                 message.success(result)
-                this.refreshList();
+                this.refreshList1();
             }, (error) => {
                 message.error("Failed")
             }
@@ -348,17 +403,19 @@ class CRUDProduct extends React.Component {
             SKU: "",
             Description: "",
             price: 0,
-
+      
             productTypeId: "",
             image: "",
         });
     }
     EditClick(dep) {
         this.setState({
+            StatusCheck: dep.status == true ?
+                "Hiển thị" : "Ẩn",
             NameCheck:dep.name,
             modelTitle: "Sửa sản phẩm",
             id: dep.id,
-            Name: dep.name,
+            Name: dep.name, SKUCheck:dep.sku,
             Status:
                 dep.status == true ?
                     "Hiển thị" : "Ẩn"
@@ -371,7 +428,7 @@ class CRUDProduct extends React.Component {
         });
     }
     NextPage(id, npage) {
-        console.log(npage)
+      
         if (id !== npage) {
             this.setState({
                 currentPage: this.state.currentPage + 1
@@ -393,7 +450,8 @@ class CRUDProduct extends React.Component {
     }
     ChangeNameinputProduct(value) {
         this.setState({
-            NameinputProduct: value.target.value
+            NameinputProduct: value.target.value,
+            currentPage: 1 
         });
 
     }
@@ -404,24 +462,74 @@ class CRUDProduct extends React.Component {
         fetch(variable.API_URL + "Products/GetAllProduct")
             .then(response => response.json())
             .then(data => {
-                this.setState({ ProductType: data });
+                this.setState({
+                    ProductType: data, Trangthai: null, currentPage: 1,
+                    NameinputProduct: ""
+});
             })
 
     }
     CheckTrue() {
-
-        fetch(variable.API_URL + "Products/GetAllProductStatusTrue")
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ ProductType: data });
-            })
+        if (this.state.StatusCheck != this.state.Status) {
+            const recordsPerPage = 5;
+            const lastIndex = this.state.currentPage * recordsPerPage;
+            const firstIndex = lastIndex - recordsPerPage;
+            const a = this.state.ProductType.slice(firstIndex, lastIndex);
+            fetch(variable.API_URL + "Products/GetAllProductStatusTrue")
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        ProductType: data,
+                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : a.length == 1 ? this.state.currentPage - 1 : this.state.currentPage,
+                        Trangthai: true,
+                        NameinputProduct: ""
+                    });
+                })
+        }
+        else {
+            fetch(variable.API_URL + "Products/GetAllProductStatusTrue")
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        ProductType: data,
+                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : this.state.currentPage,
+                        Trangthai: true,
+                        NameinputProduct: ""
+                    });
+                })
+        }
     }
     CheckFalse() {
-        fetch(variable.API_URL + "Products/GetAllProductStatusFalse")
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ ProductType: data });
-            })
+        if (this.state.StatusCheck != this.state.Status)
+        {
+            const recordsPerPage = 5;
+            const lastIndex = this.state.currentPage * recordsPerPage;
+            const firstIndex = lastIndex - recordsPerPage;
+            const a = this.state.ProductType.slice(firstIndex, lastIndex);
+            fetch(variable.API_URL + "Products/GetAllProductStatusFalse")
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        ProductType: data,
+                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : a.length == 1 ? this.state.currentPage - 1 : this.state.currentPage,
+                        Trangthai: false,
+                        NameinputProduct: ""
+                    });
+                })
+        }
+        else {
+            fetch(variable.API_URL + "Products/GetAllProductStatusFalse")
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        ProductType: data,
+                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 :  this.state.currentPage,
+                        Trangthai: false,
+                        NameinputProduct: ""
+                    });
+                })
+        }
+      
     }
     render() {
 
@@ -433,7 +541,7 @@ class CRUDProduct extends React.Component {
             currentPage,
             ProductTypegetbyid, Disscount, ProductType1,
             Description,
-            price,
+            price, NameinputProduct,
             SKU,
             productTypeId,
             image, Status
@@ -462,7 +570,7 @@ class CRUDProduct extends React.Component {
                             <div>
                                 <div className="form-group">
                                     <label>Tìm kiếm theo tên sản phẩm</label>
-                                    <div><input className="form-control w-100" type="text" onChange={(e) => this.ChangeNameinputProduct(e)} placeholder="Tên sản phẩm" />
+                                    <div><input className="form-control w-100" type="text" value={NameinputProduct} onChange={(e) => this.ChangeNameinputProduct(e)} placeholder="Tên sản phẩm" />
                                     </div>
                                 </div>
 
@@ -640,6 +748,7 @@ class CRUDProduct extends React.Component {
                                                 Loại
                                             </span>
                                             <Autocomplete
+                                                disableClearable
                                                 value={productTypeId}
                                                 onChange={(event, newValue) => {
                                                     this.setState({
@@ -661,6 +770,7 @@ class CRUDProduct extends React.Component {
                                             </span>
                                             <Autocomplete
                                                 value={Status}
+                                                disableClearable
                                                 onChange={(event, newValue) => {
                                                     this.setState({
                                                         Status: newValue
