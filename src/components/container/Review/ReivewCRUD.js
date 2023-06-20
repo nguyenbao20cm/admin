@@ -2,7 +2,7 @@ import * as React from 'react';
 import { variable } from '../../../Variable';
 
 import Paper from '@mui/material/Paper';
-
+import { Alert, Space, message } from 'antd';
 
 class ReviewCRUD extends React.Component {
     constructor(props) {
@@ -53,16 +53,18 @@ class ReviewCRUD extends React.Component {
             body: JSON.stringify({ name: this.state.Name })
         }).then(res => res.json())
             .then(result => {
-                alert(result);
                 if (result == "Thành công") {
+                    message.success("Thành công")
                     window.location.reload(false);
                 }
+                else
+                    message.error(result)
             }, (error) => {
-                alert("Failed");
+                message.error("Failed")
             });
     }
     UpdateClick(id) {
-        if (this.state.Name == "") return alert("Không được bỏ trống");
+        if (this.state.Name == "") return message.error("Không được bỏ trống")
         fetch(variable.API_URL + "ProductTypes/UpdateProductType/" + id, {
             method: "PUT",
             headers: {
@@ -72,12 +74,14 @@ class ReviewCRUD extends React.Component {
             body: JSON.stringify({ name: this.state.Name })
         }).then(res => res.json())
             .then(result => {
-                alert(result);
                 if (result == "Thành công") {
+                    message.success("Thành công")
                     window.location.reload(false);
                 }
+                else
+                    message.error(result)
             }, (error) => {
-                alert("Failed");
+                message.error("Failed")
             }
             )
     }
@@ -93,10 +97,15 @@ class ReviewCRUD extends React.Component {
                 }
             }).then(res => res.json())
                 .then(result => {
-                    alert(result);
-                    this.refreshList();
+                    if (result == "Thành công") {
+                        message.success("Thành công")
+                        this.refreshList()
+                    }
+                    else
+                        message.error(result)
+                   
                 }, (error) => {
-                    alert("Failed");
+                    message.error("Failed")
                 }
                 )
         }

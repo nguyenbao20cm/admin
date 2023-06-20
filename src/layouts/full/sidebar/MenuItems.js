@@ -12,7 +12,7 @@ const Menuitems = [
 
   {
     id: uniqueId(),
-    title: 'Dashboard',
+    title: 'Trang chủ',
     icon: IconLayoutDashboard,
     href: '/dashboard',
   },
@@ -21,55 +21,55 @@ const Menuitems = [
 
   {
     id: uniqueId(),
-    title: 'ProductType Page', bbb: false,
+    title: 'Loại sản phẩm', bbb: false,
     icon: IconAperture,
     href: '/sample-page',
   },
   {
     id: uniqueId(),
-    title: 'Product Page', bbb: false,
+    title: 'Sản phẩm', bbb: false,
     icon: IconAperture,
     href: '/ProductTypepage',
   },
   {
     id: uniqueId(),
-    title: 'ProductSize Page',
+    title: 'Size sản phẩm',
     icon: IconAperture, bbb: false,
     href: '/ProductSize',
   },
   {
     navlabel: true,
-    subheader: 'Invoice',
+    subheader: 'Hóa đơn',
   },
   {
     id: uniqueId(),
-    title: 'Invoice Page',
+    title: 'Hóa đơn',
     icon: IconAperture,
     href: '/InvoicePage',
   },
   {
     id: uniqueId(),
-    title: 'Review Page',
+    title: 'Bình luận',
     icon: IconAperture,
     href: '/ReviewPage',
     aaa: true,
   },
   {
     id: uniqueId(),
-    title: 'AdvertisingPanel Page',
+    title: 'Panner Quảng cáo',
     icon: IconAperture,
     href: '/AdvertisingPanel', aaa: true,
   },
   {
     id: uniqueId(),
-    title: 'Disscount Page',
+    title: 'Giảm giá',
     icon: IconAperture,
     href: '/Disscount', aaa: true,
   },
 
   {
     id: uniqueId(),
-    title: 'Report Week Page',
+    title: 'Báo cáo Week Page',
     icon: IconAperture,
     href: '/ReportWeekPage',
     bbb:true

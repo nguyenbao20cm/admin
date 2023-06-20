@@ -5,6 +5,7 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import $ from "jquery"
+import { Alert, Space, message } from 'antd';
 class CRUDProductType extends React.Component {
     constructor(props) {
         super(props);
@@ -14,14 +15,12 @@ class CRUDProductType extends React.Component {
             Name: "",
             id: 0,
             currentPage: 1,
-            NameinputProductType: "", Status: "", 
+            NameinputProductType: "", Status: "",
 
         }
-      
+
     }
-    hideModal() {
-    $("#myModal").modal("hide");
-    };
+ 
     refreshList() {
 
         fetch(variable.API_URL + "ProductTypes/GetAllProductType")
@@ -38,9 +37,9 @@ class CRUDProductType extends React.Component {
     }
 
     CreateClick() {
-        if (this.state.Status == "") alert("Dữ liệu bị trống");
+        if (this.state.Status == "") return message.warning("Dữ liệu bị trống")
         else
-            if (this.state.Name == "") alert("Dữ liệu bị trống");
+            if (this.state.Name == "") return message.warning("Dữ liệu bị trống")
             else {
                 fetch(variable.API_URL + "ProductTypes/CreateProductType", {
                     method: "POST",
@@ -50,24 +49,27 @@ class CRUDProductType extends React.Component {
                     },
                     body: JSON.stringify({
                         name: this.state.Name,
-                        status: this.state.Status == "True" ? true : false,
+                        status: this.state.Status == "Hiển thị" ? true : false,
                     })
                 }).then(res => res.json())
                     .then(result => {
-                        alert(result);
                         if (result == "Thành công") {
-                            window.location.reload(false);
+                            message.success("Thành công")
+                            this.refreshList()
+                            document.getElementById("closeModal").click()
                         }
+                        else
+                            message.error(result)
                     }, (error) => {
-                        alert("Failed");
+                        message.error("Failed")
                     });
             }
 
     }
     UpdateClick(id) {
-        if (this.state.Name == "") return alert("Không được bỏ trống");
+        if (this.state.Name == "") return message.error("Dữ liệu bị trống")
         else
-            if (this.state.Status == null) return alert("Không được bỏ trống");
+            if (this.state.Status == null) return message.error("Dữ liệu bị trống")
             else {
                 fetch(variable.API_URL + "ProductTypes/UpdateProductType/" + id, {
                     method: "PUT",
@@ -77,23 +79,26 @@ class CRUDProductType extends React.Component {
                     },
                     body: JSON.stringify({
                         name: this.state.Name,
-                        status: this.state.Status == "True" ? true : false,
+                        status: this.state.Status == "Hiển thị" ? true : false,
                     })
                 }).then(res => res.json())
                     .then(result => {
-                        alert(result);
                         if (result == "Thành công") {
-                            window.location.reload(false);
+                            message.success("Thành công")
+                            this.refreshList()
+                            document.getElementById("closeModal").click()
                         }
+                        else
+                            message.error(result)
                     }, (error) => {
-                        alert("Failed");
+                        message.error("Failed")
                     }
                     )
             }
 
     }
     DeleteClick(id) {
-        if (window.confirm('Are you sure?')) {
+      
             fetch(variable.API_URL + "ProductTypes/DeleteProductType/" + id, {
                 method: "PUT",
                 headers: {
@@ -102,18 +107,18 @@ class CRUDProductType extends React.Component {
                 },
             }).then(res => res.json())
                 .then(result => {
-                    alert(result);
+                    message.success(result)
                     this.refreshList();
                 }, (error) => {
-                    alert("Failed");
+                    message.error("Failed")
                 }
                 )
-        }
+        
     }
 
     addClick() {
         this.setState({
-            modelTitle: "Add ProductType",
+            modelTitle: "Thêm loại sản phẩm",
             id: 0,
             Name: "",
             Status: "",
@@ -121,12 +126,12 @@ class CRUDProductType extends React.Component {
     }
     EditClick(dep) {
         this.setState({
-            modelTitle: "Edit ProductType",
+            modelTitle: "Sửa loại sản phẩm ",
             id: dep.id,
             Name: dep.name,
             Status:
                 dep.status == true ?
-                    "True" : "False"
+                    "Hiển thị" : "Ẩn"
             ,
 
         });
@@ -194,7 +199,7 @@ class CRUDProductType extends React.Component {
             Status,
         } = this.state;
         const recordsPerPage = 5;
-        const options = ['True', 'False']
+        const options = ['Hiển thị', 'Ẩn']
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
         const a = ProductType.slice(firstIndex, lastIndex);
@@ -202,36 +207,37 @@ class CRUDProductType extends React.Component {
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
         return (
             <>
+              
                 <div style={{ display: "flex", }}>
                     <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
                         <div className="card-body" >
                             <div>
                                 <div className="form-group">
-                                    <label>Search by Id:</label>
-                                    <div><input className="form-control w-100" type="text" onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Id" />
+                                    <label>Tìm kiếm theo tên loại</label>
+                                    <div><input className="form-control w-100" type="text" onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Tên loại sản phẩm" />
                                     </div>
                                 </div>
 
                             </div>
                         </div>
                     </div>
-                    <div className="card">
+                    <div className="card" style={{width: "135px" }}>
                         <div className="card-body">
-                            <label>Status:</label>
+                            <label>Trạng thái:</label>
                             <div className>
                                 <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
-                                <label for="All">All</label><br />
+                                <label for="All">Tất cả</label><br />
                                 <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
-                                <label for="True">True</label><br />
+                                <label for="True">Hiển thị</label><br />
                                 <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />
-                                <label for="False">False</label>
+                                <label for="False">Ẩn</label>
                             </div>
                         </div>
                     </div>
                 </div>
                 <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
                     onClick={() => this.addClick()}>
-                    Add ProductType
+                    Thêm loại
                 </button>
                 <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                     <div>
@@ -239,19 +245,19 @@ class CRUDProductType extends React.Component {
                             <thead>
                                 <tr>
                                     <th>
-                                        id
+                                        ID
                                     </th>
                                     <th>
-                                        Name
+                                        Tên loại
                                     </th>
                                     <th>
-                                        Status
+                                        Trạng thái
                                     </th>
                                     <th>
-                                        Edit
+                                        Sửa
                                     </th>
                                     <th>
-                                        Delete
+                                        Xóa
                                     </th>
                                 </tr>
                             </thead>
@@ -259,7 +265,7 @@ class CRUDProductType extends React.Component {
                                 {ProductType.filter((item) => {
                                     return this.state.NameinputProductType === ""
                                         ? item
-                                        : item.id.toString().includes(this.state.NameinputProductType);
+                                        : item.name.toString().includes(this.state.NameinputProductType);
                                 }).slice(firstIndex, lastIndex)
                                     .map(dep =>
                                         <tr key={dep.id}>
@@ -272,7 +278,7 @@ class CRUDProductType extends React.Component {
                                             <td>
 
                                                 {dep.status == true ?
-                                                    "True" : "False"
+                                                    "Hiển thị" : "Ẩn"
                                                 }
                                             </td>
                                             <td>
@@ -324,23 +330,22 @@ class CRUDProductType extends React.Component {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className='modal-title'>{modelTitle}</h5>
-                                <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
-
+                                <button id="closeModal" type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
                                 </button>
                             </div>
                             <div className='modal-body'>
-                               
-                            
+
+
                                 <div className='input-group mb-3'>
                                     <span className='input-group-text'>
-                                        ProductTypeName
+                                        Tên loại
                                     </span>
                                     <input type='text' className='form-control' value={Name}
                                         onChange={(e) => this.ChangeProdcutTypeName(e)} />
                                 </div>
                                 <div className='input-group mb-3'>
                                     <span className='input-group-text'>
-                                        Status
+                                        Trạng thái
                                     </span>
                                     <Autocomplete
                                         value={Status}
@@ -348,7 +353,7 @@ class CRUDProductType extends React.Component {
                                             this.setState({
                                                 Status: newValue
                                             });
-                                            console.log(this.state.Status)
+                                      
                                         }}
 
                                         options={options}

@@ -8,7 +8,7 @@ const ReviewList = () => {
     return (
         <PageContainer title="Sample Page" description="this is Sample page">
 
-            <DashboardCard title="Disscount List">
+            <DashboardCard title="Giảm giá">
                 <Typography paragraph>
                     <Disscount />
                 </Typography>

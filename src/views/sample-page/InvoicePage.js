@@ -13,7 +13,7 @@ const ProductTypeList = () => {
           
             <PageContainer title="Sample Page" description="this is Sample page">
 
-                <DashboardCard title="Invoices List">
+                <DashboardCard title="Danh sách Hóa đơn">
                     <Typography paragraph>
                         <InvoicePage />
                     </Typography>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { variable } from '../../../Variable';
-
+import { Alert, Space, message } from 'antd';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -72,17 +72,22 @@ class ReviewCRUD extends React.Component {
             })
         }).then(res => res.json())
             .then(result => {
-                alert(result);
+                
                 if (result == "Thành công") {
-                    window.location.reload(false);
+                    message.success(result)
+                    message.success("Thành công")
+                    this.refreshList()
+                    document.getElementById("closeModal").click()
                 }
+                else
+                    message.error(result)
             }, (error) => {
-                alert("Failed");
+                message.error("Failed")
             });
     }
     UpdateClick(id) {
         const token = this.getToken();
-        if (this.state.Name == "") return alert("Không được bỏ trống");
+        if (this.state.Name == "") return message.error("Không được bỏ trống")
         fetch(variable.API_URL + "ProductSizes/UpdateProductSize/" + id, {
             method: "PUT",
             headers: {
@@ -100,18 +105,21 @@ class ReviewCRUD extends React.Component {
                 })
         }).then(res => res.json())
             .then(result => {
-                alert(result);
                 if (result == "Thành công") {
-                    window.location.reload(false);
+                    message.success("Thành công")
+                    this.refreshList()
+                    document.getElementById("closeModal").click()
                 }
+                else
+                    message.error(result)
             }, (error) => {
-                alert("Failed");
+                message.error("Failed")
             }
             )
     }
     DeleteClick(id) {
         const token = this.getToken();
-        if (window.confirm('Are you sure?')) {
+        
             fetch(variable.API_URL + "ProductSizes/DeleteProductSize/" + id, {
                 method: "PUT",
                 headers: {
@@ -121,35 +129,41 @@ class ReviewCRUD extends React.Component {
                 },
             }).then(res => res.json())
                 .then(result => {
-                    alert(result);
-                    this.refreshList();
+                    if (result == "Thành công") {
+                        message.success("Thành công")
+                        this.refreshList();
+                    }
+                    else
+                        message.error(result)
+                   
                 }, (error) => {
-                    alert("Failed");
+                    message.error("Failed")
                 }
                 )
-        }
+        
     }
 
     addClick() {
         this.setState({
-            modelTitle: "Add ProductSize",
+            modelTitle: "Thêm Size sản phẩm",
             id: 0,
             Name: "",
             ProductId: "", 
             Status: "",
-            Stock: 0,
+            Stock: 0, ImportPrice: 0,
         });
     }
     EditClick(dep) {
         this.setState({
-            modelTitle: "Edit ProductSize",
+            modelTitle: "Sửa Size sản phẩm",
             id: dep.id,
             Name: dep.name,
             ProductId: dep.productId,
             Status:
                 dep.status == true ?
-                    "True" : "False"
+                    "Hiển thị" : "Ẩn"
             ,
+            ImportPrice:dep.importPrice,
             Stock: dep.stock,
         });
     }
@@ -251,6 +265,14 @@ class ReviewCRUD extends React.Component {
 
 
     }
+    DatetimeFormat(e) {
+        const abc = new Date(e)
+        var day = abc.getDate() + "/";
+        var month = abc.getMonth() + 1 + "/";
+        var year = abc.getFullYear()
+        let format4 = day + month + year;
+        return format4;
+    }
     render() {
 
         const {
@@ -263,7 +285,7 @@ class ReviewCRUD extends React.Component {
             ProductId,
             Status, IssuedDate, ImportPrice
         } = this.state;
-        const recordsPerPage = 5; const options = ['True', 'False']
+        const recordsPerPage = 5; const options = ['Hiển thị', 'Ẩn']
         const optionProductType = []
         ProductType.forEach(element => {
             optionProductType.push(element.id)
@@ -281,33 +303,31 @@ class ReviewCRUD extends React.Component {
                         <div className="card-body" >
                             <div>
                                 <div className="form-group">
-                                    <label>Search by ProductId:</label>
-                                    <div><input className="form-control w-100" type="text" onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Id" />
+                                    <label>Tìm kiếm Size theo tên sản phẩm</label>
+                                    <div><input className="form-control w-100" type="text" onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Tên sản phẩm" />
                                     </div>
                                 </div>
 
                             </div>
                         </div>
                     </div>
-                    <div className="card">
+                    <div className="card" style={{ width: "135px" }}>
                         <div className="card-body">
-                            <label>Status:</label>
+                            <label>Trạng thái:</label>
                             <div className>
                                 <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
-                                <label for="All">All</label><br />
+                                <label for="All">Tất cả</label><br />
                                 <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
-                                <label for="True">True</label><br />
+                                <label for="True">Hiển thị</label><br />
                                 <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />
-                                <label for="False">False</label>
+                                <label for="False">Ẩn</label>
                             </div>
                         </div>
                     </div>
-
                 </div>
-
                 <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
                     onClick={() => this.addClick()}>
-                    Add ProductSize
+                   Thêm Size sản phẩm
                 </button>
                 <Paper sx={{ width: '100%', overflow: 'hidden' }}>
 
@@ -318,32 +338,32 @@ class ReviewCRUD extends React.Component {
                             <thead>
                                 <tr>
                                     <th>
-                                        Id
+                                        ID
                                     </th>
                                     <th>
-                                        Name
+                                        Size
                                     </th>
                                     <th>
-                                        ProductId
+                                       Của sản phẩm
                                     </th>
                                     <th>
-                                        Stock
+                                        Số lượng kho
                                     </th>
                                     <th>
-                                        IssuedDate
+                                        Ngày nhập
                                     </th>
                                     <th>
-                                        ImportPrice
+                                        Giá nhập
                                     </th>
 
                                     <th>
-                                        Status
+                                        Trạng thái
                                     </th>
                                     <th>
-                                        Edit
+                                        Sửa
                                     </th>
                                     <th>
-                                        Delete
+                                        Xóa
                                     </th>
                                 </tr>
                             </thead>
@@ -363,21 +383,23 @@ class ReviewCRUD extends React.Component {
                                                 {dep.name}
                                             </td>
                                             <td>
-                                                {dep.productId}
+                                                {dep.product.name}
                                             </td>
                                             <td>
                                                 {dep.stock}
                                             </td>
                                             <td>
-                                                {dep.issuedDate}
+                                                {
+                                                    this.DatetimeFormat(dep.issuedDate)
+                                                }
                                             </td>
                                             <td>
-                                                {dep.importPrice}
+                                                {dep.importPrice+" Đồng"}
                                             </td>
                                             <td>
 
                                                 {dep.status == true ?
-                                                    "True" : "False"
+                                                    "Hiển thị" : "Ẩn"
                                                 }
                                             </td>
                                             <td>
@@ -407,23 +429,19 @@ class ReviewCRUD extends React.Component {
                                         <h5 className='modal-title'>{modelTitle}</h5>
                                         <button id="closeModal" type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
                                         </button>
-                                        <button onClick={() => {
-                                            document.getElementById("closeModal").click()
-                                        }}>
-
-                                        </button>
+                                       
                                     </div>
                                     <div className='modal-body'>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
-                                                Name
+                                                Size
                                             </span>
                                             <input type='text' className='form-control' value={Name}
                                                 onChange={(e) => this.ChangeProdcutTypeName(e)} />
                                         </div>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
-                                                ProductId
+                                                Của sản phẩm
                                             </span>
                                             <Autocomplete
                                                 value={ProductId}
@@ -443,12 +461,12 @@ class ReviewCRUD extends React.Component {
                                         </div>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
-                                                Stock
+                                                Số lương kho
                                             </span>
                                             <input type='text' className='form-control' value={Stock}
                                                 onChange={(e) => this.ChangeStock(e)} />
                                             <span className='input-group-text'>
-                                                ImportPrice
+                                                Giá nhập
                                             </span>
                                             <input type='text' className='form-control' value={ImportPrice}
                                                 onChange={(e) => this.ChangeImportPrice(e)} />
@@ -456,7 +474,7 @@ class ReviewCRUD extends React.Component {
 
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
-                                                Status
+                                                Trạng thái
                                             </span>
                                             <Autocomplete
                                                 value={Status}

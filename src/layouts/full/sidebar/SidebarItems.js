@@ -53,7 +53,7 @@ const SidebarItems = () => {
               );
             }
         })}
-        <ListSubheaderStyle>Product</ListSubheaderStyle>
+        <ListSubheaderStyle>Sản phẩm</ListSubheaderStyle>
         <Accordion>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -72,7 +72,7 @@ const SidebarItems = () => {
               {itemIcon}
             </ListItemIcon>
             <ListItemText>
-              <>Product</>
+              <>Sản phẩm</>
             </ListItemText>
           </AccordionSummary>
           <AccordionDetails>
@@ -85,7 +85,7 @@ const SidebarItems = () => {
             })}
           </AccordionDetails>
         </Accordion>
-        <ListSubheaderStyle>Report</ListSubheaderStyle>
+        <ListSubheaderStyle>Báo cáo</ListSubheaderStyle>
         <Accordion>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -104,7 +104,7 @@ const SidebarItems = () => {
               {itemIcon}
             </ListItemIcon>
             <ListItemText>
-              <>Report</>
+              <>Báo cáo</>
             </ListItemText>
           </AccordionSummary>
           <AccordionDetails>
@@ -117,7 +117,7 @@ const SidebarItems = () => {
             })}
           </AccordionDetails>
         </Accordion>
-        <ListSubheaderStyle>Onther Function</ListSubheaderStyle>
+        <ListSubheaderStyle>Các chúc năng khác</ListSubheaderStyle>
         {Menuitems.map((item) => {
 
           if (item.aaa == true) {

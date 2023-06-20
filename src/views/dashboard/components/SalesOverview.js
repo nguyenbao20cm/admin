@@ -117,11 +117,11 @@ const SalesOverview = () => {
     };
     const seriescolumnchart = [
         {
-            name: 'Eanings this month',
+            name: 'Thu nhập trong tháng',
             data: Object.values(InvoiceTotalMonth)
         },
         {
-            name: 'Expense this month',
+            name: 'Chi tiêu trong tháng',
             data: Object.values(ImportPrice)
         },
     ];
@@ -132,7 +132,7 @@ const SalesOverview = () => {
         <>
 
             {InvoiceTotalMonth != null ?
-                <DashboardCard height="670" title="Sales Overview" action={
+                <DashboardCard height="670" title="Sơ đồ tổng quan" action={
                     <div>
                         <Select
                             labelId="month-dd"
@@ -151,13 +151,13 @@ const SalesOverview = () => {
                             sx={{  width: 9, height: 9, bgcolor: primary, svg: { display: 'none' } }}
                         ></Avatar>
                         <Typography variant="subtitle2" color="textSecondary">
-                            Eanings
+                            Thu nhập
                         </Typography>
                         <Avatar
                             sx={{ width: 9, height: 9, bgcolor: secondary, svg: { display: 'none' } }}
                         ></Avatar>
                         <Typography variant="subtitle2" color="textSecondary">
-                            Expense
+                            Chi tiêu
                         </Typography>
                     </div>
                 }>

@@ -92,7 +92,7 @@ const YearlyBreakup = () => {
       })
   }, []);
   return (
-    <DashboardCard title="Profit for the whole year">
+    <DashboardCard title="Lợi nhuận cả năm">
       <Grid container spacing={3}>
 
 

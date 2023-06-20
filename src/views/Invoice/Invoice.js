@@ -4,11 +4,18 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Loadable from '../../layouts/full/shared/loadable/Loadable';
 import { ConstructionOutlined, Login } from '@mui/icons-material';
+import { Alert, Space, message } from 'antd';
 
-
-
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import { result } from 'lodash';
 class InvoiceCRUD extends React.Component {
     constructor(props) {
         super(props);
@@ -31,7 +38,7 @@ class InvoiceCRUD extends React.Component {
             ChangeId: "",
             startDate: "",
             endDate: "",
-            value: "", value: "", ID: ""
+            value: "", value: "", ID: "", open: false, data: "", open1:false
         }
     }
 
@@ -86,7 +93,7 @@ class InvoiceCRUD extends React.Component {
 
     CreateClick() {
         if (this.state.image == "") {
-            alert("Chua Nhap Image");
+            message.error("Chưa nhập hình ảnh")
         } else {
             const formData = new FormData()
             var imagelName = this.state.sku + ".jpg"
@@ -116,22 +123,61 @@ class InvoiceCRUD extends React.Component {
                             body: formData
                         }).then(res => res.json())
                     }
-                    alert(result);
-                    this.refreshList();
+                if (result == "Thành công") {
+                    message.success("Thành công")
+                   this.refreshList()
+                }
+                else
+                    message.error(result)
+                  
                 },
                     (error) => {
 
-                        alert("Failed");
+                        message.error("Failed")
                     });
             this.refreshList();
-            window.location.reload(false);
+          
         }
 
 
     }
 
 
-    UpdateClick(id) {
+    UpdateClick() {
+
+        const token = this.getToken();
+        fetch(variable.API_URL + "Inovices/UpdateInovice/" + this.state.data, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+            body: JSON.stringify({
+                shippingphone: this.state.ShippingPhone,
+                shippingadress: this.state.ShippingAddress,
+                pay: this.state.Pay == "True" ? true : false,
+                orderStatus: this.state.OrderStatus == "Chưa xác nhận" ? 1 : this.state.OrderStatus == "Đang chuẩn bị" ? 2 : this.state.OrderStatus == "Đang giao" ? 3 : this.state.OrderStatus == "Đã hủy" ? 4 : this.state.OrderStatus == "Hoàn tất" ? 5 : null,
+
+            })
+        }).then(res => res.json())
+            .then(result => {
+                if (result == "Thành công") {
+                    message.success("Thành công")
+                    this.refreshList()
+                    this.setState({ open1: false })
+                    this.setState({ open: false })
+                    document.getElementById("closeModal").click()
+                }
+                else
+                    message.error(result)
+            }, (error) => {
+                message.error("Failed")
+            }
+            )
+
+    }
+    UpdateClick1(id) {
 
         const token = this.getToken();
         fetch(variable.API_URL + "Inovices/UpdateInovice/" + id, {
@@ -150,12 +196,17 @@ class InvoiceCRUD extends React.Component {
             })
         }).then(res => res.json())
             .then(result => {
-                alert(result);
                 if (result == "Thành công") {
-                    window.location.reload(false);
+                    message.success("Thành công")
+                    this.refreshList()
+                    this.setState({ open1: false })
+                    this.setState({ open: false })
+                    document.getElementById("closeModal").click()
                 }
+                else
+                    message.error(result)
             }, (error) => {
-                alert("Failed");
+                message.error("Failed")
             }
             )
 
@@ -178,19 +229,21 @@ class InvoiceCRUD extends React.Component {
             })
     }
     EditClick(dep) {
-        this.setState({
-            modelTitle: "Edit Invoice",
-            ShippingPhone: dep.shippingPhone,
-            Pay:
-                dep.pay == true ?
-                    "True" : "False"
-            ,
-            ID: dep.id,
-            ShippingAddress: dep.shippingAddress,
-            OrderStatus:
-                dep.orderStatus == 1 ? "Chưa xác nhận" : dep.orderStatus == 2 ? "Đang chuẩn bị" : dep.orderStatus == 3 ? "Đang giao" : dep.orderStatus == 4 ? "Đã hủy" : dep.orderStatus == 5 ? "Hoàn tất" : null
+     
+            this.setState({
+                modelTitle: "Edit Invoice",
+                ShippingPhone: dep.shippingPhone,
+                Pay:
+                    dep.pay == true ?
+                        "True" : "False"
+                ,
+                ID: dep.id,
+                ShippingAddress: dep.shippingAddress,
+                OrderStatus:
+                    dep.orderStatus == 1 ? "Chưa xác nhận" : dep.orderStatus == 2 ? "Đang chuẩn bị" : dep.orderStatus == 3 ? "Đang giao" : dep.orderStatus == 4 ? "Đã hủy" : dep.orderStatus == 5 ? "Hoàn tất" : null
 
-        });
+            });
+        
     }
     NextPage(id, npage) {
 
@@ -239,7 +292,8 @@ class InvoiceCRUD extends React.Component {
     ApplyClick() {
         const token = this.getToken();
 
-
+        if (this.state.startDate == "") return message.warning("Dữ liệu bị trống")
+        if (this.state.endDate == "") return message.warning("Dữ liệu bị trống")
         fetch(variable.API_URL + "Inovices/GetAllInoviceFilterByDate/" + this.state.startDate + "," + this.state.endDate, {
             method: "GET",
             headers: {
@@ -264,10 +318,102 @@ class InvoiceCRUD extends React.Component {
             ShippingAddress: e.target.value
         });
     }
+    CompareDate(day1,day2) {
+        const abc = new Date(day1)
+        var day1 = abc.getDate() + "/";;
+        var month1 = abc.getMonth() + 1 + "/";;
+        var year1 = abc.getFullYear()
+        let format4 = day1 + month1 + year1;
+        console.log(format4)
+        const abc1 = new Date(day2)
+        var day12 = abc1.getDate() + "/";;
+        var month12 = abc1.getMonth() + 1 + "/";;
+        var year12 = abc1.getFullYear()
+        let format42 = day12 + month12 + year12;
+        console.log(format42)
+        if (format4 === format42) return true
+        else return false;
+
+    }
+    DatetimeFormat(e) {
+        const abc = new Date(e) 
+        var day =  abc.getDate()  +"/";
+        var month = abc.getMonth()+1 + "/";
+        var year = abc.getFullYear()
+        let format4 = day   + month  + year;
+        return format4;
+    }
+    DeleteClick(dep) {
+        this.setState({ open: true, data:dep})
+    }
+    Upade(dep) {
+        this.setState({ open1: true, data: dep })
+    }
+    Delete() {
+        const token = this.getToken();
+        fetch(variable.API_URL + "Inovices/DeleteInvoice/" + this.state.data, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            }
+        })
+            .then(response => response.json())
+            .then(result => {
+                if (result == "Thành công") {
+                    message.success("Thành công")
+                    this.setState({ open: false })
+                    this.refreshList()
+              
+                }
+                else
+                    message.error(result)
+              
+            })
+    }
+    CheckAll() {
+        this.refreshList()
+    }
+    CheckHuy() {
+        this.setState({
+            Invoice: this.state.Invoice.filter((item) => {
+                return item.orderStatus==4
+            })
+        })
+    }
+    CheckHT() {
+        this.setState({
+            Invoice: this.state.Invoice.filter((item) => {
+                return item.orderStatus == 5
+            })
+        })
+    }
+    CheckCXN() {
+        this.setState({
+            Invoice: this.state.Invoice.filter((item) => {
+                return item.orderStatus == 1
+            })
+        })
+    }
+    CheckCB() {
+        this.setState({
+            Invoice: this.state.Invoice.filter((item) => {
+                return item.orderStatus == 2
+            })
+        })
+    }
+    CheckDG() {
+        this.setState({
+            Invoice: this.state.Invoice.filter((item) => {
+                return item.orderStatus == 6
+            })
+        })
+    }
     render() {
 
         const {
-            Invoice,
+            Invoice,data,
             modelTitle,
             Code,
             id,
@@ -276,10 +422,10 @@ class InvoiceCRUD extends React.Component {
             IssuedDate,
             ShippingAddress,
             ShippingPhone,
-            Total,
+            Total, open,
             Status, value,
             Pay, value1,
-            OrderStatus,
+            OrderStatus, open1,
             DetailsInvoice,
             totalDetailInvoice
         } = this.state;
@@ -291,54 +437,130 @@ class InvoiceCRUD extends React.Component {
         const npage = Math.ceil(Invoice.length / recordsPerPage)
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
         const options = ['True', 'False']
-        const options2 = ['Hoàn tất', 'Đã hủy',
+        const options2 = ['Hoàn tất', 
             'Đang giao', 'Chưa xác nhận', 'Đang chuẩn bị', 'Đã giao']
         {/* //1 chưa xác nhận //2 la chua đang chuẩn bị //3 đang giao//6 đã giao//4 đã hủy,//5hoàn tất */ }
         return (
             <>
+                <Dialog
+                    open={open1}
+                    keepMounted
+                    onClose={() => {
+                        this.setState({ open1: false })
+                    }}
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <DialogTitle>{"Bạn có chắc chắc muốn hoàn tất đơn hàng"}</DialogTitle>
+                    <DialogContent>
+                        {/* <DialogContentText id="alert-dialog-slide-description">
+                            Khi hủy xong thì sẽ không thể khôi phục lại được
+                        </DialogContentText> */}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => {
+                            this.UpdateClick()
+                        }}>Chấp nhận</Button>
+                        <Button onClick={() => {
+                            this.setState({ open1: false })
+                        }}>Quay lại</Button>
+                    </DialogActions>
+                </Dialog>
                 <div style={{ display: "flex" }}>
                     <div className="card">
                         <div className="card-body">
                             <div>
                                 <div className="form-group">
-                                    <label>Date from - to:</label>
+                                    <label>Từ ngày:</label>
                                     <div>
                                         <input id="dates-range" className="form-control flatpickr-input"
                                             type="datetime-local" onChange={(e) => this.ChangeStartDate(e)} />
                                     </div>
-
                                 </div>
 
                                 <div className="form-group" >
-
                                     <div>
                                         <input id="dates-range" className="form-control flatpickr-input"
                                             type="datetime-local" onChange={(e) => this.ChangeEndDate(e)} />
                                     </div>
-                                    <button type='button' className='btn btn-primary m-2 float-end'
-                                        onClick={() => this.ApplyClick()}>
-                                        Apply
-                                    </button>
                                 </div>
 
+                                <div className="form-group" >
+                                    <div>
+                                <button type='button' className='btn btn-primary m-2 float-end'
+                                    onClick={() => this.refreshList()}>
+                                    Reset Trang
+                                    </button>
+                                    </div>
+                                </div>
 
+                                <div className="form-group" >
+                                    <div>
+                                    <button type='button' className='btn btn-primary m-2 float-end'
+                                        onClick={() => this.ApplyClick()}>
+                                        Áp dụng
+                                        </button>
+                                    </div>
+                                </div>
+                               
 
                             </div>
                         </div>
 
                     </div>
+                    <div className="card" style={{  width: "217px" }}>
+                        <div className="card-body">
+                            <label>Trạng thái:</label>
+                            <div className>
+                                <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
+                                <label for="All">Tất cả</label><br />
+                                <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckHuy()} />
+                                <label for="All">Đã hủy</label><br />
+                                <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckCXN()} />
+                                <label for="True">Chưa xác nhận</label><br />
+                                <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckHT()} />
+                                <label for="False">Hoàn tất</label><br />
+                                <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckCB()} />
+                                <label for="False">Đang chuẩn bị</label><br />
+                                <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckDG()} />
+                                <label for="False">Đang giao</label><br />
+      
+                            </div>
+                        </div>
+                    </div>    
                     <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
                         <div className="card-body">
                             <div className="form-group">
-                                <label>Search by Id:</label>
+                                <label>Tìm kiếm theo Id Hóa đơn:</label>
                                 <div><input className="form-control w-100" onChange={(e) => this.ChangeId(e)} type="text" placeholder="Id" />
                                 </div>
                             </div>
                         </div>
                     </div>
-
+                    
                 </div>
-
+                <Dialog
+                    open={open}
+                    keepMounted
+                    onClose={() => {
+                        this.setState({ open: false })
+                    }}
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <DialogTitle>{"Bạn có chắc chắc muốn hủy đơn hàng"}</DialogTitle>
+                    <DialogContent>
+                        {/* <DialogContentText id="alert-dialog-slide-description">
+                            Khi hủy xong thì sẽ không thể khôi phục lại được
+                        </DialogContentText> */}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => {
+                           this.Delete()
+                        }}>Chấp nhận</Button>
+                        <Button onClick={() => {
+                            this.setState({ open: false })
+                        }}>Quay lại</Button>
+                    </DialogActions>
+                </Dialog>
                 <Paper sx={{ width: '100%', overflow: 'hidden' }}>
 
                     <div>
@@ -354,34 +576,37 @@ class InvoiceCRUD extends React.Component {
                                         Id
                                     </th>
                                     <th>
-                                        AccountId
+                                        Id Tài khoản
                                     </th>
                                     <th>
-                                        IssuedDate
+                                        Ngày lập
                                     </th>
                                     <th>
-                                        ShippingAddress
+                                        Địa chỉ 
                                     </th>
                                     <th>
-                                        ShippingPhone
+                                        SĐT
                                     </th>
                                     <th>
-                                        Total
+                                        Tổng
                                     </th>
-                                    <th>
+                                    {/* <th>
                                         Status
+                                    </th> */}
+                                    <th>
+                                        Thanh toán
                                     </th>
                                     <th>
-                                        Pay
+                                        Trạng thái
                                     </th>
                                     <th>
-                                        OrderStatus
+                                        Hủy
                                     </th>
                                     <th>
-                                        Edit
+                                        Sửa
                                     </th>
                                     <th>
-                                        Details
+                                        Xem
                                     </th>
 
                                 </tr>
@@ -401,7 +626,9 @@ class InvoiceCRUD extends React.Component {
                                                 {dep.accountId}
                                             </td>
                                             <td>
-                                                {dep.issuedDate}
+                                                {
+                                                    this.DatetimeFormat(dep.issuedDate)
+                                                }
                                             </td>
                                             <td>
                                                 {dep.shippingAddress}
@@ -412,11 +639,11 @@ class InvoiceCRUD extends React.Component {
                                             <td>
                                                 {dep.total}
                                             </td>
-                                            <td>
+                                            {/* <td>
                                                 {dep.status == true ?
                                                     "True" : "False"
                                                 }
-                                            </td>
+                                            </td> */}
                                             <td>
                                                 {dep.pay == true ?
                                                     "True" : "False"
@@ -430,8 +657,18 @@ class InvoiceCRUD extends React.Component {
                                             </td>
                                             {/* //1 chưa xác nhận //2 la chua đang chuẩn bị //3 đang giao//6 đã giao//4 đã hủy,//5hoàn tất */}
                                             <td>
+                                                {dep.orderStatus != 5 ?
+                                                    <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                                        </svg>
+                                                    </button>
+                                                    :null}
+                                            </td>
+                                            <td>
                                                 {
-                                                    dep.orderStatus == 5 ? null : <button type='button' className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#exampleModal'
+                                                    
+                                                    dep.orderStatus == 4 || dep.orderStatus == 5 ? null : <button type='button' className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#exampleModal'
                                                         onClick={() => this.EditClick(dep)}>
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
                                                             <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
@@ -439,7 +676,7 @@ class InvoiceCRUD extends React.Component {
                                                         </svg>
                                                     </button>
                                                 }
-                                              
+
                                             </td>
                                             <td>
                                                 <button type='button' className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#exampleModalCenter'
@@ -460,22 +697,24 @@ class InvoiceCRUD extends React.Component {
                                         <h5 class="modal-title" id="exampleModalLongTitle">Details Invoice</h5>
                                         <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
                                         </button>
+                                      
+                                     
                                     </div>
                                     <div class="modal-body">
                                         <table id="example" className='table table-striped'>
                                             <thead>
                                                 <tr>
                                                     <th>
-                                                        ProductId
+                                                        Tên sản phẩm
                                                     </th>
                                                     <th>
-                                                        Quantity
+                                                        Số lượng
                                                     </th>
                                                     <th>
-                                                        UnitPrice
+                                                        Giá
                                                     </th>
                                                     <th>
-                                                        Total
+                                                        Tổng tiền
                                                     </th>
                                                 </tr>
                                             </thead>
@@ -485,7 +724,7 @@ class InvoiceCRUD extends React.Component {
 
                                                     <tr >
                                                         <td>
-                                                            {dep.productId}
+                                                            {(dep.productSize.product).name}
                                                         </td>
                                                         <td>
                                                             {dep.quantity}
@@ -503,7 +742,7 @@ class InvoiceCRUD extends React.Component {
                                         </table>
                                     </div>
                                     <div class="modal-footer">
-                                        <h4>Total:{this.total(DetailsInvoice)}</h4>
+                                        <h4>Tổng hóa đơn: {" "}{this.total(DetailsInvoice)}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -513,25 +752,26 @@ class InvoiceCRUD extends React.Component {
                                 <div className="modal-content">
                                     <div className="modal-header">
                                         <h5 className='modal-title'>{modelTitle}</h5>
-                                        <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
+                                        <button id="closeModal" type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
                                         </button>
+                                      
                                     </div>
                                     <div className='modal-body'>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
-                                                ShippingAddress
+                                                Địa chỉ giao hàng
                                             </span>
                                             <input type='text' className='form-control' value={this.state.ShippingAddress}
                                                 onChange={(e) => this.ChangeShippingAddress(e)} />
                                             <span className='input-group-text'>
-                                                ShippingPhone
+                                                SĐT giao hàng
                                             </span>
                                             <input type='text' className='form-control' value={this.state.ShippingPhone}
                                                 onChange={(e) => this.ChangeShippingPhone(e)} />
                                         </div>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
-                                                Pay
+                                                Thanh toán
                                             </span>
                                             <Autocomplete
                                                 value={Pay}
@@ -553,7 +793,7 @@ class InvoiceCRUD extends React.Component {
 
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
-                                                OrderStatus
+                                                Trạng thái đơn hàng
                                             </span>
                                             <Autocomplete
                                                 value={OrderStatus}
@@ -571,10 +811,15 @@ class InvoiceCRUD extends React.Component {
                                                         variant="outlined" />}
                                             />
                                         </div>
-                                      
+
                                     </div>
                                     <div class="modal-footer">
-                                        <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.ID)}>Update</button>
+                                        {
+                                            this.state.OrderStatus == "Hoàn tất" ?
+                                                <button type='button' className='btn btn-primary float-start' onClick={() => this.Upade(this.state.ID)}>Update</button>
+                                             : <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick1(this.state.ID)}>Update</button>
+                                        }
+                                      
                                     </div>
                                 </div>
                             </div>

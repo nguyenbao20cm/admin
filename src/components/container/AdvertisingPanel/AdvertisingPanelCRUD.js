@@ -4,7 +4,7 @@ import { variable } from '../../../Variable';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-
+import { Alert, Space, message } from 'antd';
 class ReviewCRUD extends React.Component {
     constructor(props) {
         super(props);
@@ -41,9 +41,9 @@ class ReviewCRUD extends React.Component {
 
     CreateClick() {
         if (this.state.image == "") {
-            alert("Chua Nhap Image");
+            message.error("Chưa nhập Hình ảnh")
         } if (this.state.Status == "") {
-            alert("Chua Nhap Status");
+            message.error("Chưa nhập trạng thái")
         } 
         else {
             const token = this.getToken();
@@ -102,13 +102,13 @@ class ReviewCRUD extends React.Component {
 
                     }
                     if (result == "Thành công") {
-                        alert(result);
+                        message.success(result)
                         window.location.reload(false);
                     }
                 },
                     (error) => {
                         console.error(error)
-                        alert("Failed");
+                        message.error("Failed")
                     });
 
         }
@@ -133,18 +133,21 @@ class ReviewCRUD extends React.Component {
                 })
             }).then(res => res.json())
                 .then(result => {
-                    alert(result);
+                    
                     if (result == "Thành công") {
+                        message.success(result)
                         window.location.reload(false);
                     }
+                    else
+                        message.error(result)
                 },
                     (error) => {
-                        console.error(error)
-                        alert("Failed");
+                      
+                        message.error("Failed")
                     });
         }
         else if (this.state.image == "") {
-            alert("Chua Nhap Image");
+            message.error("Chưa nhập hình ảnh")
         } else {
            
             const formData = new FormData()
@@ -173,14 +176,17 @@ class ReviewCRUD extends React.Component {
                         }).then(res => res.json())
 
                     }
-                    alert(result);
+                   
                     if (result == "Thành công") {
+                        message.success(result)
                         window.location.reload(false);
                     }
+                    else
+                        message.error(result)
                 },
                     (error) => {
                         console.error(error)
-                        alert("Failed");
+                        message.error("Failed")
                     });
 
         }
@@ -198,10 +204,10 @@ class ReviewCRUD extends React.Component {
                 }
             }).then(res => res.json())
                 .then(result => {
-                    alert(result);
+                    message.success(result)
                     this.refreshList();
                 }, (error) => {
-                    alert("Failed");
+                    message.error("Failed")
                 }
                 )
         }

@@ -4,7 +4,7 @@ import { variable } from '../../../Variable';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-
+import { Alert, Space, message } from 'antd';
 class ReviewCRUD extends React.Component {
     constructor(props) {
         super(props);
@@ -65,8 +65,8 @@ class ReviewCRUD extends React.Component {
         var check = true;
         this.state.Disscounts.forEach(element => {
             if (element.productId == this.state.ProductId) check = false;
-        });
-        if (check == false) return alert("Disscount cho Product này đã tồn tại");;
+        }); 
+        if (check == false) return message.error("Disscount cho Product này đã tồn tại")
         const optionProductType = []
         this.state.ProductType.forEach(element => {
             optionProductType.push(element.id)
@@ -75,12 +75,12 @@ class ReviewCRUD extends React.Component {
         optionProductType.forEach(element => {
             if (element == this.state.ProductId) a =  true;
         });
-        if (a == false) return alert("ProductId không tồn tại");;
+        if (a == false) return message.error("ProductId không tồn tại")
         if (Number.isInteger(this.state.DisscountEdit)) {
-            return alert("Disscount không hợp lệ");;
-        }
+            return message.error("Disscount không hợp lệ")
+        } 
         if (this.state.DisscountEdit < 0 || this.state.DisscountEdit > 100) {
-            return alert("Disscount không hợp lệ");;
+            return message.error("Disscount không hợp lệ")
         }
         const token = this.getToken();
         fetch(variable.API_URL + "Disscounts/CreateDisscount", {
@@ -98,17 +98,20 @@ class ReviewCRUD extends React.Component {
             })
         }).then(res => res.json())
             .then(result => {
-                alert(result);
+             
                 if (result == "Thành công") {
+                    message.success("Thành công")
                     window.location.reload(false);
                 }
+                else
+                    message.error(result)
             }, (error) => {
-                alert("Failed");
+                message.error("Failed")
             });
     }
     UpdateClick(id) {
         const token = this.getToken();
-        if (this.state.Name == "") return alert("Không được bỏ trống");
+        if (this.state.Name == "") return message.error("Không được bỏ trống tên")
         fetch(variable.API_URL + "Disscounts/UpdateDisscount/" + id, {
             method: "PUT",
             headers: {
@@ -123,12 +126,15 @@ class ReviewCRUD extends React.Component {
             })
         }).then(res => res.json())
             .then(result => {
-                alert(result);
+             
                 if (result == "Thành công") {
+                    message.success(result)
                     window.location.reload(false);
                 }
+                else
+                    message.error(result)
             }, (error) => {
-                alert("Failed");
+                message.error("Failed")
             }
             )
     }
@@ -144,10 +150,10 @@ class ReviewCRUD extends React.Component {
                 }
             }).then(res => res.json())
                 .then(result => {
-                    alert(result);
+                    message.success(result)
                     this.refreshList();
                 }, (error) => {
-                    alert("Failed");
+                    message.error("Failed")
                 }
                 )
         }

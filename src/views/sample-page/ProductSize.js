@@ -9,7 +9,7 @@ const ProductTypeList = () => {
 
     return (
         <>
-            <DashboardCard title="ProductSize List">
+            <DashboardCard title="Danh sách Size sản phẩm">
                 <Typography paragraph>
                     <ProductSize />
                 </Typography>

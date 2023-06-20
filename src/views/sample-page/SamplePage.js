@@ -8,7 +8,7 @@ const SamplePage = () => {
   return (
     <PageContainer title="Sample Page" description="this is Sample page">
 
-      <DashboardCard title="Products List">
+      <DashboardCard title="Danh sách sản phẩm ">
         <Typography paragraph>
           <ProductList />
         </Typography>

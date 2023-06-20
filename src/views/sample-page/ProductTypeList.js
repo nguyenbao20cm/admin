@@ -11,7 +11,7 @@ const ProductTypeList = () => {
     <>
       <PageContainer title="Sample Page" description="this is Sample page">
 
-        <DashboardCard title="ProductTypes List">
+        <DashboardCard title="Danh sách loại sản phẩm ">
           <Typography paragraph>
             <ProductType />
           </Typography>

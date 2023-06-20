@@ -6,6 +6,12 @@ import { result } from 'lodash';
 import $ from "jquery";
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import { Space, message } from 'antd';
+import { PrintDisabled } from '@mui/icons-material';
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+
+import 'sweetalert2/src/sweetalert2.scss'
+import { colors } from '@mui/material';
 class CRUDProduct extends React.Component {
 
     constructor(props) {
@@ -19,10 +25,10 @@ class CRUDProduct extends React.Component {
             NameinputProduct: "",
             Description: "",
             price: 0,
-
+            SKU: "",
             productTypeId: "",
             image: "",
-            Iimage: "",
+            Iimage: "", NameCheck:"",
             ProductTypegetbyid: [], SKU: "", Disscount: "", Status: "", ProductType1: []
         }
     }
@@ -76,24 +82,56 @@ class CRUDProduct extends React.Component {
         this.setState({ productTypeId: e.target.value });
     }
     ChangeProdcutImage = (e) => {
-
+        if (e.target.files[0] !=null)
         this.setState({ image: e.target.files[0].name, Iimage: e.target.files[0] });
 
     }
-
+    PRID(a) {
+        var b = this.state.ProductType1.filter((item) => { return item.name == a ? item : null }).map((dep) => dep.id)
+      
+        return b[0]
+    }
+    loi(title, text) {
+        return Swal.fire({
+            icon: 'error',
+            title: title,
+            text: text,
+            confirmButtonText: 'Ok',
+            confirmButtonColor: '#3085d6',
+            timer: 1500
+        })
+    }
     CreateClick() {
-        if (this.state.SKU.length > 5) return alert("SKU không được vượt quá 5 ký tự");
+       
+        if (this.state.Name == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
+        if (this.state.Description == "") return this.loi("Miêu tả bị rỗng ", "Hãy nhập lại")
+        if (this.state.price == "") return this.loi("Giá bán đang bị rỗng ", "Hãy nhập lại")
+        if (this.state.Status == "") return this.loi("Dữ liệu trạng thái bị rỗng", "Hãy nhập lại")
+
+        if (this.state.SKU.length > 5) return this.loi("SKU không được vượt quá 5 ký tự", "Hãy nhập lại")
+        if (this.state.SKU == "") return this.loi("SKU không được rỗng", "Hãy nhập lại")
         const optionProductType = []
         this.state.ProductType1.forEach(element => {
-            optionProductType.push(element.id)
+            optionProductType.push(element.name)
         });
         var a = false;
         optionProductType.forEach(element => {
             if (element == this.state.productTypeId) a = true;
         });
-        if (a == false) return alert("ProductTypeId không tồn tại");;
+        if (a == false) return this.loi("Loại sản phẩm không tần tại", "Hãy nhập lại")
+        if (this.state.NameCheck != this.state.Name) {
+            const ProductCheck = []
+            this.state.ProductType.forEach(element => {
+                ProductCheck.push(element.name)
+            });
+            var ab = false;
+            ProductCheck.forEach(element => {
+                if (element == this.state.Name) ab = true;
+            });
+            if (ab == true) return this.loi("Tên sản phẩm đã tồn tại", "Hãy nhập lại")
+        }
         if (this.state.image == "") {
-            alert("Chua Nhap Image");
+            return this.loi("Hình ảnh đang bị rỗng", "Hãy nhập lại")
         } else {
             // const formData = new FormData()
             // formData.append("model", this.state.Iimage)
@@ -107,11 +145,10 @@ class CRUDProduct extends React.Component {
                     JSON.stringify({
                         name: this.state.Name,
                         sku: this.state.SKU,
-                        status: this.state.Status == "True" ? true : false,
+                        status: this.state.Status == "Hiển thị" ? true : false,
                         description: this.state.Description,
                         price: this.state.price,
-
-                        productTypeId: this.state.productTypeId,
+                        productTypeId: this.PRID(this.state.productTypeId),
                         image: ""
                     })
             }).then(res => res.json())
@@ -139,10 +176,10 @@ class CRUDProduct extends React.Component {
                                             name: this.state.Name,
                                             sku: this.state.SKU,
                                             description: this.state.Description,
-                                            status: this.state.Status == "True" ? true : false,
+                                            status: this.state.Status == "Hiển thị" ? true : false,
                                             price: this.state.price,
 
-                                            productTypeId: this.state.productTypeId,
+                                            productTypeId: this.PRID(this.state.productTypeId),
                                             image: imagelName
                                         })
                                 }).then(res => res.json())
@@ -151,27 +188,56 @@ class CRUDProduct extends React.Component {
 
                     }
                     if (result == "Thành công") {
-                        alert(result);
-                        window.location.reload(false);
+                        message.success("Thành công")
+                        this.refreshList()
+                        document.getElementById("closeModal").click()
                     }
+                    else
+                        this.loi(result, "")
                 },
                     (error) => {
                         console.error(error)
-                        alert("Failed");
+                        this.loi("Đã có lỗi bạn hãy xem lại dữ liệu có đúng không", "")
                     });
 
         }
-
-
-
-
-
-
     }
 
 
     UpdateClick(id) {
-        if (this.state.SKU.length > 5) return alert("SKU không được vượt quá 5 ký tự");
+
+        if (this.state.Name == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
+        if (this.state.Description == "") return this.loi("Miêu tả bị rỗng ", "Hãy nhập lại")
+        if (this.state.price == "") return this.loi("Giá bán đang bị rỗng ", "Hãy nhập lại")
+        if (this.state.Status == "") return this.loi("Dữ liệu trạng thái bị rỗng", "Hãy nhập lại")
+
+        if (this.state.SKU.length > 5) return this.loi("SKU không được vượt quá 5 ký tự", "Hãy nhập lại")
+        if (this.state.SKU == "") return this.loi("SKU không được rỗng", "Hãy nhập lại")
+        const optionProductType = []
+        this.state.ProductType1.forEach(element => {
+            optionProductType.push(element.name)
+        });
+        var a = false;
+        optionProductType.forEach(element => {
+            if (element == this.state.productTypeId) a = true;
+        });
+        if (a == false) return this.loi("Loại sản phẩm không tần tại", "Hãy nhập lại")
+ 
+
+        if (this.state.NameCheck != this.state.Name) {
+            const ProductCheck = []
+            this.state.ProductType.forEach(element => {
+                ProductCheck.push(element.name)
+            });
+            var ab = false;
+            ProductCheck.forEach(element => {
+                if (element == this.state.Name) ab = true;
+            });
+            if (ab == true) return this.loi("Tên sản phẩm đã tồn tại", "Hãy nhập lại")
+        }
+        
+        if (this.state.image == "")
+            return this.loi("Hình ảnh đang bị rỗng", "Hãy nhập lại")
         var imagelName = this.state.id + ".jpg"
         if (this.state.image == imagelName) {
             fetch(variable.API_URL + "Products/UpdateProduct/" + id, {
@@ -184,27 +250,29 @@ class CRUDProduct extends React.Component {
                     JSON.stringify({
                         name: this.state.Name,
                         sku: this.state.SKU,
-                        status: this.state.Status == "True" ? true : false,
+                        status: this.state.Status == "Hiển thị" ? true : false,
                         description: this.state.Description,
                         price: this.state.price,
-
-                        productTypeId: this.state.productTypeId,
+                        productTypeId: this.PRID(this.state.productTypeId),
                         image: imagelName
                     })
             }).then(res => res.json())
                 .then(result => {
-                    alert(result);
                     if (result == "Thành công") {
-                        window.location.reload(false);
+                        message.success("Thành công")
+                        this.refreshList()
+                        document.getElementById("closeModal").click()
                     }
+                    else
+                        this.loi(result, "")
                 },
                     (error) => {
-                        console.error(error)
-                        alert("Failed");
+                        
+                        this.loi("Đã xảy ra lỗi", "")
                     });
         }
         else if (this.state.image == "") {
-            alert("Chua Nhap Image");
+            message.error("Chưa nhập hình ảnh")
         } else {
             const formData = new FormData()
             var imagelName = this.state.id + ".jpg"
@@ -221,11 +289,10 @@ class CRUDProduct extends React.Component {
                     JSON.stringify({
                         name: this.state.Name,
                         sku: this.state.SKU,
-                        status: this.state.Status == "True" ? true : false,
+                        status: this.state.Status == "Hiển thị" ? true : false,
                         description: this.state.Description,
                         price: this.state.price,
-
-                        productTypeId: this.state.productTypeId,
+                        productTypeId: this.PRID(this.state.productTypeId),
                         image: imagelName
                     })
             }).then(res => res.json())
@@ -237,14 +304,17 @@ class CRUDProduct extends React.Component {
                         }).then(res => res.json())
 
                     }
-                    alert(result);
                     if (result == "Thành công") {
-                        window.location.reload(false);
+                        message.success("Thành công")
+                        this.refreshList()
+                        document.getElementById("closeModal").click()
                     }
+                    else
+                        this.loi(result, "")
                 },
                     (error) => {
                         console.error(error)
-                        alert("Failed");
+                        message.error("Failed")
                     });
 
         }
@@ -252,30 +322,30 @@ class CRUDProduct extends React.Component {
 
     }
     DeleteClick(id) {
-        if (window.confirm('Are you sure?')) {
-            fetch(variable.API_URL + "Products/DeleteProduct/" + id, {
-                method: "PUT",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-            }).then(res => res.json())
-                .then(result => {
-                    alert(result);
-                    this.refreshList();
-                }, (error) => {
-                    alert("Failed");
-                }
-                )
-        }
+
+        fetch(variable.API_URL + "Products/DeleteProduct/" + id, {
+            method: "PUT",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+        }).then(res => res.json())
+            .then(result => {
+                message.success(result)
+                this.refreshList();
+            }, (error) => {
+                message.error("Failed")
+            }
+            )
+
     }
 
     addClick() {
         this.setState({
-            modelTitle: "Add Product",
+            modelTitle: "Thêm sản phẩm ",
             id: 0,
             Name: "",
-
+            SKU: "",
             Description: "",
             price: 0,
 
@@ -285,17 +355,18 @@ class CRUDProduct extends React.Component {
     }
     EditClick(dep) {
         this.setState({
-            modelTitle: "Edit Product",
+            NameCheck:dep.name,
+            modelTitle: "Sửa sản phẩm",
             id: dep.id,
             Name: dep.name,
             Status:
                 dep.status == true ?
-                    "True" : "False"
+                    "Hiển thị" : "Ẩn"
             ,
             Description: dep.description,
             price: dep.price,
-
-            productTypeId: dep.productTypeId,
+            SKU: dep.sku,
+            productTypeId: dep.productType.name,
             image: dep.image,
         });
     }
@@ -367,10 +438,10 @@ class CRUDProduct extends React.Component {
             productTypeId,
             image, Status
         } = this.state;
-        const options = ['True', 'False']
+        const options = ["Hiển thị", "Ẩn"]
         const optionProductType = []
         ProductType1.forEach(element => {
-            optionProductType.push(element.id)
+            optionProductType.push(element.name)
         });
         const recordsPerPage = 5;
         const lastIndex = currentPage * recordsPerPage;
@@ -380,29 +451,34 @@ class CRUDProduct extends React.Component {
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
         return (
             <>
+
+
+
+
+
                 <div style={{ display: "flex" }}>
                     <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
                         <div className="card-body" >
                             <div>
                                 <div className="form-group">
-                                    <label>Search by Id:</label>
-                                    <div><input className="form-control w-100" type="text" onChange={(e) => this.ChangeNameinputProduct(e)} placeholder="Id" />
+                                    <label>Tìm kiếm theo tên sản phẩm</label>
+                                    <div><input className="form-control w-100" type="text" onChange={(e) => this.ChangeNameinputProduct(e)} placeholder="Tên sản phẩm" />
                                     </div>
                                 </div>
 
                             </div>
                         </div>
                     </div>
-                    <div className="card">
+                    <div className="card" style={{ width: "135px" }}>
                         <div className="card-body">
-                            <label>Status:</label>
+                            <label>Trạng thái:</label>
                             <div className>
                                 <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
-                                <label for="All">All</label><br />
+                                <label for="All">Tất cả</label><br />
                                 <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
-                                <label for="True">True</label><br />
+                                <label for="True">Hiển thị</label><br />
                                 <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />
-                                <label for="False">False</label>
+                                <label for="False">Ẩn</label>
                             </div>
                         </div>
                     </div>
@@ -411,7 +487,7 @@ class CRUDProduct extends React.Component {
 
                 <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
                     onClick={() => this.addClick()}>
-                    Add Product
+                    Thêm sản phẩm
                 </button>
                 <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                     <div>
@@ -422,34 +498,34 @@ class CRUDProduct extends React.Component {
                                         Id
                                     </th>
                                     <th>
-                                        SKU
+                                        Mã SKU
                                     </th>
                                     <th>
-                                        Name
-                                    </th>
-
-                                    <th>
-                                        Description
-                                    </th>
-                                    <th>
-                                        Price
+                                        Tên sản phẩm
                                     </th>
 
+                                    <th>
+                                        Miêu tả
+                                    </th>
+                                    <th>
+                                        Giá bán
+                                    </th>
+
 
                                     <th>
-                                        Image
+                                        Ảnh
                                     </th>
                                     <th>
-                                        ProductTypeId
+                                        Loại
                                     </th>
                                     <th>
-                                        Status
+                                        Trạng thái
                                     </th>
                                     <th>
-                                        Edit
+                                        Sửa
                                     </th>
                                     <th>
-                                        Delete
+                                        Ẩn
                                     </th>
                                 </tr>
                             </thead>
@@ -458,7 +534,7 @@ class CRUDProduct extends React.Component {
                                 {ProductType.filter((item) => {
                                     return this.state.NameinputProduct === ""
                                         ? item
-                                        : item.id.toString().includes(this.state.NameinputProduct);
+                                        : item.name.toString().includes(this.state.NameinputProduct);
                                 }).slice(firstIndex, lastIndex)
                                     .map(dep =>
                                         <tr >
@@ -475,7 +551,7 @@ class CRUDProduct extends React.Component {
                                                 {dep.description}
                                             </td>
                                             <td>
-                                                {dep.price + "$"}
+                                                {dep.price + " Đồng"}
                                             </td>
 
 
@@ -483,11 +559,11 @@ class CRUDProduct extends React.Component {
                                                 <img style={{ width: 50 }} src={require('../../assets/images/products/' + dep.image)} />
                                             </td>
                                             <td>
-                                                {dep.productTypeId}
+                                                {(dep.productType).name}
                                             </td>
                                             <td>
                                                 {dep.status == true ?
-                                                    "True" : "False"
+                                                    "Hiển thị" : "Ẩn"
                                                 }
                                             </td>
                                             <td>
@@ -515,14 +591,14 @@ class CRUDProduct extends React.Component {
                                 <div className="modal-content">
                                     <div className="modal-header">
                                         <h5 className='modal-title'>{modelTitle}</h5>
-                                        <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
+                                        <button id="closeModal" type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
                                         </button>
                                     </div>
                                     <div className='modal-body'>
 
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
-                                                Name
+                                                Tên sản phẩm
                                             </span>
                                             <input type='text' className='form-control' value={Name}
                                                 onChange={(e) => this.ChangeProdcutTypeName(e)} />
@@ -530,7 +606,7 @@ class CRUDProduct extends React.Component {
                                         </div>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
-                                                SKU
+                                                Mã SKU
                                             </span>
                                             <input type='text' className='form-control' value={SKU}
                                                 onChange={(e) => this.ChangeSKU(e)} />
@@ -538,14 +614,14 @@ class CRUDProduct extends React.Component {
                                         </div>
                                         <div class="form-group">
                                             <span className='input-group-text'>
-                                                Description
+                                                Miêu tả
                                             </span>
                                             <textarea class="form-control" id="message-text" value={Description} style={{ height: 152 }}
                                                 onChange={(e) => this.ChangeProdcutDescription(e)}></textarea>
                                         </div>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
-                                                Price
+                                                Giá bán
                                             </span>
                                             <input type='text' className='form-control' value={price}
                                                 onChange={(e) => this.ChangeProdcutPrice(e)} />
@@ -553,7 +629,7 @@ class CRUDProduct extends React.Component {
 
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
-                                                Image
+                                                Ảnh
                                             </span>
                                             <input type='text' className='form-control' value={image}
                                                 onChange={(e) => this.ChangeProdcutImage(e)} readOnly />
@@ -561,7 +637,7 @@ class CRUDProduct extends React.Component {
                                         </div>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
-                                                ProductTypeId
+                                                Loại
                                             </span>
                                             <Autocomplete
                                                 value={productTypeId}
@@ -581,7 +657,7 @@ class CRUDProduct extends React.Component {
                                         </div>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
-                                                Status
+                                                Trạng thái
                                             </span>
                                             <Autocomplete
                                                 value={Status}
@@ -589,6 +665,7 @@ class CRUDProduct extends React.Component {
                                                     this.setState({
                                                         Status: newValue
                                                     });
+
                                                 }}
 
                                                 options={options}
@@ -604,10 +681,10 @@ class CRUDProduct extends React.Component {
                                     </div>
                                     <div class="modal-footer">
                                         {id == 0 ?// eslint-disable-next-line
-                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.CreateClick()}>Create</button> : null
+                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.CreateClick()}>Thêm</button> : null
                                         }
                                         {id != 0 ?// eslint-disable-next-line
-                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.id)}>Update</button> : null
+                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.id)}>Sửa</button> : null
                                         }
                                     </div>
                                 </div>
