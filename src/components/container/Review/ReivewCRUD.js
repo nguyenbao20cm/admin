@@ -229,7 +229,7 @@ class ReviewCRUD extends React.Component {
                         <div className="card-body" >
                             <div>
                                 <div className="form-group">
-                                    <label>Search by ProductId:</label>
+                                    <label>Tìm kiếm bình luận theo tên sản phẩm:</label>
                                     <div><input className="form-control w-100" type="text" onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Id" />
                                     </div>
                                 </div>
@@ -237,16 +237,16 @@ class ReviewCRUD extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="card">
+                    <div className="card" style={{ width: "135px" }}>
                         <div className="card-body">
-                            <label>Status:</label>
+                            <label>Trạng thái:</label>
                             <div className>
                                 <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
-                                <label for="All">All</label><br />
+                                <label for="All">Tất cả</label><br />
                                 <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
-                                <label for="True">True</label><br />
+                                <label for="True">Hiển thị</label><br />
                                 <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />
-                                <label for="False">False</label>
+                                <label for="False">Ẩn</label>
                             </div>
                         </div>
                     </div>
@@ -266,29 +266,29 @@ class ReviewCRUD extends React.Component {
                             <thead>
                                 <tr>
                                     <th>
-                                        Id
+                                        ID
                                     </th>
                                     <th>
-                                        ProductId
+                                        Của sản phẩm
                                     </th>
                                     <th>
-                                        AccountId
+                                        Của tài khoản ID
                                     </th>
                                     <th>
-                                        Content
+                                        Nội dung
                                     </th>
                                     <th>
-                                        DateTime
+                                        Ngày tạo
                                     </th>
                                     <th>
-                                        Star
+                                        Sao đánh giá
                                     </th>
                                     <th>
-                                        Status
+                                        Trạng thái
                                     </th>
 
                                     <th>
-                                        Delete
+                                        Ẩn
                                     </th>
                                 </tr>
                             </thead>
@@ -367,7 +367,7 @@ class ReviewCRUD extends React.Component {
                         <nav>
                             <ul className='pagination'>
                                 <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.PrePage(this.state.currentPage)}>Prev</a>
+                                    <a href='#' className='page-link' onClick={() => this.PrePage(this.state.currentPage)}>{"<"}</a>
                                 </li>
                                 {
                                     numbers.map((n, i) => (
@@ -378,7 +378,7 @@ class ReviewCRUD extends React.Component {
                                     ))
                                 }
                                 <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.NextPage(this.state.currentPage, npage)}>Next</a>
+                                    <a href='#' className='page-link' onClick={() => this.NextPage(this.state.currentPage, npage)}>{">"}</a>
                                 </li>
 
                             </ul>

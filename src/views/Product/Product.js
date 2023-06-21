@@ -480,7 +480,7 @@ class CRUDProduct extends React.Component {
                 .then(data => {
                     this.setState({
                         ProductType: data,
-                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : a.length == 1 ? this.state.currentPage - 1 : this.state.currentPage,
+                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == false ? 1 : a.length == 1 ? this.state.currentPage - 1 : this.state.currentPage,
                         Trangthai: true,
                         NameinputProduct: ""
                     });
@@ -492,7 +492,7 @@ class CRUDProduct extends React.Component {
                 .then(data => {
                     this.setState({
                         ProductType: data,
-                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : this.state.currentPage,
+                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == false ? 1 : this.state.currentPage,
                         Trangthai: true,
                         NameinputProduct: ""
                     });
@@ -803,7 +803,7 @@ class CRUDProduct extends React.Component {
                         <nav>
                             <ul className='pagination'>
                                 <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.PrePage(this.state.currentPage)}>Prev</a>
+                                    <a href='#' className='page-link' onClick={() => this.PrePage(this.state.currentPage)}>{"<"}</a>
                                 </li>
                                 {
                                     numbers.map((n, i) => (
@@ -814,7 +814,7 @@ class CRUDProduct extends React.Component {
                                     ))
                                 }
                                 <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.NextPage(this.state.currentPage, npage)}>Next</a>
+                                    <a href='#' className='page-link' onClick={() => this.NextPage(this.state.currentPage, npage)}>{">"}</a>
                                 </li>
 
                             </ul>

@@ -66,15 +66,39 @@ const Menuitems = [
     icon: IconAperture,
     href: '/Disscount', aaa: true,
   },
-
   {
     id: uniqueId(),
-    title: 'Báo cáo Week Page',
+    title: 'Quản lý tài khoản khách hàng',
+    icon: IconAperture,
+    href: '/Disscount', aaa: true,
+  },
+  {
+    id: uniqueId(),
+    title: 'Quản lý Voucher',
+    icon: IconAperture,
+    href: '/Disscount', aaa: true,
+  },
+  {
+    id: uniqueId(),
+    title: 'Báo cáo theo ngày',
     icon: IconAperture,
     href: '/ReportWeekPage',
     bbb:true
   },
-
+  {
+    id: uniqueId(),
+    title: 'Báo cáo theo tháng',
+    icon: IconAperture,
+    href: '/ReportWeekPage',
+    bbb: true
+  },
+  {
+    id: uniqueId(),
+    title: 'Báo cáo theo năm',
+    icon: IconAperture,
+    href: '/ReportWeekPage',
+    bbb: true
+  },
   
 ];
 

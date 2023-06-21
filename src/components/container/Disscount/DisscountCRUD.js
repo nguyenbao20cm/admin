@@ -296,7 +296,7 @@ class ReviewCRUD extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="card">
+                    <div className="card" style={{ width: "135px" }}>
                         <div className="card-body">
                             <label>Status:</label>
                             <div className>
@@ -461,7 +461,7 @@ class ReviewCRUD extends React.Component {
                         <nav>
                             <ul className='pagination'>
                                 <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.PrePage(this.state.currentPage)}>Prev</a>
+                                    <a href='#' className='page-link' onClick={() => this.PrePage(this.state.currentPage)}>{"<"}</a>
                                 </li>
                                 {
                                     numbers.map((n, i) => (
@@ -472,7 +472,7 @@ class ReviewCRUD extends React.Component {
                                     ))
                                 }
                                 <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.NextPage(this.state.currentPage, npage)}>Next</a>
+                                    <a href='#' className='page-link' onClick={() => this.NextPage(this.state.currentPage, npage)}>{">"}</a>
                                 </li>
 
                             </ul>

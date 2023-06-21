@@ -27,12 +27,12 @@ class InvoiceCRUD extends React.Component {
             id: 0,
             Code: "",
             AccountId: 0,
-            currentPage: 1, checkTrangthai:"",
+            currentPage: 1, checkTrangthai: "",
             IssuedDate: "",
             ShippingAddress: "",
             ShippingPhone: "",
             Total: 0,
-            Status: "",
+            Status: "", APdungCheck: false,
             Pay: "",
             OrderStatus: "",
             DetailsInvoice: [],
@@ -40,7 +40,7 @@ class InvoiceCRUD extends React.Component {
             ChangeId: "",
             startDate: "",
             endDate: "",
-            value: "", value: "", ID: "", open: false, data: "", open1:false,Trangthai:""
+            value: "", value: "", ID: "", open: false, data: "", open1: false, Trangthai: ""
         }
     }
 
@@ -69,12 +69,12 @@ class InvoiceCRUD extends React.Component {
 
             .then(response => response.json())
             .then(data => {
-                this.setState({ Invoice: data, APIInvoice:data });
+                this.setState({ Invoice: data, APIInvoice: data });
             })
     }
     refreshList() {
         const token = this.getToken();
-      
+
         fetch(variable.API_URL + "Inovices/GetAllInovice", {
             method: "GET",
             headers: {
@@ -86,7 +86,7 @@ class InvoiceCRUD extends React.Component {
 
             .then(response => response.json())
             .then(data => {
-                this.setState({ Invoice: data, APIInvoice: data,currentPage:this.state.currentPage, Trangthai: null });
+                this.setState({ Invoice: data, APIInvoice: data, currentPage: this.state.currentPage, Trangthai: null });
             })
     }
     componentDidMount() {
@@ -148,23 +148,23 @@ class InvoiceCRUD extends React.Component {
                             body: formData
                         }).then(res => res.json())
                     }
-                if (result == "Thành công") {
-                    message.success("Thành công")
-                    this.state.Trangthai == true ? this.CheckTrue()
-                        : this.state.Trangthai == false ? this.CheckFalse()
-                            :
-                            this.refreshList()
-                }
-                else
-                    message.error(result)
-                  
+                    if (result == "Thành công") {
+                        message.success("Thành công")
+                        this.state.Trangthai == true ? this.CheckTrue()
+                            : this.state.Trangthai == false ? this.CheckFalse()
+                                :
+                                this.refreshList()
+                    }
+                    else
+                        message.error(result)
+
                 },
                     (error) => {
 
                         message.error("Failed")
                     });
             this.refreshList();
-          
+
         }
 
 
@@ -174,7 +174,7 @@ class InvoiceCRUD extends React.Component {
     UpdateClick() {
         if (this.state.ShippingAddress == "") return this.loi("Địa chỉ bị rỗng ", "Hãy nhập lại")
         if (this.state.ShippingPhone == "") return this.loi("SĐT bị rỗng ", "Hãy nhập lại")
-        if (this.state.ShippingPhone.length> 10) return this.loi("SĐT bị sai ", "Hãy nhập lại")
+        if (this.state.ShippingPhone.length > 10) return this.loi("SĐT bị sai ", "Hãy nhập lại")
         if (this.state.ShippingPhone.length < 0) return this.loi("SĐT bị sai ", "Hãy nhập lại")
         if (Number.isInteger(Number(this.state.ShippingPhone)) == false) return this.loi("SĐT bị sai ", "Hãy nhập lại")
         if (this.state.Pay == "") return this.loi("Trạng thái bị rỗng ", "Hãy nhập lại")
@@ -206,7 +206,7 @@ class InvoiceCRUD extends React.Component {
                                     this.state.Trangthai == "DG" ? this.CheckDG()
                                         : this.state.Trangthai == "DangG" ? this.CheckDangG() :
                                             this.refreshList()
-                    this.setState({ open1: false })
+                    this.setState({ open1: false, })
                     this.setState({ open: false })
                     document.getElementById("closeModal").click()
                 }
@@ -237,7 +237,7 @@ class InvoiceCRUD extends React.Component {
         if (this.state.Pay == "") return this.loi("Trạng thái bị rỗng ", "Hãy nhập lại")
         if (this.state.OrderStatus == "") return this.loi("Dữ liệu trạng thái bị sai", "Hãy nhập lại")
         if (this.state.OrderStatus == null) return this.loi("Dữ liệu trạng thái bị sai", "Hãy nhập lại")
-        console.log(this.state.OrderStatus)
+
         const token = this.getToken();
         fetch(variable.API_URL + "Inovices/UpdateInovice/" + id, {
             method: "PUT",
@@ -250,7 +250,7 @@ class InvoiceCRUD extends React.Component {
                 shippingphone: this.state.ShippingPhone,
                 shippingadress: this.state.ShippingAddress,
                 pay: this.state.Pay == "Đã thanh toán" ? true : false,
-                orderStatus: this.state.OrderStatus == "Chưa xác nhận" ? 1 : this.state.OrderStatus == "Đang chuẩn bị" ? 2 : this.state.OrderStatus == "Đang giao" ? 3 : this.state.OrderStatus == "Đã hủy" ? 4 : this.state.OrderStatus == "Hoàn tất" ? 5 : this.state.OrderStatus == "Đã giao" ? 6: null,
+                orderStatus: this.state.OrderStatus == "Chưa xác nhận" ? 1 : this.state.OrderStatus == "Đang chuẩn bị" ? 2 : this.state.OrderStatus == "Đang giao" ? 3 : this.state.OrderStatus == "Đã hủy" ? 4 : this.state.OrderStatus == "Hoàn tất" ? 5 : this.state.OrderStatus == "Đã giao" ? 6 : null,
 
             })
         }).then(res => res.json())
@@ -263,9 +263,9 @@ class InvoiceCRUD extends React.Component {
                             : this.state.Trangthai == "CXN" ? this.CheckCXN()
                                 : this.state.Trangthai == "CB" ? this.CheckCB() :
                                     this.state.Trangthai == "DG" ? this.CheckDG()
-                                        : this.state.Trangthai == "DangG" ? this.CheckDangG():
-                            this.refreshList()
-                    this.setState({ open1: false })
+                                        : this.state.Trangthai == "DangG" ? this.CheckDangG() :
+                                            this.refreshList()
+                    this.setState({ open1: false, APdungCheck :this.state.APdungCheck==false?false:true})
                     this.setState({ open: false })
                     document.getElementById("closeModal").click()
                 }
@@ -295,23 +295,23 @@ class InvoiceCRUD extends React.Component {
             })
     }
     EditClick(dep) {
-     
+
         this.setState({
             checkTrangthai: dep.orderStatus == 1 ? "Chưa xác nhận" : dep.orderStatus == 2 ? "Đang chuẩn bị" : dep.orderStatus == 3 ? "Đang giao" : dep.orderStatus == 4 ? "Đã hủy" : dep.orderStatus == 5 ? "Hoàn tất" : dep.orderStatus == 6 ? "Đã giao" : null
-,
-                modelTitle: "Edit Invoice",
-                ShippingPhone: dep.shippingPhone,
-                Pay:
-                    dep.pay == true ?
-                        "Đã thanh toán" : "Chưa thanh toán"
-                ,
-                ID: dep.id,
-                ShippingAddress: dep.shippingAddress,
-                OrderStatus:
-                    dep.orderStatus == 1 ? "Chưa xác nhận" : dep.orderStatus == 2 ? "Đang chuẩn bị" : dep.orderStatus == 3 ? "Đang giao" : dep.orderStatus == 4 ? "Đã hủy" : dep.orderStatus == 5 ? "Hoàn tất" : dep.orderStatus == 6 ? "Đã giao": null
+            ,
+            modelTitle: "Edit Invoice",
+            ShippingPhone: dep.shippingPhone,
+            Pay:
+                dep.pay == true ?
+                    "Đã thanh toán" : "Chưa thanh toán"
+            ,
+            ID: dep.id,
+            ShippingAddress: dep.shippingAddress,
+            OrderStatus:
+                dep.orderStatus == 1 ? "Chưa xác nhận" : dep.orderStatus == 2 ? "Đang chuẩn bị" : dep.orderStatus == 3 ? "Đang giao" : dep.orderStatus == 4 ? "Đã hủy" : dep.orderStatus == 5 ? "Hoàn tất" : dep.orderStatus == 6 ? "Đã giao" : null
 
-            });
-        
+        });
+
     }
     NextPage(id, npage) {
 
@@ -343,7 +343,7 @@ class InvoiceCRUD extends React.Component {
     }
     ChangeId(value) {
         this.setState({
-            ChangeId: value.target.value, currentPage: 1 
+            ChangeId: value.target.value, currentPage: 1
         });
 
     }
@@ -379,9 +379,9 @@ class InvoiceCRUD extends React.Component {
         })
             .then(response => response.json())
             .then(data => {
-                this.setState({ Invoice: data });
+                this.setState({APdungCheck:true, Invoice: data,currentPage:1 });
             })
-      
+
 
     }
     ChangeShippingPhone(e) {
@@ -395,7 +395,7 @@ class InvoiceCRUD extends React.Component {
             ShippingAddress: e.target.value
         });
     }
-    CompareDate(day1,day2) {
+    CompareDate(day1, day2) {
         const abc = new Date(day1)
         var day1 = abc.getDate() + "/";;
         var month1 = abc.getMonth() + 1 + "/";;
@@ -413,15 +413,15 @@ class InvoiceCRUD extends React.Component {
 
     }
     DatetimeFormat(e) {
-        const abc = new Date(e) 
-        var day =  abc.getDate()  +"/";
-        var month = abc.getMonth()+1 + "/";
+        const abc = new Date(e)
+        var day = abc.getDate() + "/";
+        var month = abc.getMonth() + 1 + "/";
         var year = abc.getFullYear()
-        let format4 = day   + month  + year;
+        let format4 = day + month + year;
         return format4;
     }
     DeleteClick(dep) {
-        this.setState({ open: true, data:dep})
+        this.setState({ open: true, data: dep })
     }
     Upade(dep) {
         this.setState({ open1: true, data: dep })
@@ -442,15 +442,31 @@ class InvoiceCRUD extends React.Component {
                     message.success("Thành công")
                     this.setState({ open: false })
                     this.refreshList()
-              
+
                 }
                 else
                     message.error(result)
-              
+
             })
     }
     CheckAll() {
         const token = this.getToken();
+        if (this.state.APdungCheck == true)
+        {
+            fetch(variable.API_URL + "Inovices/GetAllInoviceFilterByDate/" + this.state.startDate + "," + this.state.endDate, {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({ APdungCheck: true, Invoice: data });
+                })
+        }
+      
 
         fetch(variable.API_URL + "Inovices/GetAllInovice", {
             method: "GET",
@@ -467,353 +483,617 @@ class InvoiceCRUD extends React.Component {
             })
     }
     CheckHuy() {
-        if (this.state.checkTrangthai != this.state.Trangthai)
-        {
-            const recordsPerPage = 5;
-            const lastIndex = this.state.currentPage * recordsPerPage;
-            const firstIndex = lastIndex - recordsPerPage;
-            const b = this.state.Invoice.slice(firstIndex, lastIndex);
-            const token = this.getToken();
-            fetch(variable.API_URL + "Inovices/GetAllInovice", {
-                method: "GET",
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Authorization': `Bearer ${token.value}`
-                }
-            })
-
-                .then(response => response.json())
-                .then(data => {
-                    this.setState({ APIInvoice: data });
-                })
-            var a = this.state.APIInvoice
-            this.setState({
-                Invoice: a.filter((item) => {
-                    return item.orderStatus == 4
-                }),
-                currentPage: this.state.Trangthai == null ?
-                    1 : this.state.Trangthai == "HT" ? 1 : this.state.Trangthai == "CXN" ? 1 :
-                        this.state.Trangthai == "CB" ? 1 :
-                            this.state.Trangthai == "DG" ? 1 :
-                                this.state.Trangthai == "DangG" ? 1
-                                    : b.length == 1 ?
-                                        this.state.currentPage - 1 : this.state.currentPage,
-                Trangthai: "HUY",
-                ChangeId: ""
-            })
-            }
-        else {
-            const token = this.getToken();
-            fetch(variable.API_URL + "Inovices/GetAllInovice", {
-                method: "GET",
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Authorization': `Bearer ${token.value}`
-                }
-            })
-
-                .then(response => response.json())
-                .then(data => {
-                    this.setState({ APIInvoice: data });
-                })
-            var a = this.state.APIInvoice
-            this.setState({
-                Invoice: a.filter((item) => {
-                    return item.orderStatus == 4
-                }),
-                currentPage: this.state.Trangthai == null ?
-                    1 : this.state.Trangthai == "HT" ? 1 : this.state.Trangthai == "CXN" ? 1 :
-                        this.state.Trangthai == "CB" ? 1 :
-                            this.state.Trangthai == "DG" ? 1 :
-                                this.state.Trangthai == "DangG" ? 1
-                                    : this.state.currentPage,
-                Trangthai: "HUY",
-                ChangeId: ""
-            })
-
-        }
-            
-       
-    }
-    CheckHT() {
-        if (this.state.checkTrangthai != this.state.Trangthai) {
-            const recordsPerPage = 5;
-            const lastIndex = this.state.currentPage * recordsPerPage;
-            const firstIndex = lastIndex - recordsPerPage;
-            const b = this.state.Invoice.slice(firstIndex, lastIndex);
-            const token = this.getToken();
-            fetch(variable.API_URL + "Inovices/GetAllInovice", {
-                method: "GET",
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Authorization': `Bearer ${token.value}`
-                }
-            })
-
-                .then(response => response.json())
-                .then(data => {
-                    this.setState({ APIInvoice: data });
-                })
-            var a = this.state.APIInvoice
-            this.setState({
-                Invoice: a.filter((item) => {
-                    return item.orderStatus == 5
-                }), currentPage: this.state.Trangthai == null ?
-                    1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "CXN" ? 1 :
-                        this.state.Trangthai == "CB" ? 1 :
-                            this.state.Trangthai == "DG" ? 1 :
-                                this.state.Trangthai == "DangG" ? 1
-                                    : b.length == 1 ?
-                                        this.state.currentPage - 1 : this.state.currentPage,
-                ChangeId: "", Trangthai: "HT",
-            })
-        }
-        else {
-            const token = this.getToken();
-            fetch(variable.API_URL + "Inovices/GetAllInovice", {
-                method: "GET",
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Authorization': `Bearer ${token.value}`
-                }
-            })
-
-                .then(response => response.json())
-                .then(data => {
-                    this.setState({ APIInvoice: data });
-                })
-            var a = this.state.APIInvoice
-            this.setState({
-                Invoice: a.filter((item) => {
-                    return item.orderStatus == 5
-                }), currentPage: this.state.Trangthai == null ?
-                    1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "CXN" ? 1 :
-                        this.state.Trangthai == "CB" ? 1 :
-                            this.state.Trangthai == "DG" ? 1 :
-                                this.state.Trangthai == "DangG" ? 1
-                                    :  this.state.currentPage,
-                ChangeId: "", Trangthai: "HT",
-            })
-        }
-        
-    }
-    CheckCXN() {
-        if (this.state.checkTrangthai != this.state.Trangthai) {
-        const recordsPerPage = 5;
-        const lastIndex = this.state.currentPage * recordsPerPage;
-        const firstIndex = lastIndex - recordsPerPage;
-        const b = this.state.Invoice.slice(firstIndex, lastIndex);
-
         const token = this.getToken();
-        fetch(variable.API_URL + "Inovices/GetAllInovice", {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            }
-        })
-
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ APIInvoice: data });
-            })
-        var a = this.state.APIInvoice
-        this.setState({
-            Invoice: a.filter((item) => {
-                return item.orderStatus == 1
-            }), currentPage: this.state.Trangthai == null ?
-                1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
-                    this.state.Trangthai == "CB" ? 1 :
-                        this.state.Trangthai == "DG" ? 1 :
-                            this.state.Trangthai == "DangG" ? 1
-                                : b.length == 1 ?
-                                    this.state.currentPage - 1 : this.state.currentPage,
-            ChangeId: "", Trangthai: "CXN",
-        })
-        }
-        else {
-            const token = this.getToken();
-            fetch(variable.API_URL + "Inovices/GetAllInovice", {
-                method: "GET",
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Authorization': `Bearer ${token.value}`
-                }
-            })
-
-                .then(response => response.json())
-                .then(data => {
-                    this.setState({ APIInvoice: data });
-                })
-            var a = this.state.APIInvoice
-            this.setState({
-                Invoice: a.filter((item) => {
-                    return item.orderStatus == 1
-                }), currentPage: this.state.Trangthai == null ?
-                    1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
-                        this.state.Trangthai == "CB" ? 1 :
-                            this.state.Trangthai == "DG" ? 1 :
-                                this.state.Trangthai == "DangG" ? 1
-                                    :  this.state.currentPage,
-                ChangeId: "", Trangthai: "CXN",
-            })
-        }
-    }
-        CheckCB() {
-            if (this.state.checkTrangthai != this.state.Trangthai) {
-        const recordsPerPage = 5;
-        const lastIndex = this.state.currentPage * recordsPerPage;
-        const firstIndex = lastIndex - recordsPerPage;
-        const b = this.state.Invoice.slice(firstIndex, lastIndex);
-        const token = this.getToken();
-        fetch(variable.API_URL + "Inovices/GetAllInovice", {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            }
-        })
-
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ APIInvoice: data });
-            })
-        var a = this.state.APIInvoice
-        this.setState({
-            Invoice: a.filter((item) => {
-                return item.orderStatus == 2
-            }), currentPage: this.state.Trangthai == null ?
-                1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
-                    this.state.Trangthai == "CXN" ? 1 :
-                        this.state.Trangthai == "DG" ? 1 :
-                            this.state.Trangthai == "DangG" ? 1
-                                : b.length == 1 ?
-                                    this.state.currentPage - 1 : this.state.currentPage,
-            ChangeId: "", Trangthai: "CB",
-        })
-            }
-            else {
+        if (this.state.APdungCheck == true) {
+            if (this.state.checkTrangthai != this.state.OrderStatus) {
+                const recordsPerPage = 5;
+                const lastIndex = this.state.currentPage * recordsPerPage;
+                const firstIndex = lastIndex - recordsPerPage;
+                const b = this.state.Invoice.slice(firstIndex, lastIndex);
                 const token = this.getToken();
-                fetch(variable.API_URL + "Inovices/GetAllInovice", {
+                fetch(variable.API_URL + "Inovices/GetAllInoviceFilterByDate/" + this.state.startDate + "," + this.state.endDate, {
                     method: "GET",
                     headers: {
                         'Content-Type': 'application/json',
                         Accept: 'application/json',
                         'Authorization': `Bearer ${token.value}`
-                    }
+                    },
                 })
-
                     .then(response => response.json())
                     .then(data => {
-                        this.setState({ APIInvoice: data });
+                        this.setState({
+                            APdungCheck: true, Invoice: data.filter((item) => {
+                                return item.orderStatus == 4
+                            }), Trangthai: "HUY", currentPage: this.state.Trangthai == null ?
+                                1 : this.state.Trangthai == "HT" ? 1 : this.state.Trangthai == "CXN" ? 1 :
+                                    this.state.Trangthai == "CB" ? 1 :
+                                        this.state.Trangthai == "DG" ? 1 :
+                                            this.state.Trangthai == "DangG" ? 1
+                                                : b.length == 1 ?
+                                                    this.state.currentPage - 1 : this.state.currentPage, ChangeId: ""
+                        });
                     })
-                var a = this.state.APIInvoice
-                this.setState({
-                    Invoice: a.filter((item) => {
-                        return item.orderStatus == 2
-                    }), currentPage: this.state.Trangthai == null ?
-                        1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
-                            this.state.Trangthai == "CXN" ? 1 :
-                                this.state.Trangthai == "DG" ? 1 :
-                                    this.state.Trangthai == "DangG" ? 1
-                                        :  this.state.currentPage,
-                    ChangeId: "", Trangthai: "CB",
+            }
+            else {
+                fetch(variable.API_URL + "Inovices/GetAllInoviceFilterByDate/" + this.state.startDate + "," + this.state.endDate, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
+                    },
                 })
-            }
-    }
-            CheckDG() {
-                if (this.state.checkTrangthai != this.state.Trangthai) {
-        const recordsPerPage = 5;
-        const lastIndex = this.state.currentPage * recordsPerPage;
-        const firstIndex = lastIndex - recordsPerPage;
-        const b = this.state.Invoice.slice(firstIndex, lastIndex);
-        const token = this.getToken();
-        fetch(variable.API_URL + "Inovices/GetAllInovice", {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            }
-        })
-
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ APIInvoice: data });
-            })
-        var a = this.state.APIInvoice
-        this.setState({
-            Invoice: a.filter((item) => {
-                return item.orderStatus == 3
-            }), currentPage: this.state.Trangthai == null ?
-                1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
-                    this.state.Trangthai == "CXN" ? 1 :
-                        this.state.Trangthai == "CB" ? 1 :
-                            this.state.Trangthai == "DangG" ? 1
-                                : b.length == 1 ?
-                                    this.state.currentPage - 1 : this.state.currentPage,
-            ChangeId: "", Trangthai: "DG",
-        })
-                }
-                else {
-                    const token = this.getToken();
-                    fetch(variable.API_URL + "Inovices/GetAllInovice", {
-                        method: "GET",
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Accept: 'application/json',
-                            'Authorization': `Bearer ${token.value}`
-                        }
+                    .then(response => response.json())
+                    .then(data => {
+                        this.setState({
+                            APdungCheck: true, Invoice: data.filter((item) => {
+                                return item.orderStatus == 4
+                            }), Trangthai: "HUY", currentPage: this.state.Trangthai == null ?
+                                1 : this.state.Trangthai == "HT" ? 1 : this.state.Trangthai == "CXN" ? 1 :
+                                    this.state.Trangthai == "CB" ? 1 :
+                                        this.state.Trangthai == "DG" ? 1 :
+                                            this.state.Trangthai == "DangG" ? 1
+                                                :  this.state.currentPage, ChangeId: ""
+                        });
                     })
+            }
+        }
+        if (this.state.checkTrangthai != this.state.OrderStatus) {
+            const recordsPerPage = 5;
+            const lastIndex = this.state.currentPage * recordsPerPage;
+            const firstIndex = lastIndex - recordsPerPage;
+            const b = this.state.Invoice.slice(firstIndex, lastIndex);
+            const token = this.getToken();
+            fetch(variable.API_URL + "Inovices/GetAllInovice", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
+            })
 
-                        .then(response => response.json())
-                        .then(data => {
-                            this.setState({ APIInvoice: data });
-                        })
-                    var a = this.state.APIInvoice
+                .then(response => response.json())
+                .then(data => {
                     this.setState({
-                        Invoice: a.filter((item) => {
+                        Invoice: data.filter((item) => {
+                            return item.orderStatus == 4
+                        }),
+                        currentPage: this.state.Trangthai == null ?
+                            1 : this.state.Trangthai == "HT" ? 1 : this.state.Trangthai == "CXN" ? 1 :
+                                this.state.Trangthai == "CB" ? 1 :
+                                    this.state.Trangthai == "DG" ? 1 :
+                                        this.state.Trangthai == "DangG" ? 1
+                                            : b.length == 1 ?
+                                                this.state.currentPage - 1 : this.state.currentPage,
+                        Trangthai: "HUY",
+                        ChangeId: "" });
+                })
+            
+        }
+        else {
+            const token = this.getToken();
+            fetch(variable.API_URL + "Inovices/GetAllInovice", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
+            })
+
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        Invoice: data.filter((item) => {
+                            return item.orderStatus == 4
+                        }),
+                        currentPage: this.state.Trangthai == null ?
+                            1 : this.state.Trangthai == "HT" ? 1 : this.state.Trangthai == "CXN" ? 1 :
+                                this.state.Trangthai == "CB" ? 1 :
+                                    this.state.Trangthai == "DG" ? 1 :
+                                        this.state.Trangthai == "DangG" ? 1
+                                            : this.state.currentPage,
+                        Trangthai: "HUY",
+                        ChangeId: ""
+});
+                })
+          
+
+        }
+
+
+    }
+    CheckHT() {
+        const token = this.getToken();
+        if (this.state.APdungCheck == true) {
+            if (this.state.checkTrangthai != this.state.OrderStatus) {
+                const recordsPerPage = 5;
+                const lastIndex = this.state.currentPage * recordsPerPage;
+                const firstIndex = lastIndex - recordsPerPage;
+                const b = this.state.Invoice.slice(firstIndex, lastIndex);
+                const token = this.getToken();
+                fetch(variable.API_URL + "Inovices/GetAllInoviceFilterByDate/" + this.state.startDate + "," + this.state.endDate, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.setState({
+                            Invoice: data.filter((item) => {
+                                return item.orderStatus == 5
+                            }), currentPage: this.state.Trangthai == null ?
+                                1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "CXN" ? 1 :
+                                    this.state.Trangthai == "CB" ? 1 :
+                                        this.state.Trangthai == "DG" ? 1 :
+                                            this.state.Trangthai == "DangG" ? 1
+                                                : b.length == 1 ?
+                                                    this.state.currentPage - 1 : this.state.currentPage,
+                            ChangeId: "", Trangthai: "HT",
+                        })
+                    });
+            }
+            else {
+                fetch(variable.API_URL + "Inovices/GetAllInoviceFilterByDate/" + this.state.startDate + "," + this.state.endDate, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.setState({
+                            Invoice: data.filter((item) => {
+                                return item.orderStatus == 5
+                            }), currentPage: this.state.Trangthai == null ?
+                                1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "CXN" ? 1 :
+                                    this.state.Trangthai == "CB" ? 1 :
+                                        this.state.Trangthai == "DG" ? 1 :
+                                            this.state.Trangthai == "DangG" ? 1
+                                                : this.state.currentPage,
+                            ChangeId: "", Trangthai: "HT",
+                        });
+                    })
+            }
+        }
+        if (this.state.checkTrangthai != this.state.OrderStatus) {
+            const recordsPerPage = 5;
+            const lastIndex = this.state.currentPage * recordsPerPage;
+            const firstIndex = lastIndex - recordsPerPage;
+            const b = this.state.Invoice.slice(firstIndex, lastIndex);
+            const token = this.getToken();
+            fetch(variable.API_URL + "Inovices/GetAllInovice", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
+            })
+
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        Invoice: data.filter((item) => {
+                            return item.orderStatus == 5
+                        }), currentPage: this.state.Trangthai == null ?
+                            1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "CXN" ? 1 :
+                                this.state.Trangthai == "CB" ? 1 :
+                                    this.state.Trangthai == "DG" ? 1 :
+                                        this.state.Trangthai == "DangG" ? 1
+                                            : b.length == 1 ?
+                                                this.state.currentPage - 1 : this.state.currentPage,
+                        ChangeId: "", Trangthai: "HT",
+});
+                })
+           
+        }
+        else {
+            const token = this.getToken();
+            fetch(variable.API_URL + "Inovices/GetAllInovice", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
+            })
+
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        Invoice: data.filter((item) => {
+                            return item.orderStatus == 5
+                        }), currentPage: this.state.Trangthai == null ?
+                            1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "CXN" ? 1 :
+                                this.state.Trangthai == "CB" ? 1 :
+                                    this.state.Trangthai == "DG" ? 1 :
+                                        this.state.Trangthai == "DangG" ? 1
+                                            : this.state.currentPage,
+                        ChangeId: "", Trangthai: "HT",
+});
+                })
+          
+        }
+
+    }
+    CheckCXN() {
+        const token = this.getToken();
+        if (this.state.APdungCheck == true) {
+            if (this.state.checkTrangthai != this.state.OrderStatus) {
+                const recordsPerPage = 5;
+                const lastIndex = this.state.currentPage * recordsPerPage;
+                const firstIndex = lastIndex - recordsPerPage;
+                const b = this.state.Invoice.slice(firstIndex, lastIndex);
+                const token = this.getToken();
+                fetch(variable.API_URL + "Inovices/GetAllInoviceFilterByDate/" + this.state.startDate + "," + this.state.endDate, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.setState({
+                            Invoice: data.filter((item) => {
+                                return item.orderStatus == 1
+                            }), currentPage: this.state.Trangthai == null ?
+                                1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
+                                    this.state.Trangthai == "CB" ? 1 :
+                                        this.state.Trangthai == "DG" ? 1 :
+                                            this.state.Trangthai == "DangG" ? 1
+                                                : b.length == 1 ?
+                                                    this.state.currentPage - 1 : this.state.currentPage,
+                            ChangeId: "", Trangthai: "CXN",
+                        })
+                    });
+            }
+            else {
+                fetch(variable.API_URL + "Inovices/GetAllInoviceFilterByDate/" + this.state.startDate + "," + this.state.endDate, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.setState({
+                            Invoice: data.filter((item) => {
+                                return item.orderStatus == 1
+                            }), currentPage: this.state.Trangthai == null ?
+                                1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
+                                    this.state.Trangthai == "CB" ? 1 :
+                                        this.state.Trangthai == "DG" ? 1 :
+                                            this.state.Trangthai == "DangG" ? 1
+                                                : this.state.currentPage,
+                            ChangeId: "", Trangthai: "CXN",
+                        });
+                    })
+            }
+        }
+        if (this.state.checkTrangthai != this.state.OrderStatus) {
+            const recordsPerPage = 5;
+            const lastIndex = this.state.currentPage * recordsPerPage;
+            const firstIndex = lastIndex - recordsPerPage;
+            const b = this.state.Invoice.slice(firstIndex, lastIndex);
+
+            const token = this.getToken();
+            fetch(variable.API_URL + "Inovices/GetAllInovice", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
+            })
+
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        Invoice: data.filter((item) => {
+                            return item.orderStatus == 1
+                        }), currentPage: this.state.Trangthai == null ?
+                            1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
+                                this.state.Trangthai == "CB" ? 1 :
+                                    this.state.Trangthai == "DG" ? 1 :
+                                        this.state.Trangthai == "DangG" ? 1
+                                            : b.length == 1 ?
+                                                this.state.currentPage - 1 : this.state.currentPage,
+                        ChangeId: "", Trangthai: "CXN",
+});
+                })
+        }
+        else {
+            const token = this.getToken();
+            fetch(variable.API_URL + "Inovices/GetAllInovice", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
+            })
+
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        Invoice: data.filter((item) => {
+                            return item.orderStatus == 1
+                        }), currentPage: this.state.Trangthai == null ?
+                            1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
+                                this.state.Trangthai == "CB" ? 1 :
+                                    this.state.Trangthai == "DG" ? 1 :
+                                        this.state.Trangthai == "DangG" ? 1
+                                            : this.state.currentPage,
+                        ChangeId: "", Trangthai: "CXN",
+});
+                })
+        }
+    }
+    CheckCB() {
+           const token = this.getToken();
+        if (this.state.APdungCheck == true) {
+            if (this.state.checkTrangthai != this.state.OrderStatus) {
+                const recordsPerPage = 5;
+                const lastIndex = this.state.currentPage * recordsPerPage;
+                const firstIndex = lastIndex - recordsPerPage;
+                const b = this.state.Invoice.slice(firstIndex, lastIndex);
+                const token = this.getToken();
+                fetch(variable.API_URL + "Inovices/GetAllInoviceFilterByDate/" + this.state.startDate + "," + this.state.endDate, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.setState({
+                            Invoice: data.filter((item) => {
+                                return item.orderStatus == 2
+                            }), currentPage: this.state.Trangthai == null ?
+                                1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
+                                    this.state.Trangthai == "CXN" ? 1 :
+                                        this.state.Trangthai == "DG" ? 1 :
+                                            this.state.Trangthai == "DangG" ? 1
+                                                : b.length == 1 ?
+                                                    this.state.currentPage - 1 : this.state.currentPage,
+                            ChangeId: "", Trangthai: "CB",
+                        })
+                    });
+            }
+            else {
+                fetch(variable.API_URL + "Inovices/GetAllInoviceFilterByDate/" + this.state.startDate + "," + this.state.endDate, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.setState({
+                            Invoice: data.filter((item) => {
+                                return item.orderStatus == 2
+                            }), currentPage: this.state.Trangthai == null ?
+                                1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
+                                    this.state.Trangthai == "CXN" ? 1 :
+                                        this.state.Trangthai == "DG" ? 1 :
+                                            this.state.Trangthai == "DangG" ? 1
+                                                : this.state.currentPage,
+                            ChangeId: "", Trangthai: "CB",
+                        });
+                    })
+            }
+        }
+        if (this.state.checkTrangthai != this.state.OrderStatus) {
+            const recordsPerPage = 5;
+            const lastIndex = this.state.currentPage * recordsPerPage;
+            const firstIndex = lastIndex - recordsPerPage;
+            const b = this.state.Invoice.slice(firstIndex, lastIndex);
+            const token = this.getToken();
+            fetch(variable.API_URL + "Inovices/GetAllInovice", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
+            })
+
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        Invoice: data.filter((item) => {
+                            return item.orderStatus == 2
+                        }), currentPage: this.state.Trangthai == null ?
+                            1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
+                                this.state.Trangthai == "CXN" ? 1 :
+                                    this.state.Trangthai == "DG" ? 1 :
+                                        this.state.Trangthai == "DangG" ? 1
+                                            : b.length == 1 ?
+                                                this.state.currentPage - 1 : this.state.currentPage,
+                        ChangeId: "", Trangthai: "CB",
+                    });
+                })
+        }
+        else {
+            const token = this.getToken();
+            fetch(variable.API_URL + "Inovices/GetAllInovice", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
+            })
+
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        Invoice: data.filter((item) => {
+                            return item.orderStatus == 2
+                        }), currentPage: this.state.Trangthai == null ?
+                            1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
+                                this.state.Trangthai == "CXN" ? 1 :
+                                    this.state.Trangthai == "DG" ? 1 :
+                                        this.state.Trangthai == "DangG" ? 1
+                                            : this.state.currentPage,
+                        ChangeId: "", Trangthai: "CB",
+                    });
+                })
+        }
+    }
+    CheckDG() {
+        const token = this.getToken();
+        if (this.state.APdungCheck == true) {
+            if (this.state.checkTrangthai != this.state.OrderStatus) {
+                const recordsPerPage = 5;
+                const lastIndex = this.state.currentPage * recordsPerPage;
+                const firstIndex = lastIndex - recordsPerPage;
+                const b = this.state.Invoice.slice(firstIndex, lastIndex);
+                const token = this.getToken();
+                fetch(variable.API_URL + "Inovices/GetAllInoviceFilterByDate/" + this.state.startDate + "," + this.state.endDate, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.setState({
+                            Invoice: data.filter((item) => {
+                                return item.orderStatus == 3
+                            }), currentPage: this.state.Trangthai == null ?
+                                1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
+                                    this.state.Trangthai == "CXN" ? 1 :
+                                        this.state.Trangthai == "CB" ? 1 :
+                                            this.state.Trangthai == "DangG" ? 1
+                                                : b.length == 1 ?
+                                                    this.state.currentPage - 1 : this.state.currentPage,
+                            ChangeId: "", Trangthai: "DG",
+                        })
+                    });
+            }
+            else {
+                fetch(variable.API_URL + "Inovices/GetAllInoviceFilterByDate/" + this.state.startDate + "," + this.state.endDate, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.setState({
+                            Invoice: data.filter((item) => {
+                                return item.orderStatus == 3
+                            }), currentPage: this.state.Trangthai == null ?
+                                1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
+                                    this.state.Trangthai == "CXN" ? 1 :
+                                        this.state.Trangthai == "CB" ? 1 :
+                                            this.state.Trangthai == "DangG" ? 1
+                                                : this.state.currentPage,
+                            ChangeId: "", Trangthai: "DG",
+                        });
+                    })
+            }
+        }
+        if (this.state.checkTrangthai != this.state.OrderStatus) {
+            const recordsPerPage = 5;
+            const lastIndex = this.state.currentPage * recordsPerPage;
+            const firstIndex = lastIndex - recordsPerPage;
+            const b = this.state.Invoice.slice(firstIndex, lastIndex);
+            const token = this.getToken();
+            fetch(variable.API_URL + "Inovices/GetAllInovice", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
+            })
+
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        Invoice: data.filter((item) => {
                             return item.orderStatus == 3
                         }), currentPage: this.state.Trangthai == null ?
                             1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
                                 this.state.Trangthai == "CXN" ? 1 :
                                     this.state.Trangthai == "CB" ? 1 :
                                         this.state.Trangthai == "DangG" ? 1
-                                            :  this.state.currentPage,
+                                            : b.length == 1 ?
+                                                this.state.currentPage - 1 : this.state.currentPage,
                         ChangeId: "", Trangthai: "DG",
-                    })
-                }
-    }
-                CheckDangG() {
-                    if (this.state.checkTrangthai != this.state.Trangthai) {
-                        const recordsPerPage = 5;
-                        const lastIndex = this.state.currentPage * recordsPerPage;
-                        const firstIndex = lastIndex - recordsPerPage;
-                        const b = this.state.Invoice.slice(firstIndex, lastIndex);
-                        const token = this.getToken();
-                        fetch(variable.API_URL + "Inovices/GetAllInovice", {
-                            method: "GET",
-                            headers: {
-                                'Content-Type': 'application/json',
-                                Accept: 'application/json',
-                                'Authorization': `Bearer ${token.value}`
-                            }
-                        })
+                    });
+                })
 
-                            .then(response => response.json())
-                            .then(data => {
-                                this.setState({ APIInvoice: data });
-                            })
-                        var a = this.state.APIInvoice
+        }
+        else {
+            const token = this.getToken();
+            fetch(variable.API_URL + "Inovices/GetAllInovice", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
+            })
+
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        Invoice: data.filter((item) => {
+                            return item.orderStatus == 3
+                        }), currentPage: this.state.Trangthai == null ?
+                            1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
+                                this.state.Trangthai == "CXN" ? 1 :
+                                    this.state.Trangthai == "CB" ? 1 :
+                                        this.state.Trangthai == "DangG" ? 1
+                                            : this.state.currentPage,
+                        ChangeId: "", Trangthai: "DG",
+                    });
+                })
+        }
+    }
+    CheckDangG() {
+        const token = this.getToken();
+        if (this.state.APdungCheck == true) {
+            if (this.state.checkTrangthai != this.state.OrderStatus) {
+                const recordsPerPage = 5;
+                const lastIndex = this.state.currentPage * recordsPerPage;
+                const firstIndex = lastIndex - recordsPerPage;
+                const b = this.state.Invoice.slice(firstIndex, lastIndex);
+                const token = this.getToken();
+                fetch(variable.API_URL + "Inovices/GetAllInoviceFilterByDate/" + this.state.startDate + "," + this.state.endDate, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
                         this.setState({
-                            Invoice: a.filter((item) => {
+                            Invoice: data.filter((item) => {
                                 return item.orderStatus == 6
                             }), currentPage: this.state.Trangthai == null ?
                                 1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
@@ -824,25 +1104,21 @@ class InvoiceCRUD extends React.Component {
                                                     this.state.currentPage - 1 : this.state.currentPage,
                             ChangeId: "", Trangthai: "DangG",
                         })
-                    }
-                    else {
-                        const token = this.getToken();
-                        fetch(variable.API_URL + "Inovices/GetAllInovice", {
-                            method: "GET",
-                            headers: {
-                                'Content-Type': 'application/json',
-                                Accept: 'application/json',
-                                'Authorization': `Bearer ${token.value}`
-                            }
-                        })
-
-                            .then(response => response.json())
-                            .then(data => {
-                                this.setState({ APIInvoice: data });
-                            })
-                        var a = this.state.APIInvoice
+                    });
+            }
+            else {
+                fetch(variable.API_URL + "Inovices/GetAllInoviceFilterByDate/" + this.state.startDate + "," + this.state.endDate, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
                         this.setState({
-                            Invoice: a.filter((item) => {
+                            Invoice: data.filter((item) => {
                                 return item.orderStatus == 6
                             }), currentPage: this.state.Trangthai == null ?
                                 1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
@@ -851,13 +1127,76 @@ class InvoiceCRUD extends React.Component {
                                             this.state.Trangthai == "DG" ? 1
                                                 : this.state.currentPage,
                             ChangeId: "", Trangthai: "DangG",
-                        })
-                    }
+                        });
+                    })
+            }
+        }
+     
+        if (this.state.checkTrangthai != this.state.OrderStatus) {
+
+            const recordsPerPage = 5;
+            const lastIndex = this.state.currentPage * recordsPerPage;
+            const firstIndex = lastIndex - recordsPerPage;
+            const b = this.state.Invoice.slice(firstIndex, lastIndex);
+            const token = this.getToken();
+            fetch(variable.API_URL + "Inovices/GetAllInovice", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
+            })
+
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        Invoice: data.filter((item) => {
+                            return item.orderStatus == 6
+                        }), currentPage: this.state.Trangthai == null ?
+                            1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
+                                this.state.Trangthai == "CXN" ? 1 :
+                                    this.state.Trangthai == "CB" ? 1 :
+                                        this.state.Trangthai == "DG" ? 1
+                                            : b.length == 1 ?
+                                                this.state.currentPage - 1 : this.state.currentPage,
+                        ChangeId: "", Trangthai: "DangG",
+                    });
+                })
+        }
+        else {
+
+            const token = this.getToken();
+            fetch(variable.API_URL + "Inovices/GetAllInovice", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
+            })
+
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        Invoice: data.filter((item) => {
+                            return item.orderStatus == 6
+                        }), currentPage: this.state.Trangthai == null ?
+                            1 : this.state.Trangthai == "HUY" ? 1 : this.state.Trangthai == "HT" ? 1 :
+                                this.state.Trangthai == "CXN" ? 1 :
+                                    this.state.Trangthai == "CB" ? 1 :
+                                        this.state.Trangthai == "DG" ? 1
+                                            : this.state.currentPage,
+                        ChangeId: "", Trangthai: "DangG",
+                    });
+                })
+        }
+        console.log(this.state.currentPage)
     }
     render() {
 
         const {
-            Invoice,data,
+            Invoice, data,
             modelTitle,
             Code,
             id,
@@ -881,7 +1220,7 @@ class InvoiceCRUD extends React.Component {
         const npage = Math.ceil(Invoice.length / recordsPerPage)
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
         const options = ['Đã thanh toán', 'Chưa thanh toán']
-        const options2 = ['Hoàn tất', 
+        const options2 = ['Hoàn tất',
             'Đang giao', 'Chưa xác nhận', 'Đang chuẩn bị', 'Đã giao']
         {/* //1 chưa xác nhận //2 la chua đang chuẩn bị //3 đang giao//6 đã giao//4 đã hủy,//5hoàn tất */ }
         return (
@@ -930,28 +1269,28 @@ class InvoiceCRUD extends React.Component {
 
                                 <div className="form-group" >
                                     <div>
-                                <button type='button' className='btn btn-primary m-2 float-end'
-                                    onClick={() => this.refreshList1()}>
-                                    Reset Trang
-                                    </button>
+                                        <button type='button' className='btn btn-primary m-2 float-end'
+                                            onClick={() => this.refreshList1()}>
+                                            Reset Trang
+                                        </button>
                                     </div>
                                 </div>
 
                                 <div className="form-group" >
                                     <div>
-                                    <button type='button' className='btn btn-primary m-2 float-end'
-                                        onClick={() => this.ApplyClick()}>
-                                        Áp dụng
+                                        <button type='button' className='btn btn-primary m-2 float-end'
+                                            onClick={() => this.ApplyClick()}>
+                                            Áp dụng
                                         </button>
                                     </div>
                                 </div>
-                               
+
 
                             </div>
                         </div>
 
                     </div>
-                    <div className="card" style={{  width: "217px" }}>
+                    <div className="card" style={{ width: "217px" }}>
                         <div className="card-body">
                             <label>Trạng thái:</label>
                             <div className>
@@ -971,7 +1310,7 @@ class InvoiceCRUD extends React.Component {
                                 <label for="False">Đã giao</label><br />
                             </div>
                         </div>
-                    </div>    
+                    </div>
                     <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
                         <div className="card-body">
                             <div className="form-group">
@@ -981,7 +1320,7 @@ class InvoiceCRUD extends React.Component {
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
                 <Dialog
                     open={open}
@@ -999,7 +1338,7 @@ class InvoiceCRUD extends React.Component {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => {
-                           this.Delete()
+                            this.Delete()
                         }}>Chấp nhận</Button>
                         <Button onClick={() => {
                             this.setState({ open: false })
@@ -1104,13 +1443,13 @@ class InvoiceCRUD extends React.Component {
                                             </td>
                                             <td>
                                                 {
-                                                    dep.orderStatus == 1 ? "Chưa xác nhận" : dep.orderStatus == 2 ? "Đang chuẩn bị" : dep.orderStatus == 3 ? "Đang giao" : dep.orderStatus == 4 ? "Đã hủy" : dep.orderStatus == 5 ? "Hoàn tất" : dep.orderStatus == 6 ? "Đã giao": null
+                                                    dep.orderStatus == 1 ? "Chưa xác nhận" : dep.orderStatus == 2 ? "Đang chuẩn bị" : dep.orderStatus == 3 ? "Đang giao" : dep.orderStatus == 4 ? "Đã hủy" : dep.orderStatus == 5 ? "Hoàn tất" : dep.orderStatus == 6 ? "Đã giao" : null
                                                 }
                                             </td>
                                             {/* //1 chưa xác nhận //2 la chua đang chuẩn bị //3 đang giao//6 đã giao//4 đã hủy,//5hoàn tất */}
                                             <td>
                                                 {dep.orderStatus == 5 ?
-                                                   null
+                                                    null
                                                     : dep.orderStatus == 4 ? null : <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
                                                             <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
@@ -1119,8 +1458,8 @@ class InvoiceCRUD extends React.Component {
                                             </td>
                                             <td>
                                                 {
-                                                    
-                                                    dep.orderStatus == 4 || dep.orderStatus == 5? null : <button type='button' className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#exampleModal'
+
+                                                    dep.orderStatus == 4 || dep.orderStatus == 5 ? null : <button type='button' className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#exampleModal'
                                                         onClick={() => this.EditClick(dep)}>
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
                                                             <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
@@ -1149,8 +1488,8 @@ class InvoiceCRUD extends React.Component {
                                         <h5 class="modal-title" id="exampleModalLongTitle">Details Invoice</h5>
                                         <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
                                         </button>
-                                      
-                                     
+
+
                                     </div>
                                     <div class="modal-body">
                                         <table id="example" className='table table-striped'>
@@ -1206,7 +1545,7 @@ class InvoiceCRUD extends React.Component {
                                         <h5 className='modal-title'>{modelTitle}</h5>
                                         <button id="closeModal" type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
                                         </button>
-                                      
+
                                     </div>
                                     <div className='modal-body'>
                                         <div className='input-group mb-3'>
@@ -1270,9 +1609,9 @@ class InvoiceCRUD extends React.Component {
                                         {
                                             this.state.OrderStatus == "Hoàn tất" ?
                                                 <button type='button' className='btn btn-primary float-start' onClick={() => this.Upade(this.state.ID)}>Update</button>
-                                             : <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick1(this.state.ID)}>Update</button>
+                                                : <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick1(this.state.ID)}>Update</button>
                                         }
-                                      
+
                                     </div>
                                 </div>
                             </div>
@@ -1280,7 +1619,7 @@ class InvoiceCRUD extends React.Component {
                         <nav>
                             <ul className='pagination'>
                                 <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.PrePage(this.state.currentPage)}>Prev</a>
+                                    <a href='#' className='page-link' onClick={() => this.PrePage(this.state.currentPage)}>{"<"}</a>
                                 </li>
                                 {
                                     numbers.map((n, i) => (
@@ -1291,7 +1630,7 @@ class InvoiceCRUD extends React.Component {
                                     ))
                                 }
                                 <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.NextPage(this.state.currentPage, npage)}>Next</a>
+                                    <a href='#' className='page-link' onClick={() => this.NextPage(this.state.currentPage, npage)}>{">"}</a>
                                 </li>
 
                             </ul>
