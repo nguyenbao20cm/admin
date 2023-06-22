@@ -5,6 +5,9 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { Alert, Space, message } from 'antd';
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+
+import 'sweetalert2/src/sweetalert2.scss'
 class ReviewCRUD extends React.Component {
     constructor(props) {
         super(props);
@@ -17,6 +20,16 @@ class ReviewCRUD extends React.Component {
             NameinputProductType: "", image: "", Iimage: "", Status: ""
 
         }
+    }
+    loi(title, text) {
+        return Swal.fire({
+            icon: 'error',
+            title: title,
+            text: text,
+            confirmButtonText: 'Ok',
+            confirmButtonColor: '#3085d6',
+            timer: 1500
+        })
     }
     getToken() {
         const tokenString = localStorage.getItem('token');
@@ -37,13 +50,13 @@ class ReviewCRUD extends React.Component {
     componentDidMount() {
         this.refreshList();
     }
-
+   
 
     CreateClick() {
         if (this.state.image == "") {
-            message.error("Chưa nhập Hình ảnh")
+            this.loi("Dữ liệu bị trống", "Hãy nhập lại")
         } if (this.state.Status == "") {
-            message.error("Chưa nhập trạng thái")
+            this.loi("Dữ liệu bị trống", "Hãy nhập lại")
         } 
         else {
             const token = this.getToken();
@@ -56,7 +69,7 @@ class ReviewCRUD extends React.Component {
                 },
                 body: JSON.stringify({
 
-                    status: this.state.Status == "True" ? true : false,
+                    status: this.state.Status == "Hiển thị" ? true : false,
                     image: this.state.image
                 })
 
@@ -102,6 +115,7 @@ class ReviewCRUD extends React.Component {
 
                     }
                     if (result == "Thành công") {
+                        document.getElementById("closeModal").click()
                         message.success(result)
                         window.location.reload(false);
                     }
@@ -115,6 +129,11 @@ class ReviewCRUD extends React.Component {
 
     }
     UpdateClick(id) {
+        if (this.state.image == "") 
+           return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
+         if (this.state.Status == "") 
+           return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
+        
         const token = this.getToken();
         var imagelName = id + ".jpg"
         if (this.state.image == imagelName) {
@@ -129,7 +148,7 @@ class ReviewCRUD extends React.Component {
                 
                 JSON.stringify({
                     image: imagelName,
-                    status: this.state.Status == "True" ? true : false,
+                    status: this.state.Status == "Hiển thị" ? true : false,
                 })
             }).then(res => res.json())
                 .then(result => {
@@ -165,7 +184,7 @@ class ReviewCRUD extends React.Component {
                 body:
                     JSON.stringify({
                         image: imagelName,
-                        status: this.state.Status == "True" ? true : false,
+                        status: this.state.Status == "Hiển thị" ? true : false,
                     })
             }).then(res => res.json())
                 .then(result => {
@@ -178,6 +197,7 @@ class ReviewCRUD extends React.Component {
                     }
                    
                     if (result == "Thành công") {
+                        document.getElementById("closeModal").click()
                         message.success(result)
                         window.location.reload(false);
                     }
@@ -213,8 +233,9 @@ class ReviewCRUD extends React.Component {
         }
     }
     ChangeProdcutImage = (e) => {
+        if (e.target.files[0] != null)
+            this.setState({ image: e.target.files[0].name, Iimage: e.target.files[0] });
 
-        this.setState({ image: e.target.files[0].name, Iimage: e.target.files[0] });
     }
 
     addClick() {
@@ -234,7 +255,7 @@ class ReviewCRUD extends React.Component {
             image: dep.image,
             Status:
                 dep.status == true ?
-                    "True" : "False"
+                    "Hiển thị" : "Ẩn"
             ,
         });
     }
@@ -329,7 +350,7 @@ class ReviewCRUD extends React.Component {
             currentPage,
             image
         } = this.state;
-        const options = ['True', 'False']
+        const options = ['Hiển thị', 'Ẩn']
         const recordsPerPage = 5;
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
@@ -338,39 +359,30 @@ class ReviewCRUD extends React.Component {
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
         return (
             <>
-                <div style={{ display: "flex", }}>
-                    <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
-                        <div className="card-body" >
-                            <div>
-                                <div className="form-group">
-                                    <label>Search by AdvertisingPanelId:</label>
-                                    <div><input className="form-control w-100" type="text" onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Id" />
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card" style={{ width: "135px" }}>
+                
+                <div className="card" style={{ width: "135px" ,float:"right"}}>
                         <div className="card-body">
-                            <label>Status:</label>
+                            <label>Trạng thái:</label>
                             <div className>
                                 <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
-                                <label for="All">All</label><br />
+                                <label for="All">Tất cả</label><br />
                                 <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
-                                <label for="True">True</label><br />
+                                <label for="True">Hiển thị</label><br />
                                 <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />
-                                <label for="False">False</label>
+                                <label for="False">Ẩn</label>
                             </div>
-                        </div>
                     </div>
-
+            
+                    <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
+                        onClick={() => this.addClick()}>
+                       Thêm quảng cáo
+                        </button>
+                    
                 </div>
 
-                <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
-                    onClick={() => this.addClick()}>
-                    Add AdvertisingPanel
-                </button>
+         
+
+              
                 <Paper sx={{ width: '100%', overflow: 'hidden' }}>
 
                     <div>
@@ -380,19 +392,19 @@ class ReviewCRUD extends React.Component {
                             <thead>
                                 <tr>
                                     <th>
-                                        Id
+                                        ID
                                     </th>
                                     <th>
-                                        Image
+                                        Hình ảnh
                                     </th>
                                     <th>
-                                        Status
+                                        Trạng thái
                                     </th>
                                     <th>
-                                        Edit
+                                        Sửa
                                     </th>
                                     <th>
-                                        Delete
+                                        Ẩn
                                     </th>
                                 </tr>
                             </thead>
@@ -414,7 +426,7 @@ class ReviewCRUD extends React.Component {
                                             <td>
 
                                                 {dep.status == true ?
-                                                    "True" : "False"
+                                                    "Hiển thị" : "Ẩn"
                                                 }
                                             </td>
                                             <td>
@@ -442,14 +454,14 @@ class ReviewCRUD extends React.Component {
                                 <div className="modal-content">
                                     <div className="modal-header">
                                         <h5 className='modal-title'>{modelTitle}</h5>
-                                        <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
+                                        <button type='button' id="closeModal" className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
 
                                         </button>
                                     </div>
                                     <div className='modal-body'>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
-                                                Image
+                                                Hình ảnh
                                             </span>
                                             <input type='text' className='form-control' value={image}
                                                 onChange={(e) => this.ChangeProdcutImage(e)} readOnly />
@@ -457,7 +469,7 @@ class ReviewCRUD extends React.Component {
                                         </div>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
-                                                Status
+                                                Trạng thái
                                             </span>
                                             <Autocomplete
                                                 disableClearable
@@ -480,10 +492,10 @@ class ReviewCRUD extends React.Component {
                                     </div>
                                     <div class="modal-footer">
                                         {id == 0 ?// eslint-disable-next-line
-                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.CreateClick()}>Create</button> : null
+                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.CreateClick()}>Thêm</button> : null
                                         }
                                         {id != 0 ?// eslint-disable-next-line
-                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.id)}>Update</button> : null
+                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.id)}>Sửa</button> : null
                                         }
                                     </div>
                                 </div>

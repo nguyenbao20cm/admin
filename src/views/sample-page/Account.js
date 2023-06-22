@@ -2,18 +2,19 @@ import React from 'react';
 import { Typography } from '@mui/material';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
-import { Box } from '@mui/material';
-import AdvertisingPanel from "../../components/container/AdvertisingPanel/AdvertisingPanelCRUD"
-const ReviewList = () => {
+
+import Account from "../Account/AccountCRUD"
+const SamplePage = () => {
     return (
         <PageContainer title="Sample Page" description="this is Sample page">
 
-            <DashboardCard title="Quản lý Banner quảng cáo">
+            <DashboardCard title="Danh sách sản phẩm ">
                 <Typography paragraph>
-                    <AdvertisingPanel />
+                    <Account />
                 </Typography>
             </DashboardCard>
         </PageContainer>
     );
 };
-export default ReviewList;
+
+export default SamplePage;

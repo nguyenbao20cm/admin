@@ -5,6 +5,9 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import $ from "jquery"
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+
+import 'sweetalert2/src/sweetalert2.scss'
 class ReviewCRUD extends React.Component {
     constructor(props) {
         super(props);
@@ -22,6 +25,16 @@ class ReviewCRUD extends React.Component {
         const tokenString = localStorage.getItem('token');
         const userToken = JSON.parse(tokenString);
         return userToken
+    }
+    loi(title, text) {
+        return Swal.fire({
+            icon: 'error',
+            title: title,
+            text: text,
+            confirmButtonText: 'Ok',
+            confirmButtonColor: '#3085d6',
+            timer: 1500
+        })
     }
     refreshList() {
 
@@ -54,7 +67,16 @@ class ReviewCRUD extends React.Component {
 
 
     CreateClick() {
+        if (this.state.Name == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
+        if (this.state.Stock == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
+        if (this.state.ProductId == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
+        if (this.state.Status == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
+        if (this.state.ImportPrice == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
+        if (Number(this.state.Stock) == false) return this.loi("Dữ liệu bị sai ", "Hãy nhập lại")
+        if (Number(this.state.ImportPrice) == false) return this.loi("Dữ liệu bị sai ", "Hãy nhập lại")
+        if (Number(this.state.ImportPrice) < 0) return this.loi("Giá nhập phải là số dương ", "Hãy nhập lại")
         const token = this.getToken();
+      
         fetch(variable.API_URL + "ProductSizes/CreateProductSize", {
             method: "POST",
             headers: {
@@ -67,14 +89,14 @@ class ReviewCRUD extends React.Component {
                 // IssuedDate: Date.now(),
                 name: this.state.Name,
                 stock: this.state.Stock,
-                ProductId: this.state.ProductId,
+                ProductId:  this.PRID(this.state.ProductId),
                 status: this.state.Status == "Hiển thị" ? true : false,
             })
         }).then(res => res.json())
             .then(result => {
 
                 if (result == "Thành công") {
-                    message.success(result)
+                
                     message.success("Thành công")
                     this.state.Trangthai == true ? this.CheckTrue()
                         : this.state.Trangthai == false ? this.CheckFalse()
@@ -82,14 +104,28 @@ class ReviewCRUD extends React.Component {
                     document.getElementById("closeModal").click()
                 }
                 else
-                    message.error(result)
+                {
+                    if (result == "Thành công, nhưng trạng thái thành Ẩn vì Size này chỉ được 1 hiện thị ")
+                    {
+                        this.loi(result, "")
+                        document.getElementById("closeModal").click()
+                        this.state.Trangthai == true ? this.CheckTrue()
+                            : this.state.Trangthai == false ? this.CheckFalse()
+                                : this.refreshList()
+                        document.getElementById("closeModal").click()
+                    }
+                    else
+                        return this.loi("Đã xảy ra lỗi", "")
+                   
+                } 
             }, (error) => {
-                message.error("Failed")
+                return this.loi("Đã xảy ra lỗi", "")
             });
     }
+    
     UpdateClick(id) {
         const token = this.getToken();
-        if (this.state.Name == "") return message.error("Không được bỏ trống")
+        if (this.state.Name == "") return this.loi("Dữ liệu bị sai ", "Hãy nhập lại")
         fetch(variable.API_URL + "ProductSizes/UpdateProductSize/" + id, {
             method: "PUT",
             headers: {
@@ -102,7 +138,7 @@ class ReviewCRUD extends React.Component {
                     importPrice: this.state.ImportPrice,
                     name: this.state.Name,
                     stock: this.state.Stock,
-                    ProductId: this.state.ProductId,
+                    ProductId: this.PRID(this.state.ProductId),
                     status: this.state.Status == "Hiển thị" ? true : false,
                 })
         }).then(res => res.json())
@@ -115,7 +151,10 @@ class ReviewCRUD extends React.Component {
                     document.getElementById("closeModal").click()
                 }
                 else
-                    message.error(result)
+                    if (result == "Không được vì Size này đã được hiện thị")
+                        return this.loi(result, "")
+                    else
+                    this.loi(result, "")
             }, (error) => {
                 message.error("Failed")
             }
@@ -135,7 +174,9 @@ class ReviewCRUD extends React.Component {
             .then(result => {
                 if (result == "Thành công") {
                     message.success("Thành công")
-                    this.refreshList();
+                    this.state.Trangthai == true ? this.CheckTrue()
+                        : this.state.Trangthai == false ? this.CheckFalse()
+                            : this.refreshList()
                 }
                 else
                     message.error(result)
@@ -164,7 +205,7 @@ class ReviewCRUD extends React.Component {
             modelTitle: "Sửa Size sản phẩm",
             id: dep.id,
             Name: dep.name,
-            ProductId: dep.productId,
+            ProductId: (dep.product).name,
             Status:
                 dep.status == true ?
                     "Hiển thị" : "Ẩn"
@@ -172,6 +213,10 @@ class ReviewCRUD extends React.Component {
             ImportPrice: dep.importPrice,
             Stock: dep.stock,
         });
+    }
+    PRID(a) {
+        var b = this.state.ProductType.filter((item) => { return item.name == a ? item : null }).map((dep) => dep.id)
+        return b[0]
     }
     NextPage(id, npage) {
 
@@ -347,14 +392,17 @@ class ReviewCRUD extends React.Component {
         const options = ['Hiển thị', 'Ẩn']
         const optionProductType = []
         ProductType.forEach(element => {
-            optionProductType.push(element.id)
+            optionProductType.push(element.name)
         });
         const recordsPerPage = 5;
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
         const a = ProductSizes.slice(firstIndex, lastIndex);
         const npage = Math.ceil(ProductSizes.length / recordsPerPage)
-        const numbers = Array.from({ length: npage }, (_, i) => i + 1);
+        const numbers = Array.from({ length: npage }, (_, i) => i + 1); const VND = new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+        });
         return (
             <>
 
@@ -454,7 +502,7 @@ class ReviewCRUD extends React.Component {
                                                 }
                                             </td>
                                             <td>
-                                                {dep.importPrice + " Đồng"}
+                                                {VND.format(dep.importPrice)}
                                             </td>
                                             <td>
 
@@ -555,10 +603,10 @@ class ReviewCRUD extends React.Component {
                                             />
                                         </div>
                                         {id == 0 ?// eslint-disable-next-line
-                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.CreateClick()}>Create</button> : null
+                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.CreateClick()}>Thêm</button> : null
                                         }
                                         {id != 0 ?// eslint-disable-next-line
-                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.id)}>Update</button> : null
+                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.id)}>Sửa</button> : null
                                         }
                                     </div>
                                 </div>

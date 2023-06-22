@@ -23,23 +23,23 @@ class CRUDProductType extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            ProductType: [], id1:"",
+            ProductType: [], id1: "",
             modelTitle: "",
             Name: "",
-            id: 0,StatusCheck:"",
+            id: 0, StatusCheck: "",
             currentPage: 1,
             NameinputProductType: "", Status: "", Trangthai: "", open1: false
 
         }
 
     }
- 
+
     refreshList() {
 
         fetch(variable.API_URL + "ProductTypes/GetAllProductType")
             .then(response => response.json())
             .then(data => {
-                this.setState({ ProductType: data,Trangthai: null ,currentPage:this.state.currentPage});
+                this.setState({ ProductType: data, Trangthai: null, currentPage: this.state.currentPage });
             })
     }
     componentDidMount() {
@@ -101,14 +101,14 @@ class CRUDProductType extends React.Component {
                         if (result == "Thành công") {
                             message.success("Thành công")
                             this.setState({
-                               currentPage:this.state.currentPage
+                                currentPage: this.state.currentPage
                             });
-                            
+
                             this.state.Trangthai == true ? this.CheckTrue()
                                 : this.state.Trangthai == false ? this.CheckFalse()
                                     : this.refreshList()
-                            
-                               
+
+
                             document.getElementById("closeModal").click()
                         }
                         else
@@ -121,26 +121,26 @@ class CRUDProductType extends React.Component {
 
     }
     DeleteClick(dep) {
-        this.setState({ open1: true,  id1: dep })
+        this.setState({ open1: true, id1: dep })
     }
     DeleteClick1() {
-      
-            fetch(variable.API_URL + "ProductTypes/DeleteProductType/" + this.state.id1, {
-                method: "PUT",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-            }).then(res => res.json())
-                .then(result => {
-                    message.success(result)
-                    this.setState({ open1: false })
-                    this.refreshList();
-                }, (error) => {
-                    message.error("Failed")
-                }
-                )
-        
+
+        fetch(variable.API_URL + "ProductTypes/DeleteProductType/" + this.state.id1, {
+            method: "PUT",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+        }).then(res => res.json())
+            .then(result => {
+                message.success(result)
+                this.setState({ open1: false })
+                this.refreshList();
+            }, (error) => {
+                message.error("Failed")
+            }
+            )
+
     }
 
     addClick() {
@@ -200,7 +200,7 @@ class CRUDProductType extends React.Component {
         this.setState({
             NameinputProductType: value.target.value,
             currentPage: 1,
-    
+
         });
 
     }
@@ -215,7 +215,7 @@ class CRUDProductType extends React.Component {
                     ProductType: data, currentPage: 1,
                     Trangthai: null,
                     NameinputProductType: ""
-});
+                });
             })
 
     }
@@ -269,10 +269,10 @@ class CRUDProductType extends React.Component {
                 .then(data => {
                     this.setState({
                         ProductType: data,
-                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 :  this.state.currentPage,
+                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : this.state.currentPage,
                         Trangthai: false, NameinputProductType: ""
                     });
-                })  
+                })
         }
     }
     render() {
@@ -330,7 +330,7 @@ class CRUDProductType extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="card" style={{width: "135px" }}>
+                    <div className="card" style={{ width: "135px" }}>
                         <div className="card-body">
                             <label>Trạng thái:</label>
                             <div className>
@@ -406,7 +406,7 @@ class CRUDProductType extends React.Component {
                                                             <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
                                                         </svg>
                                                     </button>
-                                               }
+                                                }
                                             </td>
                                         </tr>
                                     )}
@@ -465,7 +465,7 @@ class CRUDProductType extends React.Component {
                                             this.setState({
                                                 Status: newValue
                                             });
-                                      
+
                                         }}
 
                                         options={options}

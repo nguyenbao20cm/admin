@@ -3,7 +3,9 @@ import { variable } from '../../../Variable';
 
 import Paper from '@mui/material/Paper';
 import { Alert, Space, message } from 'antd';
+import Swal from 'sweetalert2/dist/sweetalert2.js'
 
+import 'sweetalert2/src/sweetalert2.scss'
 class ReviewCRUD extends React.Component {
     constructor(props) {
         super(props);
@@ -13,9 +15,19 @@ class ReviewCRUD extends React.Component {
             Name: "",
             id: 0,
             currentPage: 1,
-            NameinputProductType: ""
+            NameinputProductType: "", Trangthai:""
 
         }
+    }
+    loi(title, text) {
+        return Swal.fire({
+            icon: 'error',
+            title: title,
+            text: text,
+            confirmButtonText: 'Ok',
+            confirmButtonColor: '#3085d6',
+            timer: 1500
+        })
     }
     getToken() {
         const tokenString = localStorage.getItem('token');
@@ -42,52 +54,17 @@ class ReviewCRUD extends React.Component {
         this.refreshList();
     }
 
-
-    CreateClick() {
-        fetch(variable.API_URL + "ProductTypes/CreateProductType", {
-            method: "POST",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ name: this.state.Name })
-        }).then(res => res.json())
-            .then(result => {
-                if (result == "Thành công") {
-                    message.success("Thành công")
-                    window.location.reload(false);
-                }
-                else
-                    message.error(result)
-            }, (error) => {
-                message.error("Failed")
-            });
-    }
-    UpdateClick(id) {
-        if (this.state.Name == "") return message.error("Không được bỏ trống")
-        fetch(variable.API_URL + "ProductTypes/UpdateProductType/" + id, {
-            method: "PUT",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ name: this.state.Name })
-        }).then(res => res.json())
-            .then(result => {
-                if (result == "Thành công") {
-                    message.success("Thành công")
-                    window.location.reload(false);
-                }
-                else
-                    message.error(result)
-            }, (error) => {
-                message.error("Failed")
-            }
-            )
+    DatetimeFormat(e) {
+        const abc = new Date(e)
+        var day = abc.getDate() + "/";
+        var month = abc.getMonth() + 1 + "/";
+        var year = abc.getFullYear()
+        let format4 = day + month + year;
+        return format4;
     }
     DeleteClick(id) {
         const token = this.getToken();
-        if (window.confirm('Are you sure?')) {
+        
             fetch(variable.API_URL + "Reviews/DeleteReviewByAdmin/" + id, {
                 method: "PUT",
                 headers: {
@@ -99,16 +76,18 @@ class ReviewCRUD extends React.Component {
                 .then(result => {
                     if (result == "Thành công") {
                         message.success("Thành công")
-                        this.refreshList()
+                        this.state.Trangthai == true ? this.CheckTrue()
+                            : this.state.Trangthai == false ? this.CheckFalse()
+                                : this.refreshList()
                     }
                     else
                         message.error(result)
-                   
+
                 }, (error) => {
                     message.error("Failed")
                 }
                 )
-        }
+        
     }
 
     addClick() {
@@ -149,7 +128,7 @@ class ReviewCRUD extends React.Component {
     ChangeNameinputProductType(value) {
         this.setState({
             NameinputProductType: value.target.value,
-            currentPage: 1 
+            currentPage: 1
         });
 
     }
@@ -168,7 +147,7 @@ class ReviewCRUD extends React.Component {
         })
             .then(response => response.json())
             .then(data => {
-                this.setState({ ReviewList: data });
+                this.setState({ ReviewList: data , Trangthai:null});
             })
     }
     CheckTrue() {
@@ -185,7 +164,10 @@ class ReviewCRUD extends React.Component {
         })
             .then(response => response.json())
             .then(data => {
-                this.setState({ ReviewList: data, currentPage: 1 });
+                this.setState({
+                    ReviewList: data,
+                    currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == false ? 1 : this.state.currentPage,
+                    Trangthai: true, NameinputProductType: "" });
             })
     }
     CheckFalse() {
@@ -201,7 +183,10 @@ class ReviewCRUD extends React.Component {
         })
             .then(response => response.json())
             .then(data => {
-                this.setState({ ReviewList: data, currentPage: 1 });
+                this.setState({
+                    ReviewList: data,
+                    currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1  : this.state.currentPage,
+                    Trangthai: false, NameinputProductType: "" });
             })
 
 
@@ -210,7 +195,7 @@ class ReviewCRUD extends React.Component {
 
         const {
             ReviewList,
-            modelTitle,
+            modelTitle, NameinputProductType,
             id,
             Name,
             currentPage,
@@ -230,7 +215,7 @@ class ReviewCRUD extends React.Component {
                             <div>
                                 <div className="form-group">
                                     <label>Tìm kiếm bình luận theo tên sản phẩm:</label>
-                                    <div><input className="form-control w-100" type="text" onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Id" />
+                                    <div><input className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Tên sản phẩm" />
                                     </div>
                                 </div>
 
@@ -272,7 +257,7 @@ class ReviewCRUD extends React.Component {
                                         Của sản phẩm
                                     </th>
                                     <th>
-                                        Của tài khoản ID
+                                        Của tài khoản
                                     </th>
                                     <th>
                                         Nội dung
@@ -281,7 +266,7 @@ class ReviewCRUD extends React.Component {
                                         Ngày tạo
                                     </th>
                                     <th>
-                                        Sao đánh giá
+                                        Đánh giá
                                     </th>
                                     <th>
                                         Trạng thái
@@ -297,7 +282,7 @@ class ReviewCRUD extends React.Component {
                                     .filter((item) => {
                                         return this.state.NameinputProductType === ""
                                             ? item
-                                            : item.productId.toString().includes(this.state.NameinputProductType)
+                                            : item.product.name.toString().includes(this.state.NameinputProductType)
                                     }).slice(firstIndex, lastIndex)
                                     .map(dep =>
                                         <tr key={dep.reviewId}>
@@ -305,7 +290,7 @@ class ReviewCRUD extends React.Component {
                                                 {dep.reviewId}
                                             </td>
                                             <td>
-                                                {dep.productId}
+                                                {(dep.product).name}
                                             </td>
                                             <td>
                                                 {dep.accountId}
@@ -314,7 +299,7 @@ class ReviewCRUD extends React.Component {
                                                 {dep.content}
                                             </td>
                                             <td>
-                                                {dep.dateTime}
+                                                {this.DatetimeFormat(dep.dateTime)}
                                             </td>
                                             <td>
                                                 {dep.star}
@@ -322,7 +307,7 @@ class ReviewCRUD extends React.Component {
                                             <td>
 
                                                 {dep.status == true ?
-                                                    "True" : "False"
+                                                    "Hiển thị" : "Ẩn"
                                                 }
                                             </td>
 

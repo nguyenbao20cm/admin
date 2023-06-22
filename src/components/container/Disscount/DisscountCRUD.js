@@ -5,6 +5,19 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { Alert, Space, message } from 'antd';
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+
+import 'sweetalert2/src/sweetalert2.scss'
+
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+
+
 class ReviewCRUD extends React.Component {
     constructor(props) {
         super(props);
@@ -12,13 +25,13 @@ class ReviewCRUD extends React.Component {
             Disscounts: [],
             modelTitle: "",
             Name: "",
-            id: 0,
+            id: 0, nameDisscount:"",
             currentPage: 1,
             NameinputProductType: "",
             DisscountEdit: "",
             ProductId: "",
             Status: "",
-            ProductType:[]
+            ProductType: [], open1: false, check:"",data:""
 
         }
     }
@@ -40,7 +53,7 @@ class ReviewCRUD extends React.Component {
         })
             .then(response => response.json())
             .then(data => {
-                this.setState({ Disscounts: data });
+                this.setState({ Disscounts: data ,currentPage:this.state.currentPage});
             })
         fetch(variable.API_URL + "Products/GetAllProduct", {
             method: "GET",
@@ -60,28 +73,23 @@ class ReviewCRUD extends React.Component {
         this.refreshList();
     }
 
-
+    loi(title, text) {
+        return Swal.fire({
+            icon: 'error',
+            title: title,
+            text: text,
+            confirmButtonText: 'Ok',
+            confirmButtonColor: '#3085d6',
+            timer: 1500
+        })
+    }
+    PRID(a) {
+        var b = this.state.ProductType.filter((item) => { return item.name == a ? item : null }).map((dep) => dep.id)
+        return b[0]
+    }
     CreateClick() {
-        var check = true;
-        this.state.Disscounts.forEach(element => {
-            if (element.productId == this.state.ProductId) check = false;
-        }); 
-        if (check == false) return message.error("Disscount cho Product này đã tồn tại")
-        const optionProductType = []
-        this.state.ProductType.forEach(element => {
-            optionProductType.push(element.id)
-        });
-        var a = false;
-        optionProductType.forEach(element => {
-            if (element == this.state.ProductId) a =  true;
-        });
-        if (a == false) return message.error("ProductId không tồn tại")
-        if (Number.isInteger(this.state.DisscountEdit)) {
-            return message.error("Disscount không hợp lệ")
-        } 
-        if (this.state.DisscountEdit < 0 || this.state.DisscountEdit > 100) {
-            return message.error("Disscount không hợp lệ")
-        }
+        if (this.state.nameDisscount == "") return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
+        if (this.state.ProductId == "") return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
         const token = this.getToken();
         fetch(variable.API_URL + "Disscounts/CreateDisscount", {
             method: "POST",
@@ -92,26 +100,35 @@ class ReviewCRUD extends React.Component {
             },
 
             body: JSON.stringify({
-                nameDisscount: this.state.DisscountEdit,
-                ProductId: this.state.ProductId,
-                status: this.state.Status == "True" ? true : false,
+                nameDisscount: this.state.nameDisscount == "10%" ? 10 : this.state.nameDisscount == "20%" ?
+                    20 : this.state.nameDisscount == "30%" ? 30 : this.state.nameDisscount == "40%" ?
+                        40 : this.state.nameDisscount == "50%" ? 50 :
+                            this.state.nameDisscount == "60%" ? 60 :
+                                this.state.nameDisscount == "70%" ? 70 :
+                                    this.state.nameDisscount == "80%" ? 80 :
+                                        this.state.nameDisscount == "90%" ? 90 : null
+                ,
+                ProductId: this.PRID(this.state.ProductId),
+                status: true,
             })
         }).then(res => res.json())
             .then(result => {
-             
+
                 if (result == "Thành công") {
                     message.success("Thành công")
-                    window.location.reload(false);
+                    this.refreshList()
+                    document.getElementById("closeModal").click()
                 }
                 else
-                    message.error(result)
+                    this.loi(result, "")
             }, (error) => {
-                message.error("Failed")
+                this.loi("Đã xảy ra lỗi", "")
             });
     }
     UpdateClick(id) {
         const token = this.getToken();
-        if (this.state.Name == "") return message.error("Không được bỏ trống tên")
+        if (this.state.nameDisscount == "") return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
+        if (this.state.ProductId == "") return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
         fetch(variable.API_URL + "Disscounts/UpdateDisscount/" + id, {
             method: "PUT",
             headers: {
@@ -120,28 +137,36 @@ class ReviewCRUD extends React.Component {
                 'Authorization': `Bearer ${token.value}`
             },
             body: JSON.stringify({
-                nameDisscount: this.state.DisscountEdit,
-                ProductId: this.state.ProductId,
-                status: this.state.Status == "True" ? true : false,
+                nameDisscount: this.state.nameDisscount == "10%" ? 10 : this.state.nameDisscount == "20%" ?
+                    20 : this.state.nameDisscount == "30%" ? 30 : this.state.nameDisscount == "40%" ?
+                        40 : this.state.nameDisscount == "50%" ? 50 :
+                            this.state.nameDisscount == "60%" ? 60 :
+                                this.state.nameDisscount == "70%" ? 70 :
+                                    this.state.nameDisscount == "80%" ? 80 :
+                                        this.state.nameDisscount == "90%" ? 90 : null
+                ,
+                ProductId: this.PRID(this.state.ProductId),
+                status: true,
             })
         }).then(res => res.json())
             .then(result => {
-             
+
                 if (result == "Thành công") {
                     message.success(result)
-                    window.location.reload(false);
+                    this.refreshList()
+                    document.getElementById("closeModal").click()
                 }
                 else
-                    message.error(result)
+                    this.loi(result, "")
             }, (error) => {
-                message.error("Failed")
+                this.loi("Đã xảy ra lỗi", "")
             }
             )
     }
-    DeleteClick(id) {
+    DeleteClick() {
         const token = this.getToken();
-        if (window.confirm('Are you sure?')) {
-            fetch(variable.API_URL + "Disscounts/DeleteDisscount/" + id, {
+     
+            fetch(variable.API_URL + "Disscounts/DeleteDisscount/" + this.state.data, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
@@ -152,26 +177,40 @@ class ReviewCRUD extends React.Component {
                 .then(result => {
                     message.success(result)
                     this.refreshList();
+                    this.setState({ open1: false })
                 }, (error) => {
-                    message.error("Failed")
+                    this.loi("Đã xảy ra lỗi", "")
                 }
                 )
-        }
+        
     }
 
     addClick() {
         this.setState({
-            modelTitle: "Add Disscounts",
+            modelTitle: "Tạo mã giảm giá",
             id: 0,
-            Name: ""
+            ProductId: "",
+            nameDisscount: "", check: 0,
+          
         });
     }
     EditClick(dep) {
         this.setState({
-            modelTitle: "Edit Disscounts",
+            modelTitle: "Chỉnh sửa",
             id: dep.id,
-            Name: dep.name
+            check:1,
+            ProductId: dep.product.name,
+            nameDisscount: dep.nameDisscount+"%",
+            Giagoc: dep.product.price,
+            GiaSale: Number(dep.product.price) * Number(dep.name),
         });
+    }
+    DeleteClick1(id) {
+        this.setState({
+       
+            open1: true, data: id 
+         
+        })
     }
     NextPage(id, npage) {
 
@@ -197,7 +236,7 @@ class ReviewCRUD extends React.Component {
     ChangeNameinputProductType(value) {
         this.setState({
             NameinputProductType: value.target.value,
-            currentPage: 1 
+            currentPage: 1
         });
 
     }
@@ -207,73 +246,24 @@ class ReviewCRUD extends React.Component {
         });
 
     }
-    //0 all 1 false 2 true
-    CheckAll() {
+  
+    
 
-        const token = this.getToken();
-
-        fetch(variable.API_URL + "Disscounts/GetAllDisscount", {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ Disscounts: data });
-            })
-    }
-    CheckTrue() {
-
-        const token = this.getToken();
-
-        fetch(variable.API_URL + "Disscounts/GetAllDisscountStatusTrue", {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ Disscounts: data, currentPage: 1 });
-            })
-    }
-    CheckFalse() {
-        const token = this.getToken();
-
-        fetch(variable.API_URL + "Disscounts/GetAllDisscountStatusFalse", {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ Disscounts: data, currentPage: 1 });
-            })
-
-
-    }
     render() {
 
         const {
-            Disscounts,
+            Disscounts, nameDisscount,
             modelTitle,
-            id, Status,ProductId,
+            id, Status, ProductId, open1,
             Name, ProductType,
-            currentPage, DisscountEdit
+            currentPage, DisscountEdit, NameinputProductType
 
         } = this.state;
         const recordsPerPage = 5;
         const optionProductType = []
+        const Sale = ["10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%"]
         ProductType.forEach(element => {
-            optionProductType.push(element.id)
+            optionProductType.push(element.name)
         });
         const options = ['True', 'False']
         const lastIndex = currentPage * recordsPerPage;
@@ -281,40 +271,67 @@ class ReviewCRUD extends React.Component {
         const a = Disscounts.slice(firstIndex, lastIndex);
         const npage = Math.ceil(Disscounts.length / recordsPerPage)
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
+        const VND = new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+        });
         return (
             <>
+                <Dialog
+                    open={open1}
+                    keepMounted
+                    onClose={() => {
+                        this.setState({ open1: false })
+                    }}
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <DialogTitle>{"Bạn có chắc chắc muốn xóa"}</DialogTitle>
+                    <DialogContent>
+                        {/* <DialogContentText id="alert-dialog-slide-description">
+                            Khi hủy xong thì sẽ không thể khôi phục lại được
+                        </DialogContentText> */}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => {
+                            this.DeleteClick()
+                        }}>Chấp nhận</Button>
+                        <Button onClick={() => {
+                            this.setState({ open1: false })
+                        }}>Quay lại</Button>
+                    </DialogActions>
+                </Dialog>
                 <div style={{ display: "flex", }}>
                     <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
                         <div className="card-body" >
                             <div>
                                 <div className="form-group">
-                                    <label>Search by Disscount:</label>
-                                    <div><input className="form-control w-100" type="text" onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Id" />
+                                    <label>Tìm kiếm theo tên sản phẩm</label>
+                                    <div><input className="form-control w-100" value={NameinputProductType} type="text" onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Tên sản phẩm " />
                                     </div>
                                 </div>
 
                             </div>
                         </div>
                     </div>
-                    <div className="card" style={{ width: "135px" }}>
-                        <div className="card-body">
-                            <label>Status:</label>
-                            <div className>
-                                <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
-                                <label for="All">All</label><br />
-                                <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
-                                <label for="True">True</label><br />
-                                <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />
-                                <label for="False">False</label>
+                    {/* <div className="card" style={{ width: "135px" }}>
+                            <div className="card-body">
+                                <label>Status:</label>
+                                <div className>
+                                    <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
+                                    <label for="All">Tất cả</label><br />
+                                    <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
+                                    <label for="True">True</label><br />
+                                    <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />
+                                    <label for="False">False</label>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        </div> */}
 
                 </div>
 
                 <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
                     onClick={() => this.addClick()}>
-                    Add Disscount
+                    Tạo giảm giá
                 </button>
                 <Paper sx={{ width: '100%', overflow: 'hidden' }}>
 
@@ -325,22 +342,25 @@ class ReviewCRUD extends React.Component {
                             <thead>
                                 <tr>
                                     <th>
-                                        Id
+                                        ID
                                     </th>
                                     <th>
-                                        Disscount
+                                        Giảm giá
                                     </th>
                                     <th>
-                                        ProductId
+                                        Tên sản phẩm
                                     </th>
                                     <th>
-                                        Status
+                                        Giá gốc
                                     </th>
                                     <th>
-                                        Edit
+                                        Giá sau khi giảm giá
                                     </th>
                                     <th>
-                                        Delete
+                                        Sửa
+                                    </th>
+                                    <th>
+                                        Xóa
                                     </th>
                                 </tr>
                             </thead>
@@ -349,8 +369,8 @@ class ReviewCRUD extends React.Component {
                                     .filter((item) => {
                                         return this.state.NameinputProductType === ""
                                             ? item
-                                            : item.nameDisscount.toString().includes(this.state.NameinputProductType)
-                                      
+                                            : item.product.name.toString().includes(this.state.NameinputProductType)
+
                                     }).slice(firstIndex, lastIndex)
                                     .map(dep =>
                                         <tr key={dep.id}>
@@ -361,12 +381,15 @@ class ReviewCRUD extends React.Component {
                                                 {dep.nameDisscount}%
                                             </td>
                                             <td>
-                                                {dep.productId}
+                                                {(dep.product).name}
                                             </td>
                                             <td>
+                                                {VND.format((dep.product).price)}
+                                            </td>
+                                            <td>
+                                                {
 
-                                                {dep.status == true ?
-                                                    "True" : "False"
+                                                    VND.format((dep.product).price - Number((dep.product).price * Number(dep.nameDisscount) / 100))
                                                 }
                                             </td>
                                             <td>
@@ -379,7 +402,7 @@ class ReviewCRUD extends React.Component {
                                                 </button>
                                             </td>
                                             <td>
-                                                <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.advertisingPanelID)}>
+                                                <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick1(dep.id)}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
                                                         <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
                                                     </svg>
@@ -394,66 +417,92 @@ class ReviewCRUD extends React.Component {
                                 <div className="modal-content">
                                     <div className="modal-header">
                                         <h5 className='modal-title'>{modelTitle}</h5>
-                                        <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
+                                        <button type='button' id="closeModal" className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
 
                                         </button>
                                     </div>
                                     <div className='modal-body'>
                                         <div className='input-group mb-3'>
-                                            <span className='input-group-text'>
-                                                Disscount
+                                            {/* <span className='input-group-text'>
+                                                Giảm giá
                                             </span>
                                             <input type='text' className='form-control' value={DisscountEdit}
-                                                onChange={(e) => this.ChangeDisscountEdit(e)} />
+                                                onChange={(e) => this.ChangeDisscountEdit(e)} /> */}
                                             <span className='input-group-text'>
-                                                ProductId
+                                                Giảm giá
                                             </span>
                                             <Autocomplete
-                                                value={ProductId}
+                                                value={nameDisscount}
                                                 disableClearable
                                                 onChange={(event, newValue) => {
                                                     this.setState({
-                                                        ProductId: newValue
+                                                        nameDisscount: newValue
                                                     });
                                                 }}
 
-                                                options={optionProductType}
+                                                options={Sale}
                                                 style={{ width: 300 }}
                                                 renderInput={(params) =>
                                                     <TextField {...params}
                                                         // label="Pay"
                                                         variant="outlined" />}
                                             />
+
+
 
                                         </div>
                                         <div className='input-group mb-3'>
+
+
                                             <span className='input-group-text'>
-                                                Status
+                                                Tên sản phẩm
                                             </span>
-                                            <Autocomplete
-                                                disableClearable
-                                                value={Status}
-                                                onChange={(event, newValue) => {
-                                                    this.setState({
-                                                        Status: newValue
-                                                    });
-                                                }}
+                                            {this.state.check == 1 ?
+                                                <Autocomplete
+                                                    readOnly
+                                                    value={ProductId}
+                                                    disableClearable
+                                                    onChange={(event, newValue) => {
+                                                        this.setState({
+                                                            ProductId: newValue
+                                                        });
+                                                    }}
 
-                                                options={options}
-                                                style={{ width: 300 }}
-                                                renderInput={(params) =>
-                                                    <TextField {...params}
-                                                        // label="Pay"
-                                                        variant="outlined" />}
-                                            />
+                                                    options={optionProductType}
+                                                    style={{ width: 300 }}
+                                                    renderInput={(params) =>
+                                                        <TextField {...params}
+                                                            // label="Pay"
+                                                            variant="outlined" />}
+                                                />
+                                                : <Autocomplete
+                                                   
+                                                    value={ProductId}
+                                                    disableClearable
+                                                    onChange={(event, newValue) => {
+                                                        this.setState({
+                                                            ProductId: newValue
+                                                        });
+                                                    }}
 
+                                                    options={optionProductType}
+                                                    style={{ width: 300 }}
+                                                    renderInput={(params) =>
+                                                        <TextField {...params}
+                                                            // label="Pay"
+                                                            variant="outlined" />}
+                                                />
+                                                }
                                         </div>
-                                        {id == 0 ?// eslint-disable-next-line
-                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.CreateClick()}>Create</button> : null
-                                        }
-                                        {id != 0 ?// eslint-disable-next-line
-                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.id)}>Update</button> : null
-                                        }
+                                        <div class="modal-footer">
+                                            {id == 0 ?// eslint-disable-next-line
+                                                <button type='button' className='btn btn-primary float-start' onClick={() => this.CreateClick()}>Tạo</button> : null
+                                            }
+                                            {id != 0 ?// eslint-disable-next-line
+                                                <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.id)}>Update</button> : null
+                                            }
+                                        </div>
+                                      
                                     </div>
                                 </div>
                             </div>

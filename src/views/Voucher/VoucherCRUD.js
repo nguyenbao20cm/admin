@@ -23,23 +23,33 @@ class CRUDProductType extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            ProductType: [], id1:"",
+            Voucher: [], id1: "",
             modelTitle: "",
-            Name: "",
-            id: 0,StatusCheck:"",
+            Name: "", Ma: "", Giamgia: "",
+            id: 0, StatusCheck: "",
             currentPage: 1,
             NameinputProductType: "", Status: "", Trangthai: "", open1: false
 
         }
 
     }
- 
+    getToken() {
+        const tokenString = localStorage.getItem('token');
+        const userToken = JSON.parse(tokenString);
+        return userToken
+    }
     refreshList() {
-
-        fetch(variable.API_URL + "ProductTypes/GetAllProductType")
+        const token = this.getToken();
+        fetch(variable.API_URL + "Vouchers/GetAllVoucher", {
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            }
+        })
             .then(response => response.json())
             .then(data => {
-                this.setState({ ProductType: data,Trangthai: null ,currentPage:this.state.currentPage});
+                this.setState({ Voucher: data, Trangthai: null, currentPage: this.state.currentPage });
             })
     }
     componentDidMount() {
@@ -50,104 +60,107 @@ class CRUDProductType extends React.Component {
     }
 
     CreateClick() {
-        if (this.state.Status == "" || this.state.Name == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
-        else
-            if (this.state.Name == "") return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
-            else {
-                fetch(variable.API_URL + "ProductTypes/CreateProductType", {
-                    method: "POST",
-                    headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        name: this.state.Name,
-                        status: this.state.Status == "Hiển thị" ? true : false,
-                    })
-                }).then(res => res.json())
-                    .then(result => {
-                        if (result == "Thành công") {
-                            message.success("Thành công")
-                            this.state.Trangthai == true ? this.CheckTrue()
-                                : this.state.Trangthai == false ? this.CheckFalse()
-                                    : this.refreshList()
-                            document.getElementById("closeModal").click()
-                        }
-                        else
-                            message.error(result)
-                    }, (error) => {
-                        message.error("Failed")
-                    });
-            }
+        const token = this.getToken();
+        if (this.state.Ma == null) return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
+        if (this.state.Giamgia == null) return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
+        if (this.state.Status == null) return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
+        fetch(variable.API_URL + "Vouchers/CreateVoucher", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+            body: JSON.stringify({
+                name: this.state.Ma,
+                disscount: this.state.Giamgia == "10%" ? 10 : this.state.Giamgia == "20%" ?
+                    20 : this.state.Giamgia == "30%" ? 30 : this.state.Giamgia == "40%" ?
+                        40 : this.state.Giamgia == "50%" ? 50 :
+                            this.state.Giamgia == "60%" ? 60 :
+                                this.state.Giamgia == "70%" ? 70 :
+                                    this.state.Giamgia == "80%" ? 80 :
+                                        this.state.Giamgia == "90%" ? 90 : null,
+                status: this.state.Status == "Hiển thị" ? true : false,
+            })
+        }).then(res => res.json())
+            .then(result => {
+                if (result == "Thành công") {
+                    message.success("Thành công")
+                    this.state.Trangthai == true ? this.CheckTrue()
+                        : this.state.Trangthai == false ? this.CheckFalse()
+                            : this.refreshList()
+                    document.getElementById("closeModal").click()
+                }
+                else
+                    message.error(result)
+            }, (error) => {
+                message.error("Failed")
+            });
+
 
     }
     UpdateClick(id) {
-        if (this.state.Name == "") return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
-        else
-            if (this.state.Status == "") return this.loi("Trạng thái bị rỗng ", "Hãy nhập lại")
-            else {
-                fetch(variable.API_URL + "ProductTypes/UpdateProductType/" + id, {
-                    method: "PUT",
-                    headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        name: this.state.Name,
-                        status: this.state.Status == "Hiển thị" ? true : false,
-                    })
-                }).then(res => res.json())
-                    .then(result => {
-                        if (result == "Thành công") {
-                            message.success("Thành công")
-                            this.setState({
-                               currentPage:this.state.currentPage
-                            });
-                            
-                            this.state.Trangthai == true ? this.CheckTrue()
-                                : this.state.Trangthai == false ? this.CheckFalse()
-                                    : this.refreshList()
-                            
-                               
-                            document.getElementById("closeModal").click()
-                        }
-                        else
-                            message.error(result)
-                    }, (error) => {
-                        message.error("Failed")
-                    }
-                    )
-            }
+        if (this.state.Ma == null) return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
+        if (this.state.Giamgia == null) return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
+        if (this.state.Status == null) return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
+        fetch(variable.API_URL + "ProductTypes/UpdateProductType/" + id, {
+            method: "PUT",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: this.state.Name,
+                status: this.state.Status == "Hiển thị" ? true : false,
+            })
+        }).then(res => res.json())
+            .then(result => {
+                if (result == "Thành công") {
+                    message.success("Thành công")
+                    this.setState({
+                        currentPage: this.state.currentPage
+                    });
 
+                    this.state.Trangthai == true ? this.CheckTrue()
+                        : this.state.Trangthai == false ? this.CheckFalse()
+                            : this.refreshList()
+                    document.getElementById("closeModal").click()
+                }
+                else
+                    message.error(result)
+            }, (error) => {
+                message.error("Failed")
+            }
+            )
     }
     DeleteClick(dep) {
-        this.setState({ open1: true,  id1: dep })
+        this.setState({ open1: true, id1: dep })
     }
     DeleteClick1() {
-      
-            fetch(variable.API_URL + "ProductTypes/DeleteProductType/" + this.state.id1, {
-                method: "PUT",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-            }).then(res => res.json())
-                .then(result => {
-                    message.success(result)
-                    this.setState({ open1: false })
-                    this.refreshList();
-                }, (error) => {
-                    message.error("Failed")
-                }
-                )
-        
+
+        fetch(variable.API_URL + "ProductTypes/DeleteProductType/" + this.state.id1, {
+            method: "PUT",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+        }).then(res => res.json())
+            .then(result => {
+                message.success(result)
+                this.setState({ open1: false })
+                this.refreshList();
+            }, (error) => {
+                message.error("Failed")
+            }
+            )
+
     }
 
     addClick() {
         this.setState({
             modelTitle: "Thêm loại sản phẩm",
             id: 0,
-            Name: "",
+            Name: "", Ma: "", Giamgia: "",
             Status: "",
         });
     }
@@ -157,7 +170,7 @@ class CRUDProductType extends React.Component {
                 "Hiển thị" : "Ẩn",
             modelTitle: "Sửa loại sản phẩm ",
             id: dep.id,
-            Name: dep.name,
+            Name: dep.name, Ma: dep.name, Giamgia: dep.disscount,
             Status:
                 dep.status == true ?
                     "Hiển thị" : "Ẩn"
@@ -200,7 +213,7 @@ class CRUDProductType extends React.Component {
         this.setState({
             NameinputProductType: value.target.value,
             currentPage: 1,
-    
+
         });
 
     }
@@ -212,10 +225,10 @@ class CRUDProductType extends React.Component {
             .then(response => response.json())
             .then(data => {
                 this.setState({
-                    ProductType: data, currentPage: 1,
+                    Voucher: data, currentPage: 1,
                     Trangthai: null,
                     NameinputProductType: ""
-});
+                });
             })
 
     }
@@ -224,12 +237,12 @@ class CRUDProductType extends React.Component {
             const recordsPerPage = 5;
             const lastIndex = this.state.currentPage * recordsPerPage;
             const firstIndex = lastIndex - recordsPerPage;
-            const a = this.state.ProductType.slice(firstIndex, lastIndex);
+            const a = this.state.Voucher.slice(firstIndex, lastIndex);
             fetch(variable.API_URL + "ProductTypes/GetAllProductTypeStatusTrue")
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
-                        ProductType: data,
+                        Voucher: data,
                         currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == false ? 1 : a.length == 1 ? this.state.currentPage - 1 : this.state.currentPage,
                         Trangthai: true, NameinputProductType: ""
                     });
@@ -240,7 +253,7 @@ class CRUDProductType extends React.Component {
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
-                        ProductType: data,
+                        Voucher: data,
                         currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == false ? 1 : this.state.currentPage,
                         Trangthai: true, NameinputProductType: ""
                     });
@@ -252,12 +265,12 @@ class CRUDProductType extends React.Component {
             const recordsPerPage = 5;
             const lastIndex = this.state.currentPage * recordsPerPage;
             const firstIndex = lastIndex - recordsPerPage;
-            const a = this.state.ProductType.slice(firstIndex, lastIndex);
+            const a = this.state.Voucher.slice(firstIndex, lastIndex);
             fetch(variable.API_URL + "ProductTypes/GetAllProductTypeStatusFalse")
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
-                        ProductType: data,
+                        Voucher: data,
                         currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : a.length == 1 ? this.state.currentPage - 1 : this.state.currentPage,
                         Trangthai: false, NameinputProductType: ""
                     });
@@ -268,17 +281,17 @@ class CRUDProductType extends React.Component {
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
-                        ProductType: data,
-                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 :  this.state.currentPage,
+                        Voucher: data,
+                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : this.state.currentPage,
                         Trangthai: false, NameinputProductType: ""
                     });
-                })  
+                })
         }
     }
     render() {
 
         const {
-            ProductType,
+            Voucher, Ma, Giamgia,
             modelTitle,
             id, NameinputProductType,
             Name,
@@ -287,10 +300,11 @@ class CRUDProductType extends React.Component {
         } = this.state;
         const recordsPerPage = 5;
         const options = ['Hiển thị', 'Ẩn']
+        const Sale = ["10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%"]
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
-        const a = ProductType.slice(firstIndex, lastIndex);
-        const npage = Math.ceil(ProductType.length / recordsPerPage)
+        const a = Voucher.slice(firstIndex, lastIndex);
+        const npage = Math.ceil(Voucher.length / recordsPerPage)
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
         return (
             <>
@@ -322,15 +336,14 @@ class CRUDProductType extends React.Component {
                         <div className="card-body" >
                             <div>
                                 <div className="form-group">
-                                    <label>Tìm kiếm theo tên loại</label>
-                                    <div><input className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Tên loại sản phẩm" />
+                                    <label>Tìm kiếm theo % giảm giá</label>
+                                    <div><input className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="%" />
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
-                    <div className="card" style={{width: "135px" }}>
+                    <div className="card" style={{ width: "135px" }}>
                         <div className="card-body">
                             <label>Trạng thái:</label>
                             <div className>
@@ -346,7 +359,7 @@ class CRUDProductType extends React.Component {
                 </div>
                 <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
                     onClick={() => this.addClick()}>
-                    Thêm loại
+                    Thêm Voucher
                 </button>
                 <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                     <div>
@@ -357,7 +370,10 @@ class CRUDProductType extends React.Component {
                                         ID
                                     </th>
                                     <th>
-                                        Tên loại
+                                        Mã
+                                    </th>
+                                    <th>
+                                        Giảm giá
                                     </th>
                                     <th>
                                         Trạng thái
@@ -371,10 +387,10 @@ class CRUDProductType extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {ProductType.filter((item) => {
+                                {Voucher.filter((item) => {
                                     return this.state.NameinputProductType === ""
                                         ? item
-                                        : item.name.toString().includes(this.state.NameinputProductType);
+                                        : item.disscount.toString().includes(this.state.NameinputProductType);
                                 }).slice(firstIndex, lastIndex)
                                     .map(dep =>
                                         <tr key={dep.id}>
@@ -383,6 +399,9 @@ class CRUDProductType extends React.Component {
                                             </td>
                                             <td>
                                                 {dep.name}
+                                            </td>
+                                            <td>
+                                                {dep.disscount}
                                             </td>
                                             <td>
 
@@ -406,7 +425,7 @@ class CRUDProductType extends React.Component {
                                                             <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
                                                         </svg>
                                                     </button>
-                                               }
+                                                }
                                             </td>
                                         </tr>
                                     )}
@@ -449,10 +468,38 @@ class CRUDProductType extends React.Component {
 
                                 <div className='input-group mb-3'>
                                     <span className='input-group-text'>
-                                        Tên loại
+                                        Mã
                                     </span>
-                                    <input type='text' className='form-control' value={Name}
-                                        onChange={(e) => this.ChangeProdcutTypeName(e)} />
+                                    <input type='text' className='form-control' value={Ma}
+                                        onChange={(e) => this.setState({
+                                            Ma: e.target.value
+                                        })} />
+                                </div>
+                                    <div className='input-group mb-3'>
+                                        {/* <span className='input-group-text'>
+                                                Giảm giá
+                                            </span>
+                                            <input type='text' className='form-control' value={DisscountEdit}
+                                                onChange={(e) => this.ChangeDisscountEdit(e)} /> */}
+                                        <span className='input-group-text'>
+                                            Giảm giá
+                                        </span>
+                                        <Autocomplete
+                                            value={Giamgia}
+                                            disableClearable
+                                            onChange={(event, newValue) => {
+                                                this.setState({
+                                                    Giamgia: newValue
+                                                });
+                                            }}
+
+                                            options={Sale}
+                                            style={{ width: 300 }}
+                                            renderInput={(params) =>
+                                                <TextField {...params}
+                                                    // label="Pay"
+                                                    variant="outlined" />}
+                                        />
                                 </div>
                                 <div className='input-group mb-3'>
                                     <span className='input-group-text'>
@@ -465,9 +512,8 @@ class CRUDProductType extends React.Component {
                                             this.setState({
                                                 Status: newValue
                                             });
-                                      
-                                        }}
 
+                                        }}
                                         options={options}
                                         style={{ width: 300 }}
                                         renderInput={(params) =>

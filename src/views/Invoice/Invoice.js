@@ -1213,7 +1213,10 @@ class InvoiceCRUD extends React.Component {
             totalDetailInvoice
         } = this.state;
         const recordsPerPage = 5;
-
+        const VND = new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+        });
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
         const a = Invoice.slice(firstIndex, lastIndex);
@@ -1424,7 +1427,7 @@ class InvoiceCRUD extends React.Component {
                                                 {dep.shippingPhone}
                                             </td>
                                             <td>
-                                                {dep.total}
+                                                {VND.format(dep.total)}
                                             </td>
                                             {/* <td>
                                                 {dep.status == true ?
@@ -1524,7 +1527,7 @@ class InvoiceCRUD extends React.Component {
                                                             {dep.unitPrice}
                                                         </td>
                                                         <td>
-                                                            {dep.unitPrice * dep.quantity}
+                                                            {VND.format(dep.unitPrice * dep.quantity)}
                                                         </td>
 
                                                     </tr>
@@ -1532,9 +1535,9 @@ class InvoiceCRUD extends React.Component {
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="modal-footer">
+                                    {/* <div class="modal-footer">
                                         <h4>Tổng hóa đơn: {" "}{this.total(DetailsInvoice)}</h4>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>

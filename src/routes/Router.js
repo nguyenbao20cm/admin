@@ -15,7 +15,11 @@ const ReviewPage = Loadable(lazy(() => import('../views/sample-page/ReviewPage')
 const AdvertisingPanel = Loadable(lazy(() => import('../views/sample-page/AdvertisingPanel')))
 const Disscount = Loadable(lazy(() => import('../views/sample-page/Disscount')))
 const ProductSize = Loadable(lazy(() => import('../views/sample-page/ProductSize')))
-const ReportWeekPage = Loadable(lazy(() => import('../views/sample-page/ReportWeekPage')))
+const ReportWeek = Loadable(lazy(() => import('../views/sample-page/ReportWeek')))
+const ReportDay = Loadable(lazy(() => import('../views/sample-page/ReportDay')))
+const ReportYear = Loadable(lazy(() => import('../views/sample-page/ReportYear')))
+const Voucher = Loadable(lazy(() => import('../views/sample-page/Voucher')))
+const Account = Loadable(lazy(() => import('../views/sample-page/Account')))
 
 
 
@@ -37,7 +41,11 @@ const Router = [
       { path: '/AdvertisingPanel', exact: true, element: < AdvertisingPanel /> },
       { path: '/Disscount', exact: true, element: < Disscount /> },
       { path: '/ProductSize', exact: true, element: < ProductSize /> },
-      { path: '/ReportWeekPage', exact: true, element: < ReportWeekPage /> },
+      { path: '/ReportWeek', exact: true, element: < ReportWeek /> },
+      { path: '/ReportYear', exact: true, element: < ReportYear /> },
+      { path: '/ReportDay', exact: true, element: < ReportDay /> },
+      { path: '/Voucher', exact: true, element: < Voucher /> },
+      { path: '/Account', exact: true, element: < Account /> },
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },

@@ -220,7 +220,8 @@ class CRUDProduct extends React.Component {
                                     if (result == "Thành công") {
                                     message.success("Thành công")
                                         window.location.reload(false);
-                                    document.getElementById("closeModal").click()}
+                                        // document.getElementById("closeModal").click()
+                                    }
                                 })
                             }
                         });
@@ -387,7 +388,10 @@ class CRUDProduct extends React.Component {
         }).then(res => res.json())
             .then(result => {
                 message.success(result)
-                this.refreshList1();
+                this.state.Trangthai == true ? this.CheckTrue()
+                    : this.state.Trangthai == false ? this.CheckFalse()
+                        :
+                        this.refreshList1()
             }, (error) => {
                 message.error("Failed")
             }
@@ -551,6 +555,10 @@ class CRUDProduct extends React.Component {
         ProductType1.forEach(element => {
             optionProductType.push(element.name)
         });
+       const VND = new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+        });
         const recordsPerPage = 5;
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
@@ -659,7 +667,7 @@ class CRUDProduct extends React.Component {
                                                 {dep.description}
                                             </td>
                                             <td>
-                                                {dep.price + " Đồng"}
+                                                {VND.format(dep.price)}
                                             </td>
 
 
