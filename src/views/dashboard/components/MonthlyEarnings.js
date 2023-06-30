@@ -1,17 +1,46 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 import { useTheme } from '@mui/material/styles';
-import { Stack, Typography, Avatar, Fab } from '@mui/material';
+import { Stack, Typography, Avatar, Fab, Container } from '@mui/material';
 import { IconArrowDownRight, IconCurrencyDollar } from '@tabler/icons';
 import DashboardCard from '../../../components/shared/DashboardCard';
-
+import { useEffect } from 'react';
+import { variable } from '../../../Variable';
 const MonthlyEarnings = () => {
   // chart color
   const theme = useTheme();
   const secondary = theme.palette.secondary.main;
   const secondarylight = '#f5fcff';
   const errorlight = '#fdede8';
+  const getToken = (() => {
+    const tokenString = localStorage.getItem('token');
+    const userToken = JSON.parse(tokenString);
+    return userToken
+  })
+  var [Moth, setInvoiceTotalMonth] = React.useState(0);
 
+  useEffect(() => {
+    const abc = new Date()
+    var month = abc.getMonth() + 1;
+    var year = abc.getFullYear()
+    const token = getToken();
+    fetch(variable.API_URL + "Inovices/GetMonthInvoice", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Authorization': `Bearer ${token.value}`
+      },
+      body: JSON.stringify({
+        year: year,
+        month: month,
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        setInvoiceTotalMonth(data)
+      })
+  }, []);
   // chart
   const optionscolumnchart = {
     chart: {
@@ -21,12 +50,13 @@ const MonthlyEarnings = () => {
       toolbar: {
         show: false,
       },
-      height: 60,
+      height: 500,
       sparkline: {
         enabled: true,
       },
       group: 'sparklines',
     },
+
     stroke: {
       curve: 'smooth',
       width: 2,
@@ -39,33 +69,44 @@ const MonthlyEarnings = () => {
     markers: {
       size: 0,
     },
+
+    labels: [25, 66, 20, 40, 12, 58, 20],
     tooltip: {
       theme: theme.palette.mode === 'dark' ? 'dark' : 'light',
     },
   };
   const seriescolumnchart = [
     {
-      name: '',
+      name: 'Lợi nhuận',
       color: secondary,
       data: [25, 66, 20, 40, 12, 58, 20],
     },
-  ];
 
+  ];
+  const VND = new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+  });
   return (
     <DashboardCard
-      title="Monthly Earnings"
-      action={
-        <Fab color="secondary" size="medium" sx={{color: '#ffffff'}}>
-          <IconCurrencyDollar width={24} />
-        </Fab>
-      }
+      title="Lợi nhuận kiếm được trong tháng"
+      // action={
+      //   <Fab color="secondary" size="medium" sx={{color: '#ffffff'}}>
+      //     <IconCurrencyDollar width={24} />
+      //   </Fab>
+      // }
       footer={
-        <Chart options={optionscolumnchart} series={seriescolumnchart} type="area" height="60px" />
+        // <Chart options={optionscolumnchart} series={seriescolumnchart} type="area" height="69px" />
+        <div style={{ height: "58px" }}>
+
+        </div>
       }
     >
       <>
-        <Typography variant="h3" fontWeight="700" mt="-20px">
-          $6,820
+        <Typography variant="h5" fontWeight="700" mt="-20px" style={{ marginTop: "5px" }}>
+          {
+            VND.format(Moth)
+          }
         </Typography>
         <Stack direction="row" spacing={1} my={1} alignItems="center">
           <Avatar sx={{ bgcolor: errorlight, width: 27, height: 27 }}>
@@ -75,7 +116,7 @@ const MonthlyEarnings = () => {
             +9%
           </Typography>
           <Typography variant="subtitle2" color="textSecondary">
-            last year
+            so với tháng trước
           </Typography>
         </Stack>
       </>

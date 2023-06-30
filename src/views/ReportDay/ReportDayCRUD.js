@@ -354,19 +354,19 @@ class CRUDProductType extends React.Component {
                             <thead>
                                 <tr>
                                     <th>
-                                        ID
+                                        Thời gian
                                     </th>
                                     <th>
-                                        Tên loại
+                                        Doanh thu
                                     </th>
                                     <th>
-                                        Trạng thái
+                                        Chi phí nhập
                                     </th>
                                     <th>
-                                        Sửa
+                                        Chi phí bên giao hàng
                                     </th>
                                     <th>
-                                        Xóa
+                                        Lợi nhuận
                                     </th>
                                 </tr>
                             </thead>

@@ -24,11 +24,16 @@ class CRUDProductType extends React.Component {
         super(props);
         this.state = {
             Account: [], id1: "",
-            modelTitle: "",
+            modelTitle: "", Quyen: "",
             Name: "",
             id: 0, StatusCheck: "",
             currentPage: 1,
-            NameinputProductType: "", Status: "", Trangthai: "", open1: false
+            NameinputProductType: "", Status: "", Trangthai: "", open1: false, TenNguoiDung: "",
+            Email: "",
+            SDT: "",
+            DiaChi: "",
+            FullName: "", matkhau: "",
+            Anh: "", History:[]
 
         }
 
@@ -40,7 +45,7 @@ class CRUDProductType extends React.Component {
     }
     refreshList() {
         const token = this.getToken();
-        fetch(variable.API_URL + "Account/GetAllAcountCustomer", {
+        fetch(variable.API_URL + "Account/GetAllAccountStaff", {
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -60,75 +65,103 @@ class CRUDProductType extends React.Component {
     }
 
     CreateClick() {
-        if (this.state.Status == "" || this.state.Name == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
-        else
-            if (this.state.Name == "") return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
-            else {
-                fetch(variable.API_URL + "ProductTypes/CreateProductType", {
+        console.log(this.state.Anh)
+        const token = this.getToken();
+        fetch(variable.API_URL + "Account/register-Staff", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+            body:
+                JSON.stringify({
+                    username: this.state.TenNguoiDung,
+                    email: this.state.Email,
+                    password: this.state.matkhau,
+                    phone: this.state.SDT,
+                    address: this.state.DiaChi,
+                    fullName: this.state.FullName,
+                    image: this.state.tenanh,
+                    status: this.state.Status == "Hiển thị" ? true : false,
+                })
+        }).then(res => res.json())
+            .then(result => {
+                const formData = new FormData()
+                var imagelName = this.state.TenNguoiDung
+                formData.append("model", this.state.Anh, imagelName)
+                fetch(variable.API_URL + "Account/CreateAvatarImage", {
                     method: "POST",
-                    headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        name: this.state.Name,
-                        status: this.state.Status == "Hiển thị" ? true : false,
-                    })
+                    body: formData
                 }).then(res => res.json())
-                    .then(result => {
-                        if (result == "Thành công") {
-                            message.success("Thành công")
-                            this.state.Trangthai == true ? this.CheckTrue()
-                                : this.state.Trangthai == false ? this.CheckFalse()
-                                    : this.refreshList()
-                            document.getElementById("closeModal").click()
-                        }
-                        else
-                            message.error(result)
-                    }, (error) => {
-                        message.error("Failed")
-                    });
+                if (result == true) {
+                    message.success("Thành công")
+                    document.getElementById("closeModal").click()
+                    this.state.Trangthai == true ? this.CheckTrue()
+                        : this.state.Trangthai == false ? this.CheckFalse()
+                            : this.refreshList()
+                }
+                else
+                    this.loi("Thất bại","Hãy nhập lại")
+            }, (error) => {
+                console.log(error)
+                message.error("Failed")
+
             }
+            )
+    }
+    ChangeProdcutImage = (e) => {
+        if (e.target.files[0] != null)
+            this.setState({ tenanh: e.target.files[0].name, Anh: e.target.files[0] });
 
     }
+
     UpdateClick(id) {
-        if (this.state.Name == "") return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
-        else
-            if (this.state.Status == "") return this.loi("Trạng thái bị rỗng ", "Hãy nhập lại")
-            else {
-                fetch(variable.API_URL + "ProductTypes/UpdateProductType/" + id, {
-                    method: "PUT",
-                    headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        name: this.state.Name,
-                        status: this.state.Status == "Hiển thị" ? true : false,
-                    })
+        const token = this.getToken();
+        fetch(variable.API_URL + "Account/register-Staff", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+            body:
+                JSON.stringify({
+                    username: this.state.TenNguoiDung,
+                    email: this.state.Email,
+                    password: this.state.matkhau,
+                    phone: this.state.SDT,
+                    address: this.state.DiaChi,
+                    fullName: this.state.FullName,
+                    image: this.state.tenanh,
+                    status: this.state.Status == "Hiển thị" ? true : false,
+                })
+        }).then(res => res.json())
+            .then(result => {
+                const formData = new FormData()
+                var imagelName = this.state.TenNguoiDung
+                formData.append("model", this.state.Anh, imagelName)
+                fetch(variable.API_URL + "Account/CreateAvatarImage", {
+                    method: "POST",
+                    body: formData
                 }).then(res => res.json())
                     .then(result => {
-                        if (result == "Thành công") {
-                            message.success("Thành công")
-                            this.setState({
-                                currentPage: this.state.currentPage
-                            });
-
-                            this.state.Trangthai == true ? this.CheckTrue()
-                                : this.state.Trangthai == false ? this.CheckFalse()
-                                    : this.refreshList()
-
-
-                            document.getElementById("closeModal").click()
-                        }
-                        else
-                            message.error(result)
-                    }, (error) => {
-                        message.error("Failed")
-                    }
-                    )
+                        message.success(result)
+                        document.getElementById("closeModal").click()
+                        this.state.Trangthai == true ? this.CheckTrue()
+                            : this.state.Trangthai == false ? this.CheckFalse()
+                                : this.refreshList()
+                    })
+                message.success("Thành công")
+                document.getElementById("closeModal").click()
+                this.state.Trangthai == true ? this.CheckTrue()
+                    : this.state.Trangthai == false ? this.CheckFalse()
+                        : this.refreshList()
+            }, (error) => {
+                
+                this.loi("Đã xảy ra lỗi","Hãy nhập lại")
             }
-
+            )
     }
     DeleteClick(dep) {
         this.setState({ open1: true, id1: dep })
@@ -237,22 +270,37 @@ class CRUDProductType extends React.Component {
             const lastIndex = this.state.currentPage * recordsPerPage;
             const firstIndex = lastIndex - recordsPerPage;
             const a = this.state.ProductType.slice(firstIndex, lastIndex);
-            fetch(variable.API_URL + "ProductTypes/GetAllProductTypeStatusTrue")
+         
+            const token = this.getToken();
+            fetch(variable.API_URL + "Account/GetAllAccountStaff", {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
+            })
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
-                        ProductType: data,
+                        Account: data,
                         currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == false ? 1 : a.length == 1 ? this.state.currentPage - 1 : this.state.currentPage,
                         Trangthai: true, NameinputProductType: ""
                     });
                 })
         }
         else {
-            fetch(variable.API_URL + "ProductTypes/GetAllProductTypeStatusTrue")
+            const token = this.getToken();
+            fetch(variable.API_URL + "Account/GetAllAccountStaff", {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
+            })
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
-                        ProductType: data,
+                        Account: data,
                         currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == false ? 1 : this.state.currentPage,
                         Trangthai: true, NameinputProductType: ""
                     });
@@ -265,27 +313,65 @@ class CRUDProductType extends React.Component {
             const lastIndex = this.state.currentPage * recordsPerPage;
             const firstIndex = lastIndex - recordsPerPage;
             const a = this.state.ProductType.slice(firstIndex, lastIndex);
-            fetch(variable.API_URL + "ProductTypes/GetAllProductTypeStatusFalse")
+            const token = this.getToken();
+            fetch(variable.API_URL + "Account/GetAllAccountStaff", {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
+            })
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
-                        ProductType: data,
+                        Account: data,
                         currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : a.length == 1 ? this.state.currentPage - 1 : this.state.currentPage,
                         Trangthai: false, NameinputProductType: ""
                     });
                 })
         }
         else {
-            fetch(variable.API_URL + "ProductTypes/GetAllProductTypeStatusFalse")
+            const token = this.getToken();
+            fetch(variable.API_URL + "Account/GetAllAccountStaff", {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                }
+            })
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
-                        ProductType: data,
+                        Account: data,
                         currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : this.state.currentPage,
                         Trangthai: false, NameinputProductType: ""
                     });
                 })
         }
+    }
+    DetailsClick(dep) {
+        const token = this.getToken();
+        fetch(variable.API_URL + "HistoryAccount/GetHistoryAccount/" + dep.id, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ History:data });
+            })
+        
+    }
+    DatetimeFormat(e) {
+        const abc = new Date(e)
+        var day = abc.getDate() + "/";
+        var month = abc.getMonth() + 1 + "/";
+        var year = abc.getFullYear()
+        let format4 = day + month + year;
+        return format4;
     }
     render() {
 
@@ -293,12 +379,19 @@ class CRUDProductType extends React.Component {
             Account,
             modelTitle,
             id, NameinputProductType,
-            Name,
+            Name, matkhau,
             currentPage, open1,
-            Status,
+            Status, TenNguoiDung,
+            Email,
+            SDT, History,
+            DiaChi,
+            FullName,
+            Anh,
         } = this.state;
         const recordsPerPage = 5;
         const options = ['Hiển thị', 'Ẩn']
+
+
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
         const a = Account.slice(firstIndex, lastIndex);
@@ -356,10 +449,10 @@ class CRUDProductType extends React.Component {
                         </div>
                     </div>
                 </div>
-                {/* <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
+                <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
                     onClick={() => this.addClick()}>
-                    Thêm loại
-                </button> */}
+                    Tạo tài khoản
+                </button>
                 <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                     <div>
                         <table id="example" className='table table-striped'>
@@ -388,14 +481,16 @@ class CRUDProductType extends React.Component {
                                     </th>
                                     {/* <th>
                                         Quyền
-                                    </th>
-                                    <th>
+                                    </th> */}
+                                    {/* <th>
                                         Level
                                     </th> */}
                                     <th>
                                         Trạng thái
                                     </th>
-
+                                    <th>
+                                        Xem lịch sử
+                                    </th>
                                     <th>
                                         Khóa
                                     </th>
@@ -432,8 +527,8 @@ class CRUDProductType extends React.Component {
                                             </td>
                                             {/* <td>
                                                 {dep.permission}
-                                            </td>
-                                            <td>
+                                            </td> */}
+                                            {/* <td>
                                                 {dep.level}
                                             </td> */}
                                             <td>
@@ -452,6 +547,16 @@ class CRUDProductType extends React.Component {
                                                 </button>
                                             </td> */}
                                             <td>
+                                                {/* <button type='button' className='btn btn-light mr-1' data-toggle="modal" data-target="#exampleModal"
+                                                onClick={() => this.DetailsClick(dep)}>
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" > <path d="M2 8C2 7.44772 2.44772 7 3 7H21C21.5523 7 22 7.44772 22 8C22 8.55228 21.5523 9 21 9H3C2.44772 9 2 8.55228 2 8Z" fill="currentColor" /> <path d="M2 12C2 11.4477 2.44772 11 3 11H21C21.5523 11 22 11.4477 22 12C22 12.5523 21.5523 13 21 13H3C2.44772 13 2 12.5523 2 12Z" fill="currentColor" /> <path d="M3 15C2.44772 15 2 15.4477 2 16C2 16.5523 2.44772 17 3 17H15C15.5523 17 16 16.5523 16 16C16 15.4477 15.5523 15 15 15H3Z" fill="currentColor" /> </svg>
+                                                </button> */}
+                                                <button type='button' className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#data'
+                                                    onClick={() => this.DetailsClick(dep)}>
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" > <path d="M2 8C2 7.44772 2.44772 7 3 7H21C21.5523 7 22 7.44772 22 8C22 8.55228 21.5523 9 21 9H3C2.44772 9 2 8.55228 2 8Z" fill="currentColor" /> <path d="M2 12C2 11.4477 2.44772 11 3 11H21C21.5523 11 22 11.4477 22 12C22 12.5523 21.5523 13 21 13H3C2.44772 13 2 12.5523 2 12Z" fill="currentColor" /> <path d="M3 15C2.44772 15 2 15.4477 2 16C2 16.5523 2.44772 17 3 17H15C15.5523 17 16 16.5523 16 16C16 15.4477 15.5523 15 15 15H3Z" fill="currentColor" /> </svg>
+                                                </button> 
+                                            </td>
+                                            <td>
                                                 {
                                                     dep.status == false ? null : <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
@@ -464,6 +569,7 @@ class CRUDProductType extends React.Component {
                                     )}
                             </tbody>
                         </table>
+              
                         {/* sss */}
                         <nav>
                             <ul className='pagination'>
@@ -488,6 +594,56 @@ class CRUDProductType extends React.Component {
                     {/* ? */}
 
                 </Paper>
+                <div className="modal fade" id="data" tabIndex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className='modal-title'>Lịch sử thao tác</h5>
+                                <button id="closeModal1" type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
+                                </button>
+                            </div>
+                            <div className='modal-body'>
+                                <table id="example" className='table table-striped'>
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Tên thao tác
+                                            </th>
+                                            <th>
+                                                Ngày
+                                            </th>
+                                           
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        {History.map(dep =>
+
+                                            <tr >
+                                                <td>
+                                                  {dep.content}
+                                                </td>
+                                                <td>
+                                                    {this.DatetimeFormat(dep.datetime)}
+                                                </td>
+                                                
+
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                {id == 0 ?// eslint-disable-next-line
+                                    <button type='button' className='btn btn-primary float-start' onClick={() => this.CreateClick()}>Thêm</button> : null
+                                }
+                                {id != 0 ?// eslint-disable-next-line
+                                    <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.id)}>Sửa</button> : null
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
                     <div className="modal-dialog modal-lg modal-dialog-centered">
                         <div className="modal-content">
@@ -501,12 +657,73 @@ class CRUDProductType extends React.Component {
 
                                 <div className='input-group mb-3'>
                                     <span className='input-group-text'>
-                                        Tên loại
+                                        Tên người dùng
                                     </span>
-                                    <input type='text' className='form-control' value={Name}
-                                        onChange={(e) => this.ChangeProdcutTypeName(e)} />
+                                    <input type='text' style={{ width: '20px' }} className='form-control' value={TenNguoiDung}
+                                        onChange={(e) =>
+                                            this.setState({
+                                                TenNguoiDung: e.target.value
+                                            })
+                                        } />
+                                    <span className='input-group-text'>
+                                        Email
+                                    </span>
+                                    <input type='text' className='form-control' value={Email}
+                                        onChange={(e) =>
+                                            this.setState({
+                                                Email: e.target.value
+                                            })
+                                        } />
                                 </div>
                                 <div className='input-group mb-3'>
+                                    <span className='input-group-text'>
+                                        Số điện thoại
+                                    </span>
+                                    <input type='text' style={{ width: '48px' }} className='form-control' value={SDT}
+                                        onChange={(e) =>
+                                            this.setState({
+                                                SDT: e.target.value
+                                            })
+                                        } />
+                                    <span className='input-group-text'>
+                                        Địa chỉ
+                                    </span>
+                                    <input type='text' className='form-control' value={DiaChi}
+                                        onChange={(e) =>
+                                            this.setState({
+                                                DiaChi: e.target.value
+                                            })
+                                        } />
+                                </div>
+                                <div className='input-group mb-3'>
+                                    <span className='input-group-text'>
+                                        Tên đầy đủ
+                                    </span>
+                                    <input type='text' style={{ width: '50px' }} className='form-control' value={FullName}
+                                        onChange={(e) =>
+                                            this.setState({
+                                                FullName: e.target.value
+                                            })
+                                        } />
+                                    <span className='input-group-text'>
+                                        Ảnh
+                                    </span>
+                                    <input type="file" name="file" id="file" class="inputfile" onChange={(e)=>
+                                       this.ChangeProdcutImage(e)
+                                    } />
+
+                                </div>
+                                <div className='input-group mb-3'>
+                                    <span className='input-group-text'>
+                                        Mật khẩu
+                                    </span>
+                                    <input type='text' className='form-control' value={matkhau}
+                                        onChange={(e) =>
+                                            this.setState({
+                                                matkhau: e.target.value
+                                            })
+                                        }
+                                    />
                                     <span className='input-group-text'>
                                         Trạng thái
                                     </span>
@@ -529,10 +746,38 @@ class CRUDProductType extends React.Component {
                                     />
 
                                 </div>
+                                {/* <div className='input-group mb-3'>
+                                    <span className='input-group-text'>
+                                        Quyền
+                                    </span>
+                                    <Autocomplete
+                                        value={Quyen}
+                                        disableClearable
+                                        onChange={(event, newValue) => {
+                                            this.setState({
+                                                Status: newValue
+                                            });
+
+                                        }}
+
+                                        options={options1}
+                                        style={{ width: 300 }}
+                                        renderInput={(params) =>
+                                            <TextField {...params}
+                                                // label="Pay"
+                                                variant="outlined" />}
+                                    />
+
+                                </div> */}
 
                             </div>
                             <div class="modal-footer">
-                                <button type='button' className='btn btn-primary float-start' onClick={() => this.DeleteClick()}>Thêm</button> : null
+                                {id == 0 ?// eslint-disable-next-line
+                                    <button type='button' className='btn btn-primary float-start' onClick={() => this.CreateClick()}>Thêm</button> : null
+                                }
+                                {id != 0 ?// eslint-disable-next-line
+                                    <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.id)}>Sửa</button> : null
+                                }
                             </div>
                         </div>
                     </div>

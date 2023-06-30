@@ -6,7 +6,9 @@ import { baselightTheme } from "./theme/DefaultColors";
 import Loadable from './layouts/full/shared/loadable/Loadable';
 import React, { lazy } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+import { Space, message } from 'antd';
+import 'sweetalert2/src/sweetalert2.scss'
 function App() {
   const routing = useRoutes(Router);
   const theme = baselightTheme;
@@ -17,8 +19,9 @@ function App() {
     const userToken = JSON.parse(tokenString);
     if (userToken == null) return null;
     const now = new Date()
-    if (now.getDate() > userToken.expiry) {
+    if (now.getDate() >= userToken.expiry) {
       localStorage.clear()
+      message.error("Đăng nhập đã hết hạn")
       return null
     }
     return tokenString

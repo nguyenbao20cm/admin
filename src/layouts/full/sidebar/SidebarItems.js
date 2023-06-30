@@ -13,7 +13,7 @@ import {
   ListItemText, useTheme, styled
 } from '@mui/material';
 import PropTypes from 'prop-types'; import {
-  IconAperture, IconCopy, IconLayoutDashboard, IconLogin, IconMoodHappy, IconTypography, IconUserPlus
+  IconAperture, IconCopy, IconLayoutDashboard, IconLogin, IconMoodHappy, IconTypography, IconUserPlus, IconReport,IconUsers,IconBorderAll
 } from '@tabler/icons';
 import { ListSubheader } from '@mui/material';
 import {
@@ -25,6 +25,9 @@ const SidebarItems = () => {
   const { pathname } = useLocation();
   const pathDirect = pathname;
   const Icon = IconAperture;
+  const itemIcon123 = <IconBorderAll stroke={1.5} size="1.3rem" />;
+  const itemIcon12 = <IconUsers stroke={1.5} size="1.3rem" />;
+  const itemIcon1 = <IconReport stroke={1.5} size="1.3rem" />;
   const theme = useTheme();
   const itemIcon = <Icon stroke={1.5} size="1.3rem" />;
   const ListSubheaderStyle = styled((props) => <ListSubheader disableSticky {...props} />)(
@@ -47,13 +50,13 @@ const SidebarItems = () => {
             return <NavGroup item={item} key={item.subheader} />;
           }
           else
-            if (item.bbb == null && item.aaa == null) {
+            if (item.bbb == null && item.aaa == null && item.taikhoan ==null) {
               return (
                 <NavItem item={item} key={item.id} pathDirect={pathDirect} />
               );
             }
         })}
-        <ListSubheaderStyle>Sản phẩm</ListSubheaderStyle>
+        <ListSubheaderStyle></ListSubheaderStyle>
         <Accordion>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -69,7 +72,7 @@ const SidebarItems = () => {
                 color: 'inherit',
               }}
             >
-              {itemIcon}
+              {itemIcon123}
             </ListItemIcon>
             <ListItemText>
               <>Sản phẩm</>
@@ -85,7 +88,7 @@ const SidebarItems = () => {
             })}
           </AccordionDetails>
         </Accordion>
-        <ListSubheaderStyle>Báo cáo</ListSubheaderStyle>
+        <ListSubheaderStyle></ListSubheaderStyle>
         <Accordion>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -101,7 +104,7 @@ const SidebarItems = () => {
                 color: 'inherit',
               }}
             >
-              {itemIcon}
+              {itemIcon1}
             </ListItemIcon>
             <ListItemText>
               <>Báo cáo</>
@@ -110,6 +113,38 @@ const SidebarItems = () => {
           <AccordionDetails>
             {Menuitems.map((item) => {
               if (item.bbb == true) {
+                return (
+                  <Buttonside item={item} key={item.id} pathDirect={pathDirect} />
+                );
+              }
+            })}
+          </AccordionDetails>
+        </Accordion>
+        <ListSubheaderStyle></ListSubheaderStyle>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            id="panel1a-header"
+            button
+            component={NavLink}
+            target={''}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: '36px',
+                p: '3px 0',
+                color: 'inherit',
+              }}
+            >
+              {itemIcon12}
+            </ListItemIcon>
+            <ListItemText>
+              <>Tài khoản</>
+            </ListItemText>
+          </AccordionSummary>
+          <AccordionDetails>
+            {Menuitems.map((item) => {
+              if (item.taikhoan == true) {
                 return (
                   <Buttonside item={item} key={item.id} pathDirect={pathDirect} />
                 );

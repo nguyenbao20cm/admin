@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { variable } from '../../../Variable';
 import DashboardCard from '../../../components/shared/DashboardCard';
 import "../components/style.css"
+import { IconArrowDownRight, IconCurrencyDollar } from '@tabler/icons';
 const YearlyBreakup = () => {
   // chart color
   const theme = useTheme();
@@ -65,6 +66,7 @@ const YearlyBreakup = () => {
   };
   const seriescolumnchart = [-15, 6, 7];
   var [TotalYear, setTotalYear] = React.useState(0);
+  var [TotalYearAgo, setTotalYearAgo] = React.useState(0);
   let year = new Date();
   const getToken = (() => {
     const tokenString = localStorage.getItem('token');
@@ -90,29 +92,54 @@ const YearlyBreakup = () => {
       .then(data => {
         setTotalYear(data)
       })
+    fetch(variable.API_URL + "Inovices/ProfitForYearAgo/" + year.getFullYear() - 1, {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Authorization': `Bearer ${token.value}`
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        setTotalYearAgo(data)
+      })
   }, []);
+  var abc = new Date()
+  const errorlight = '#fdede8';
+  var nam = "Lợi nhuận trong năm " + abc.getFullYear()
   return (
-    <DashboardCard title="Lợi nhuận cả năm">
+    <DashboardCard title={nam} >
       <Grid container spacing={3}>
 
-
-
         {/* column */}
-        <Grid item xs={8} sm={8}>
+        <Grid item xs={9} sm={9}>
           <Typography variant="h5" fontWeight="700" alignContent={'center'}>
             {VND.format(TotalYear)}
           </Typography>
-          <Stack direction="row" spacing={2} mt={2} alignItems="center">
-            <Avatar sx={{ bgcolor: successlight, width: 27, height: 27 }}>
-              <IconArrowUpLeft width={20} color="#39B69A" />
-            </Avatar>
-            <Typography variant="subtitle2" fontWeight="600">
-              +9%
-            </Typography>
-            <Typography variant="subtitle2" color="textSecondary">
-              last year
-            </Typography>
-          </Stack>
+          {abc.getFullYear() == 2021 ? null :
+            <>
+              {
+                TotalYear == "" || TotalYearAgo == "" ? null :
+                  <Stack direction="row" alignItems="center">
+                    {((TotalYearAgo - TotalYear) / TotalYear) * 100 < 0 ?
+                      <Avatar sx={{ bgcolor: errorlight, width: 27, height: 27 }}>
+                        <IconArrowDownRight width={20} color="#FA896B" />
+                      </Avatar> : <Avatar sx={{ bgcolor: successlight, width: 27, height: 27 }}>
+                        <IconArrowUpLeft width={20} color="#39B69A" />
+                      </Avatar>
+                    }
+                    <Typography marginLeft="7px" variant="subtitle2" fontWeight="600" >
+
+                      {TotalYear == "" || TotalYearAgo == "" ? null : ((TotalYearAgo - TotalYear) / TotalYear) * 100}%
+                    </Typography>
+                    <Typography marginLeft="7px" variant="subtitle2" color="textSecondary">
+                      so với năm trước
+                    </Typography>
+                  </Stack>
+              }
+            </>
+          }
           {/* <Stack spacing={3} mt={5} direction="row">
             <Stack direction="row" spacing={1} alignItems="center">
               <Avatar

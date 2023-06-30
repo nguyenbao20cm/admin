@@ -6,18 +6,22 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { Alert, Space, message } from 'antd';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
-
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 import 'sweetalert2/src/sweetalert2.scss'
 class ReviewCRUD extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             AdvertisingPanel: [],
-            modelTitle: "",
+            modelTitle: "", Product: "", ProductType: "", APIProductType: [],
             Name: "",
             id: 0,
-            currentPage: 1,
-            NameinputProductType: "", image: "", Iimage: "", Status: ""
+            currentPage: 1, ProductAPI: [],
+            NameinputProductType: "", image: "", Iimage: "", Status: "", sanpham: "", loaisanpham: "", s: ""
 
         }
     }
@@ -37,7 +41,7 @@ class ReviewCRUD extends React.Component {
         return userToken
     }
     refreshList() {
-
+        const token = this.getToken();
         fetch(variable.API_URL + "AdvertisingPanels/GetAllAdvertisingPanel", {
             method: "GET",
 
@@ -46,19 +50,55 @@ class ReviewCRUD extends React.Component {
             .then(data => {
                 this.setState({ AdvertisingPanel: data });
             })
+        fetch(variable.API_URL + "Products/GetAllProduct", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+
+        })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ ProductAPI: data });
+            })
+        fetch(variable.API_URL + "ProductTypes/GetAllProductType", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+
+        })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({
+                    APIProductType: data
+                });
+            })
     }
     componentDidMount() {
         this.refreshList();
     }
-   
 
+    PRID(a) {
+        var b = this.state.ProductAPI.filter((item) => { return item.name == a ? item : null }).map((dep) => dep.id)
+
+        return b[0]
+    }
+    PRID1(a) {
+        var b = this.state.APIProductType.filter((item) => { return item.name == a ? item : null }).map((dep) => dep.id)
+
+        return b[0]
+    }
     CreateClick() {
-        if (this.state.image == "") {
-            this.loi("Dữ liệu bị trống", "Hãy nhập lại")
-        } if (this.state.Status == "") {
-            this.loi("Dữ liệu bị trống", "Hãy nhập lại")
-        } 
-        else {
+        if (this.state.image == "")
+            return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
+        if (this.state.Status == "")
+            return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
+        if (this.state.sanpham == "female") {
             const token = this.getToken();
             fetch(variable.API_URL + "AdvertisingPanels/CreateAdvertisingPanel", {
                 method: "POST",
@@ -68,147 +108,309 @@ class ReviewCRUD extends React.Component {
                     'Authorization': `Bearer ${token.value}`
                 },
                 body: JSON.stringify({
-
+                    linkProduct: this.PRID(this.state.Product),
+                    linkProductType: null,
                     status: this.state.Status == "Hiển thị" ? true : false,
                     image: this.state.image
                 })
-
             }).then(res => res.json())
                 .then(result => {
-                    if (result == "Thành công") {
+                    this.setState({
+                        s: result.data.advertisingPanelID
+                    })
+                    const token = this.getToken();
+                    const response = fetch(
+                        variable.API_URL + "AdvertisingPanels/GetAdvertisingPanelById/" + result.data.advertisingPanelID, {
+                        method: "GET",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Accept: 'application/json',
+                            'Authorization': `Bearer ${token.value}`
+                        },
+                    }
+                    ).then((response) => response.json())
+                        .then(result => {
+                        const formData = new FormData()
                         const token = this.getToken();
-                        const response = fetch(
-                            variable.API_URL + "AdvertisingPanels/GetAdvertisingPanelById/" + this.state.image, {
-                            method: "GET",
+                        var imagelName = this.state.s + ".jpg"
+                        formData.append("model", this.state.Iimage, imagelName)
+                        fetch(variable.API_URL + "AdvertisingPanels/CreateImageAdvertisingPanel", {
+                            method: "POST",
+                            body: formData
+                        }).then(res => res.json())
+                        fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + this.state.s, {
+                            method: "PUT",
                             headers: {
                                 'Content-Type': 'application/json',
                                 Accept: 'application/json',
                                 'Authorization': `Bearer ${token.value}`
                             },
-                        }
-                        ).then((response) => response.json()).then(result => {
-                            if (result.advertisingPanelID != null) {
-                                const formData = new FormData()
-                                const token = this.getToken();
-                                var imagelName = result.advertisingPanelID + ".jpg"
-                                formData.append("model", this.state.Iimage, imagelName)
-                                fetch(variable.API_URL + "AdvertisingPanels/CreateImageAdvertisingPanel", {
-                                    method: "POST",
-                                    body: formData
-                                }).then(res => res.json())
-                                fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + result.advertisingPanelID, {
-                                    method: "PUT",
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        Accept: 'application/json',
-                                        'Authorization': `Bearer ${token.value}`
-                                    },
-                                    body:
-                                        JSON.stringify({
-                                            image: imagelName,
-                                            status: result.status,
-                                          
-                                        })
-                                }).then(res => res.json())
+                            body:
+                                JSON.stringify({
+                                    image: imagelName,
+                                    status: this.state.Status == "Hiển thị" ? true : false,
+                                    linkProduct: this.PRID(this.state.Product),
+                                    linkProductType: null,
+                                })
+                        }).then(res => res.json()).then(result => {
+                            if (result == "Thành công") {
+                                document.getElementById("closeModal").click()
+                                message.success(result)
+                                window.location.reload(false);
                             }
-                        });
+                        })
 
-                    }
-                    if (result == "Thành công") {
-                        document.getElementById("closeModal").click()
-                        message.success(result)
-                        window.location.reload(false);
-                    }
+                    });
+
+
                 },
                     (error) => {
                         console.error(error)
                         message.error("Failed")
                     });
+        }
+        if (this.state.sanpham == "male") {
+            const token = this.getToken();
+            fetch(variable.API_URL + "AdvertisingPanels/CreateAdvertisingPanel", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                },
+                body: JSON.stringify({
+                    linkProduct:  null,
+                    linkProductType: this.PRID1(this.state.ProductType),
+                    status: this.state.Status == "Hiển thị" ? true : false,
+                    image: this.state.image
+                })
+            }).then(res => res.json())
+                .then(result => {
+                    this.setState({
+                        s: result.data.advertisingPanelID
+                    })
+                    const token = this.getToken();
+                    const response = fetch(
+                        variable.API_URL + "AdvertisingPanels/GetAdvertisingPanelById/" + result.data.advertisingPanelID, {
+                        method: "GET",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Accept: 'application/json',
+                            'Authorization': `Bearer ${token.value}`
+                        },
+                    }
+                    ).then((response) => response.json())
+                        .then(result => {
+                            const formData = new FormData()
+                            const token = this.getToken();
+                            var imagelName = this.state.s + ".jpg"
+                            formData.append("model", this.state.Iimage, imagelName)
+                            fetch(variable.API_URL + "AdvertisingPanels/CreateImageAdvertisingPanel", {
+                                method: "POST",
+                                body: formData
+                            }).then(res => res.json())
+                            fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + this.state.s, {
+                                method: "PUT",
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    Accept: 'application/json',
+                                    'Authorization': `Bearer ${token.value}`
+                                },
+                                body:
+                                    JSON.stringify({
+                                        image: imagelName,
+                                        status: this.state.Status == "Hiển thị" ? true : false,
+                                        linkProduct: null,
+                                        linkProductType: this.PRID1(this.state.ProductType),
+                                    })
+                            }).then(res => res.json()).then(result => {
+                                if (result == "Thành công") {
+                                    document.getElementById("closeModal").click()
+                                    message.success(result)
+                                    window.location.reload(false);
+                                }
+                            })
 
+                        });
+
+
+                },
+                    (error) => {
+                        console.error(error)
+                        message.error("Failed")
+                    });
         }
 
     }
     UpdateClick(id) {
-        if (this.state.image == "") 
-           return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
-         if (this.state.Status == "") 
-           return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
-        
+        if (this.state.image == "")
+            return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
+        if (this.state.Status == "")
+            return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
+
         const token = this.getToken();
         var imagelName = id + ".jpg"
-        if (this.state.image == imagelName) {
-            fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + id, {
-                method: "PUT",
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Authorization': `Bearer ${token.value}`
-                },
-                body:
-                
-                JSON.stringify({
-                    image: imagelName,
-                    status: this.state.Status == "Hiển thị" ? true : false,
-                })
-            }).then(res => res.json())
-                .then(result => {
-                    
-                    if (result == "Thành công") {
-                        message.success(result)
-                        window.location.reload(false);
-                    }
-                    else
-                        message.error(result)
-                },
-                    (error) => {
-                      
-                        message.error("Failed")
-                    });
+        if (this.state.sanpham == "female") {
+            if (this.state.image == imagelName) {
+                fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + id, {
+                    method: "PUT",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
+                    },
+                    body:
+
+                        JSON.stringify({
+                            image: imagelName,
+                            status: this.state.Status == "Hiển thị" ? true : false,
+                            linkProduct: this.PRID(this.state.Product) ,
+                            linkProductType: null  ,
+                        })
+                }).then(res => res.json())
+                    .then(result => {
+
+                        if (result == "Thành công") {
+                            message.success(result)
+                            this.refreshList()
+                            document.getElementById("closeModal").click()
+                        }
+                        else
+                            message.error(result)
+                    },
+                        (error) => {
+
+                            message.error("Failed")
+                        });
+            }
+            else if (this.state.image == "") {
+                message.error("Chưa nhập hình ảnh")
+            } else {
+
+                const formData = new FormData()
+                var imagelName = id + ".jpg"
+
+                formData.append("model", this.state.Iimage, imagelName)
+
+                fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + id, {
+                    method: "PUT",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
+                    },
+                    body:
+                        JSON.stringify({
+                            image: imagelName,
+                            status: this.state.Status == "Hiển thị" ? true : false,
+                            linkProduct: this.PRID(this.state.Product),
+                            linkProductType: null,
+                        })
+                }).then(res => res.json())
+                    .then(result => {
+                        if (result === "Thành công") {
+                            fetch(variable.API_URL + "AdvertisingPanels/CreateImageAdvertisingPanel", {
+                                method: "POST",
+                                body: formData
+                            }).then(res => res.json())
+
+                        }
+
+                        if (result == "Thành công") {
+                            document.getElementById("closeModal").click()
+                            message.success(result)
+                            window.location.reload(false);
+                        }
+                        else
+                            message.error(result)
+                    },
+                        (error) => {
+                            console.error(error)
+                            message.error("Failed")
+                        });
+
+            }
         }
-        else if (this.state.image == "") {
-            message.error("Chưa nhập hình ảnh")
-        } else {
-           
-            const formData = new FormData()
-            var imagelName = id + ".jpg"
+        if (this.state.sanpham == "male") {
+            if (this.state.image == imagelName) {
+                fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + id, {
+                    method: "PUT",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
+                    },
+                    body:
 
-            formData.append("model", this.state.Iimage, imagelName)
+                        JSON.stringify({
+                            image: imagelName,
+                            status: this.state.Status == "Hiển thị" ? true : false,
+                            linkProduct: null,
+                            linkProductType: this.PRID1(this.state.ProductType),
+                        })
+                }).then(res => res.json())
+                    .then(result => {
 
-            fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + id, {
-                method: "PUT",
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Authorization': `Bearer ${token.value}`
-                },
-                body:
-                    JSON.stringify({
-                        image: imagelName,
-                        status: this.state.Status == "Hiển thị" ? true : false,
-                    })
-            }).then(res => res.json())
-                .then(result => {
-                    if (result === "Thành công") {
-                        fetch(variable.API_URL + "AdvertisingPanels/CreateImageAdvertisingPanel", {
-                            method: "POST",
-                            body: formData
-                        }).then(res => res.json())
+                        if (result == "Thành công") {
+                            message.success(result)
+                            this.refreshList()
+                            document.getElementById("closeModal").click()
+                        }
+                        else
+                            message.error(result)
+                    },
+                        (error) => {
 
-                    }
-                   
-                    if (result == "Thành công") {
-                        document.getElementById("closeModal").click()
-                        message.success(result)
-                        window.location.reload(false);
-                    }
-                    else
-                        message.error(result)
-                },
-                    (error) => {
-                        console.error(error)
-                        message.error("Failed")
-                    });
+                            message.error("Failed")
+                        });
+            }
+            else if (this.state.image == "") {
+                message.error("Chưa nhập hình ảnh")
+            } else {
 
+                const formData = new FormData()
+                var imagelName = id + ".jpg"
+
+                formData.append("model", this.state.Iimage, imagelName)
+
+                fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + id, {
+                    method: "PUT",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
+                    },
+                    body:
+                        JSON.stringify({
+                            image: imagelName,
+                            status: this.state.Status == "Hiển thị" ? true : false,
+                            linkProduct: null,
+                            linkProductType: this.PRID1(this.state.ProductType),
+                        })
+                }).then(res => res.json())
+                    .then(result => {
+                        if (result === "Thành công") {
+                            fetch(variable.API_URL + "AdvertisingPanels/CreateImageAdvertisingPanel", {
+                                method: "POST",
+                                body: formData
+                            }).then(res => res.json())
+
+                        }
+
+                        if (result == "Thành công") {
+                            document.getElementById("closeModal").click()
+                            message.success(result)
+                            window.location.reload(false);
+                        }
+                        else
+                            message.error(result)
+                    },
+                        (error) => {
+                            console.error(error)
+                            message.error("Failed")
+                        });
+
+            }
         }
 
     }
@@ -240,19 +442,23 @@ class ReviewCRUD extends React.Component {
 
     addClick() {
         this.setState({
-            modelTitle: "Add AdvertisingPanel",
+            modelTitle: "Thêm mới",
             id: 0,
             Name: "",
             image: "",
-            Status:"",
+            Status: "",
+            Product: "",
+            ProductType: "",sanpham :""
         });
     }
     EditClick(dep) {
         this.setState({
-            modelTitle: "Edit AdvertisingPanel",
+            modelTitle: "Chỉnh sửa",
             id: dep.advertisingPanelID,
             Name: dep.name,
             image: dep.image,
+            Product: dep.product != null?(dep.product).name:null,
+            ProductType: dep.productType != null ? (dep.productType).name : null,
             Status:
                 dep.status == true ?
                     "Hiển thị" : "Ẩn"
@@ -283,7 +489,7 @@ class ReviewCRUD extends React.Component {
     ChangeNameinputProductType(value) {
         this.setState({
             NameinputProductType: value.target.value,
-            currentPage: 1 
+            currentPage: 1
         });
 
     }
@@ -344,13 +550,21 @@ class ReviewCRUD extends React.Component {
 
         const {
             AdvertisingPanel,
-            modelTitle,
-            id,
+            modelTitle, sanpham, loaisanpham,
+            id, ProductAPI,
             Name, Status,
             currentPage,
-            image
+            image, Product, ProductType, APIProductType
         } = this.state;
         const options = ['Hiển thị', 'Ẩn']
+        const optionProductType = []
+        ProductAPI.forEach(element => {
+            optionProductType.push(element.name)
+        });
+        const optionProductType1 = []
+        APIProductType.forEach(element => {
+            optionProductType1.push(element.name)
+        });
         const recordsPerPage = 5;
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
@@ -359,30 +573,30 @@ class ReviewCRUD extends React.Component {
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
         return (
             <>
-                
-                <div className="card" style={{ width: "135px" ,float:"right"}}>
-                        <div className="card-body">
-                            <label>Trạng thái:</label>
-                            <div className>
-                                <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
-                                <label for="All">Tất cả</label><br />
-                                <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
-                                <label for="True">Hiển thị</label><br />
-                                <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />
-                                <label for="False">Ẩn</label>
-                            </div>
+
+                <div className="card" style={{ width: "135px", float: "right" }}>
+                    <div className="card-body">
+                        <label>Trạng thái:</label>
+                        <div className>
+                            <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
+                            <label for="All">Tất cả</label><br />
+                            <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
+                            <label for="True">Hiển thị</label><br />
+                            <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />
+                            <label for="False">Ẩn</label>
+                        </div>
                     </div>
-            
+
                     <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
                         onClick={() => this.addClick()}>
-                       Thêm quảng cáo
-                        </button>
-                    
+                        Thêm quảng cáo
+                    </button>
+
                 </div>
 
-         
 
-              
+
+
                 <Paper sx={{ width: '100%', overflow: 'hidden' }}>
 
                     <div>
@@ -396,6 +610,12 @@ class ReviewCRUD extends React.Component {
                                     </th>
                                     <th>
                                         Hình ảnh
+                                    </th>
+                                    <th>
+                                        Link tới sản phẩm
+                                    </th>
+                                    <th>
+                                        Link tới loại sản phẩm
                                     </th>
                                     <th>
                                         Trạng thái
@@ -421,7 +641,13 @@ class ReviewCRUD extends React.Component {
                                                 {dep.advertisingPanelID}
                                             </td>
                                             <td>
-                                                <img style={{ width: 50 }} src={require('../../../assets/images/AdvertisingPanel/' + dep.image)} />
+                                                <img style={{ width: 50 }} src={'https://localhost:7067/wwwroot/Image/AdvertisingPanel/' + dep.image} />
+                                            </td>
+                                            <td>
+                                                {dep.product != null ? (dep.product).name:null}
+                                            </td>
+                                            <td>
+                                                {dep.productType != null ? (dep.productType).name:null}
                                             </td>
                                             <td>
 
@@ -466,6 +692,67 @@ class ReviewCRUD extends React.Component {
                                             <input type='text' className='form-control' value={image}
                                                 onChange={(e) => this.ChangeProdcutImage(e)} readOnly />
                                             <input type="file" id="img" name="img" accept="image/*" onChange={(e) => this.ChangeProdcutImage(e)}></input>
+                                        </div>
+                                        <div className='input-group mb-3'>
+                                            <FormControl>
+                                                <FormLabel id="demo-controlled-radio-buttons-group">Link tới</FormLabel>
+                                                <RadioGroup
+                                                    aria-labelledby="demo-controlled-radio-buttons-group"
+                                                    name="controlled-radio-buttons-group"
+                                                    value={sanpham}
+                                                    onChange={(e) => {
+                                                        this.setState({
+                                                            sanpham: e.target.value
+                                                        })
+                                                    }}
+                                                >
+                                                    <FormControlLabel value="female" control={<Radio />} label="Sản phẩm" />
+                                                    {
+                                                        this.state.sanpham == "female" ?
+                                                            <Autocomplete
+                                                                disableClearable
+                                                                value={Product}
+                                                                onChange={(event, newValue) => {
+                                                                    this.setState({
+                                                                        Product: newValue
+                                                                    });
+                                                                }}
+
+                                                                options={optionProductType}
+                                                                style={{ width: 300 }}
+                                                                renderInput={(params) =>
+                                                                    <TextField {...params}
+                                                                        // label="Pay"
+                                                                        variant="outlined" />}
+                                                            />
+
+                                                            : null
+                                                    }
+                                                    <FormControlLabel value="male" control={<Radio />} label="Loại sản phẩm" />
+                                                    {
+                                                        this.state.sanpham == "male" ?
+                                                            <Autocomplete
+                                                                disableClearable
+                                                                value={ProductType}
+                                                                onChange={(event, newValue) => {
+                                                                    this.setState({
+                                                                        ProductType: newValue
+                                                                    });
+                                                                }}
+
+                                                                options={optionProductType1}
+                                                                style={{ width: 300 }}
+                                                                renderInput={(params) =>
+                                                                    <TextField {...params}
+                                                                        // label="Pay"
+                                                                        variant="outlined" />}
+                                                            />
+
+                                                            : null
+                                                    }
+                                                </RadioGroup>
+                                            </FormControl>
+
                                         </div>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>

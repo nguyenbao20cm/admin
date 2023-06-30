@@ -2,19 +2,18 @@ import React from 'react';
 import { Typography } from '@mui/material';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
-
-import ReportDay from "../ReportDay/ReportDayCRUD"
-const SamplePage = () => {
+import { Box } from '@mui/material';
+import History from "../History/History"
+const ReviewList = () => {
     return (
-        <PageContainer title="Báo cáo theo ngày" description="this is Sample page">
+        <PageContainer title="Lịch sử thao tác " description="this is Sample page">
 
-            <DashboardCard title="Báo cáo lợi nhuận">
+            <DashboardCard title="Lịch sử thao tác người dùng">
                 <Typography paragraph>
-                    <ReportDay />
+                    <History />
                 </Typography>
             </DashboardCard>
         </PageContainer>
     );
 };
-
-export default SamplePage;
+export default ReviewList;

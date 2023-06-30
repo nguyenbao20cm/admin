@@ -10,9 +10,9 @@ import {
   ListItemIcon,
   ListItemText
 } from '@mui/material';
-
-import { IconListCheck, IconMail, IconUser } from '@tabler/icons';
-
+import { NavLink } from 'react-router-dom';
+import { IconListCheck, IconMail, IconUser,IconHistory } from '@tabler/icons';
+ import { useNavigate } from 'react-router-dom';
 import ProfileImg from 'src/assets/images/profile/user-1.jpg';
 
 const Profile = () => {
@@ -20,6 +20,7 @@ const Profile = () => {
   const handleClick2 = (event) => {
     setAnchorEl2(event.currentTarget);
   };
+  const history = useNavigate();
   const handleClose2 = () => {
     setAnchorEl2(null);
   };
@@ -72,23 +73,27 @@ const Profile = () => {
           <ListItemIcon>
             <IconUser width={20} />
           </ListItemIcon>
-          <ListItemText>My Profile</ListItemText>
+          <ListItemText onClick={() => {
+            history("/TaiKhoan")
+            }}>Tài khoản</ListItemText>
         </MenuItem>
-        <MenuItem>
+        {/* <MenuItem>
           <ListItemIcon>
             <IconMail width={20} />
           </ListItemIcon>
           <ListItemText>My Account</ListItemText>
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem>
           <ListItemIcon>
-            <IconListCheck width={20} />
+            <IconHistory width={20} />
           </ListItemIcon>
-          <ListItemText>My Tasks</ListItemText>
+          <ListItemText onClick={() => {
+            history("/LichSuThaoTac")
+          }}>Lịch sử thao tác</ListItemText>
         </MenuItem>
         <Box mt={1} py={1} px={2}>
           <Button to="/auth/login" variant="outlined" color="primary" component={Link} fullWidth onClick={handleSignOut}>
-            Logout
+            Đăng xuất
           </Button>
         </Box>
       </Menu>

@@ -6,7 +6,7 @@ import Loadable from '../../layouts/full/shared/loadable/Loadable';
 import { ConstructionOutlined, Login } from '@mui/icons-material';
 import { Alert, Space, message } from 'antd';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
-import "./Invoice.css"
+
 import 'sweetalert2/src/sweetalert2.scss'
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -69,7 +69,7 @@ class InvoiceCRUD extends React.Component {
 
             .then(response => response.json())
             .then(data => {
-                this.setState({currentPage:1, Invoice: data, APIInvoice: data });
+                this.setState({ currentPage: 1, Invoice: data, APIInvoice: data });
             })
     }
     refreshList() {
@@ -1293,37 +1293,6 @@ class InvoiceCRUD extends React.Component {
                         </div>
 
                     </div>
-                    <div className="card" style={{ width: "217px" }}>
-                        <div className="card-body">
-                            <label>Trạng thái:</label>
-                            <div className>
-                                <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
-                                <label for="All">Tất cả</label><br />
-                                <input type="radio" id="All1" name="fav_language" value="All" onClick={() => this.CheckHuy()} />
-                                <label for="All">Đã hủy</label><br />
-                                <input type="radio" id="All2" name="fav_language" value="True" onClick={() => this.CheckCXN()} />
-                                <label for="True">Chưa xác nhận</label><br />
-                                <input type="radio" id="All3" name="fav_language" value="False" onClick={() => this.CheckHT()} />
-                                <label for="False">Hoàn tất</label><br />
-                                <input type="radio" id="All4" name="fav_language" value="False" onClick={() => this.CheckCB()} />
-                                <label for="False">Đang chuẩn bị</label><br />
-                                <input type="radio" id="All5" name="fav_language" value="False" onClick={() => this.CheckDG()} />
-                                <label for="False">Đang giao</label><br />
-                                <input type="radio" id="All6" name="fav_language" value="False" onClick={() => this.CheckDangG()} />
-                                <label for="False">Đã giao</label><br />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
-                        <div className="card-body">
-                            <div className="form-group">
-                                <label>Tìm kiếm theo Id Hóa đơn:</label>
-                                <div><input className="form-control w-100" value={ChangeId} onChange={(e) => this.ChangeId(e)} type="text" placeholder="Id" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
                 <Dialog
                     open={open}
@@ -1359,48 +1328,14 @@ class InvoiceCRUD extends React.Component {
                         <table id="example" className='table table-striped'>
                             <thead>
                                 <tr>
+                                 
                                     <th>
-                                        Id
+                                        Nội dung
                                     </th>
                                     <th>
-                                        Id Tài khoản
+                                        Ngày thực hiện
                                     </th>
-                                    <th>
-                                        Tên người nhận
-                                    </th>
-                                    <th>
-                                        Ngày lập
-                                    </th>
-                                    <th>
-                                        Địa chỉ giao hàng
-                                    </th>
-                                    <th>
-                                        SĐT
-                                    </th>
-                                    <th>
-                                        Tổng
-                                    </th>
-                                    {/* <th>
-                                        Status
-                                    </th> */}
-                                    <th>
-                                        Thanh toán
-                                    </th>
-                                    <th>
-                                        Phương thức Thanh toán
-                                    </th>
-                                    <th>
-                                        Trạng thái
-                                    </th>
-                                    <th>
-                                        Hủy
-                                    </th>
-                                    <th>
-                                        Sửa
-                                    </th>
-                                    <th>
-                                        Xem
-                                    </th>
+                                    
 
                                 </tr>
                             </thead>
@@ -1416,75 +1351,10 @@ class InvoiceCRUD extends React.Component {
                                                 {dep.id}
                                             </td>
                                             <td>
-                                                {dep.accountId}
-                                            </td>
-                                            <td>
-                                                {dep.nameCustomer}
-                                            </td>
-                                            <td>
                                                 {
                                                     this.DatetimeFormat(dep.issuedDate)
                                                 }
                                             </td>
-                                            <td>
-                                                {dep.shippingAddress}
-                                            </td>
-                                            <td>
-                                                {dep.shippingPhone}
-                                            </td>
-                                            <td>
-                                                {VND.format(dep.total)}
-                                            </td>
-                                            {/* <td>
-                                                {dep.status == true ?
-                                                    "True" : "False"
-                                                }
-                                            </td> */}
-                                            <td>
-                                                {dep.pay == true ?
-                                                    "Đã thanh toán" : "Chưa thanh toán"
-                                                }
-                                            </td>
-                                            <td>
-                                                {dep.paymentMethods == true ?
-                                                    "COD" : "Chuyển khoản"
-                                                }
-                                            </td>
-                                            <td>
-                                                {
-                                                    dep.orderStatus == 1 ? "Chưa xác nhận" : dep.orderStatus == 2 ? "Đang chuẩn bị" : dep.orderStatus == 3 ? "Đang giao" : dep.orderStatus == 4 ? "Đã hủy" : dep.orderStatus == 5 ? "Hoàn tất" : dep.orderStatus == 6 ? "Đã giao" : null
-                                                }
-                                            </td>
-                                            {/* //1 chưa xác nhận //2 la chua đang chuẩn bị //3 đang giao//6 đã giao//4 đã hủy,//5hoàn tất */}
-                                            <td>
-                                                {dep.orderStatus == 5 ?
-                                                    null
-                                                    : dep.orderStatus == 4 ? null : <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
-                                                        </svg>
-                                                    </button>}
-                                            </td>
-                                            <td>
-                                                {
-
-                                                    dep.orderStatus == 4 || dep.orderStatus == 5 ? null : <button type='button' className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#exampleModal'
-                                                        onClick={() => this.EditClick(dep)}>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
-                                                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                                            <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-                                                        </svg>
-                                                    </button>
-                                                }
-
-                                            </td>
-                                            <td>
-                                                <button type='button' className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#exampleModalCenter'
-                                                    onClick={() => this.DetailsClick(dep)}>
-                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" > <path d="M2 8C2 7.44772 2.44772 7 3 7H21C21.5523 7 22 7.44772 22 8C22 8.55228 21.5523 9 21 9H3C2.44772 9 2 8.55228 2 8Z" fill="currentColor" /> <path d="M2 12C2 11.4477 2.44772 11 3 11H21C21.5523 11 22 11.4477 22 12C22 12.5523 21.5523 13 21 13H3C2.44772 13 2 12.5523 2 12Z" fill="currentColor" /> <path d="M3 15C2.44772 15 2 15.4477 2 16C2 16.5523 2.44772 17 3 17H15C15.5523 17 16 16.5523 16 16C16 15.4477 15.5523 15 15 15H3Z" fill="currentColor" /> </svg>
-                                                </button>
-                                            </td>
-
                                         </tr>
                                     )}
                             </tbody>
@@ -1497,8 +1367,6 @@ class InvoiceCRUD extends React.Component {
                                         <h5 class="modal-title" id="exampleModalLongTitle">Details Invoice</h5>
                                         <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
                                         </button>
-
-
                                     </div>
                                     <div class="modal-body">
                                         <table id="example" className='table table-striped'>

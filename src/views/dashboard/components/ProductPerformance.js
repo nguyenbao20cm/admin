@@ -9,51 +9,45 @@ import {
     Chip
 } from '@mui/material';
 import DashboardCard from '../../../components/shared/DashboardCard';
+import { useEffect } from 'react';
+import { variable } from '../../../Variable';
 
-const products = [
-    {
-        id: "1",
-        name: "Sunil Joshi",
-        post: "Web Designer",
-        pname: "Elite Admin",
-        priority: "Low",
-        pbg: "primary.main",
-        budget: "3.9",
-    },
-    {
-        id: "2",
-        name: "Andrew McDownland",
-        post: "Project Manager",
-        pname: "Real Homes WP Theme",
-        priority: "Medium",
-        pbg: "secondary.main",
-        budget: "24.5",
-    },
-    {
-        id: "3",
-        name: "Christopher Jamil",
-        post: "Project Manager",
-        pname: "MedicalPro WP Theme",
-        priority: "High",
-        pbg: "error.main",
-        budget: "12.8",
-    },
-    {
-        id: "4",
-        name: "Nirav Joshi",
-        post: "Frontend Engineer",
-        pname: "Hosting Press HTML",
-        priority: "Critical",
-        pbg: "success.main",
-        budget: "2.4",
-    },
-];
 
 
 const ProductPerformance = () => {
+
+    const getToken = (() => {
+        const tokenString = localStorage.getItem('token');
+        const userToken = JSON.parse(tokenString);
+        return userToken
+    })
+    var [products, setInvoiceTotalMonth] = React.useState([]);
+
+    useEffect(() => {
+        const abc = new Date()
+        var month = abc.getMonth() + 1;
+        var year = abc.getFullYear()
+        const token = getToken();
+        fetch(variable.API_URL + "Products/GetTop10BestSeller", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                setInvoiceTotalMonth(data)
+            })
+    }, []);
+    const VND = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
     return (
 
-        <DashboardCard title="Product Performance">
+        <DashboardCard title="Các sản phẩm bán chạy">
             <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
                 <Table
                     aria-label="simple table"
@@ -71,22 +65,22 @@ const ProductPerformance = () => {
                             </TableCell>
                             <TableCell>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Assigned
+                                    SKU
                                 </Typography>
                             </TableCell>
                             <TableCell>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Name
+                                    Tên
                                 </Typography>
                             </TableCell>
                             <TableCell>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Priority
+                                    Số lượt bán
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Budget
+                                    Giá
                                 </Typography>
                             </TableCell>
                         </TableRow>
@@ -128,22 +122,22 @@ const ProductPerformance = () => {
                                 </TableCell>
                                 <TableCell>
                                     <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-                                        {product.pname}
+                                        {product.sku}
                                     </Typography>
                                 </TableCell>
                                 <TableCell>
                                     <Chip
                                         sx={{
                                             px: "4px",
-                                            backgroundColor: product.pbg,
-                                            color: "#fff",
+                                            // backgroundColor: product.pbg,
+                                            // color: "#fff",
                                         }}
                                         size="small"
-                                        label={product.priority}
+                                        label={product.countSell}
                                     ></Chip>
                                 </TableCell>
                                 <TableCell align="right">
-                                    <Typography variant="h6">${product.budget}k</Typography>
+                                    <Typography variant="h6">{VND.format(product.price)}</Typography>
                                 </TableCell>
                             </TableRow>
                         ))}

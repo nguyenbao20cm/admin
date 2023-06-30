@@ -3,14 +3,14 @@ import { Typography } from '@mui/material';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
 
-import ReportDay from "../ReportDay/ReportDayCRUD"
+import Account from "../Account/AccountStaffCRUD"
 const SamplePage = () => {
     return (
-        <PageContainer title="Báo cáo theo ngày" description="this is Sample page">
+        <PageContainer title="Tài khoản nhân viên" description="this is Sample page">
 
-            <DashboardCard title="Báo cáo lợi nhuận">
+            <DashboardCard title="Tài khoản nhân viên">
                 <Typography paragraph>
-                    <ReportDay />
+                    <Account />
                 </Typography>
             </DashboardCard>
         </PageContainer>

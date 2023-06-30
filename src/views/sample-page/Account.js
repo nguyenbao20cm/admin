@@ -6,9 +6,9 @@ import DashboardCard from '../../components/shared/DashboardCard';
 import Account from "../Account/AccountCRUD"
 const SamplePage = () => {
     return (
-        <PageContainer title="Sample Page" description="this is Sample page">
+        <PageContainer title="Tài khoản" description="this is Sample page">
 
-            <DashboardCard title="Danh sách sản phẩm ">
+            <DashboardCard title="Tài khoản khách hàng ">
                 <Typography paragraph>
                     <Account />
                 </Typography>

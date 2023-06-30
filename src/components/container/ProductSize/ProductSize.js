@@ -12,7 +12,7 @@ class ReviewCRUD extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            ProductSizes: [], ProductType: [], StatusCheck: "",
+            ProductSizes: [], ProductType: [], StatusCheck: "", nhacungcap: "", ProductType1: [],
             modelTitle: "",
             Name: "",
             id: 0,
@@ -60,6 +60,19 @@ class ReviewCRUD extends React.Component {
             .then(data => {
                 this.setState({ ProductType: data });
             })
+        fetch(variable.API_URL + "Suppliers/GetAllSupplier", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+
+        })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ ProductType1: data });
+            })
     }
     componentDidMount() {
         this.refreshList();
@@ -88,6 +101,7 @@ class ReviewCRUD extends React.Component {
                 importPrice: this.state.ImportPrice,
                 // IssuedDate: Date.now(),
                 name: this.state.Name,
+                supplierId:this.PRID1(this.state.nhacungcap),
                 stock: this.state.Stock,
                 ProductId:  this.PRID(this.state.ProductId),
                 status: this.state.Status == "Hiển thị" ? true : false,
@@ -138,6 +152,7 @@ class ReviewCRUD extends React.Component {
                     importPrice: this.state.ImportPrice,
                     name: this.state.Name,
                     stock: this.state.Stock,
+                    supplierId: this.PRID1(this.state.nhacungcap),
                     ProductId: this.PRID(this.state.ProductId),
                     status: this.state.Status == "Hiển thị" ? true : false,
                 })
@@ -216,6 +231,10 @@ class ReviewCRUD extends React.Component {
     }
     PRID(a) {
         var b = this.state.ProductType.filter((item) => { return item.name == a ? item : null }).map((dep) => dep.id)
+        return b[0]
+    }
+    PRID1(a) {
+        var b = this.state.ProductType1.filter((item) => { return item.name == a ? item : null }).map((dep) => dep.id)
         return b[0]
     }
     NextPage(id, npage) {
@@ -381,7 +400,7 @@ class ReviewCRUD extends React.Component {
 
         const {
             ProductSizes,
-            modelTitle,
+            modelTitle, nhacungcap, ProductType1,
             id,
             Name,
             currentPage, ProductType,
@@ -393,6 +412,10 @@ class ReviewCRUD extends React.Component {
         const optionProductType = []
         ProductType.forEach(element => {
             optionProductType.push(element.name)
+        });
+        const optionProductTyp1 = []
+        ProductType1.forEach(element => {
+            optionProductTyp1.push(element.name)
         });
         const recordsPerPage = 5;
         const lastIndex = currentPage * recordsPerPage;
@@ -458,6 +481,9 @@ class ReviewCRUD extends React.Component {
                                         Số lượng kho
                                     </th>
                                     <th>
+                                        Nhà cung cấp 
+                                    </th>
+                                    <th>
                                         Ngày nhập
                                     </th>
                                     <th>
@@ -471,7 +497,7 @@ class ReviewCRUD extends React.Component {
                                         Sửa
                                     </th>
                                     <th>
-                                        Xóa
+                                        Ẩn
                                     </th>
                                 </tr>
                             </thead>
@@ -497,6 +523,9 @@ class ReviewCRUD extends React.Component {
                                                 {dep.stock}
                                             </td>
                                             <td>
+                                                {dep.supplier.name}
+                                            </td>
+                                            <td>
                                                 {
                                                     this.DatetimeFormat(dep.issuedDate)
                                                 }
@@ -520,7 +549,7 @@ class ReviewCRUD extends React.Component {
                                                 </button>
                                             </td>
                                             <td>
-                                                <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.reviewId)}>
+                                                <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
                                                         <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
                                                     </svg>
@@ -561,6 +590,27 @@ class ReviewCRUD extends React.Component {
                                                 }}
 
                                                 options={optionProductType}
+                                                style={{ width: 300 }}
+                                                renderInput={(params) =>
+                                                    <TextField {...params}
+                                                        // label="Pay"
+                                                        variant="outlined" />}
+                                            />
+                                        </div>
+                                        <div className='input-group mb-3'>
+                                            <span className='input-group-text'>
+                                                Của nhà cung cấp
+                                            </span>
+                                            <Autocomplete
+                                                disableClearable
+                                                value={nhacungcap}
+                                                onChange={(event, newValue) => {
+                                                    this.setState({
+                                                        nhacungcap: newValue
+                                                    });
+                                                }}
+
+                                                options={optionProductTyp1}
                                                 style={{ width: 300 }}
                                                 renderInput={(params) =>
                                                     <TextField {...params}

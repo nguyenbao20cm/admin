@@ -56,7 +56,10 @@ const SalesOverview = () => {
     const theme = useTheme();
     const primary = theme.palette.primary.main;
     const secondary = theme.palette.secondary.main;
-
+    const VND = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
     // chart
     const optionscolumnchart = {
         chart: {
@@ -102,7 +105,11 @@ const SalesOverview = () => {
             },
         },
         yaxis: {
-            tickAmount: 4,
+            labels: {
+                formatter: (val) => {
+                    return VND.format(val)
+                }
+            }
         },
         xaxis: {
             categories: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
@@ -126,7 +133,7 @@ const SalesOverview = () => {
         },
     ];
 
-
+   
 
     return (
         <>

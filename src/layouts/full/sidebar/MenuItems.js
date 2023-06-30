@@ -1,5 +1,6 @@
 import {
-  IconAperture, IconCopy, IconLayoutDashboard, IconLogin, IconMoodHappy, IconTypography, IconUserPlus
+  IconAperture, IconCopy, IconLayoutDashboard, IconLogin, IconMoodHappy, IconTypography, IconUserPlus,
+  IconUser, IconSettings, IconReport,IconFileInvoice,IconMessage,IconAd2,IconDiscount,IconTicket,IconHistory
 } from '@tabler/icons';
 
 import { uniqueId } from 'lodash';
@@ -38,64 +39,88 @@ const Menuitems = [
     href: '/ProductSize',
   },
   {
+    id: uniqueId(),
+    title: 'Nhà cung cấp',
+    icon: IconAperture, bbb: false,
+    href: '/NhaCungCapSanPham',
+  },
+  {
     navlabel: true,
     subheader: 'Hóa đơn',
   },
   {
     id: uniqueId(),
     title: 'Hóa đơn',
-    icon: IconAperture,
+    icon: IconFileInvoice,
     href: '/InvoicePage',
   },
   {
     id: uniqueId(),
     title: 'Bình luận',
-    icon: IconAperture,
+    icon: IconMessage,
     href: '/ReviewPage',
     aaa: true,
   },
   {
     id: uniqueId(),
     title: 'Panner Quảng cáo',
-    icon: IconAperture,
+    icon: IconAd2,
     href: '/AdvertisingPanel', aaa: true,
   },
   {
     id: uniqueId(),
     title: 'Giảm giá',
-    icon: IconAperture,
+    icon: IconDiscount,
     href: '/Disscount', aaa: true,
   },
   {
     id: uniqueId(),
-    title: 'Quản lý tài khoản',
+    title: 'Tài khoản khách hàng',
     icon: IconAperture,
-    href: '/Account', aaa: true,
+    href: '/Account', taikhoan: true,
   },
-  {
+  { 
     id: uniqueId(),
     title: 'Quản lý Voucher',
-    icon: IconAperture,
+    icon: IconTicket,
     href: '/Voucher', aaa: true,
   },
   {
     id: uniqueId(),
-    title: 'Báo cáo theo ngày',
+    title: 'Lịch sử người dùng',
+    icon: IconHistory,
+    href: '/LichSuThaoTac', aaa: true,
+  },
+  {
+    id: uniqueId(),
+    title: 'Cài đặt',
+    icon: IconSettings,
+    href: '/TaiKhoan', aaa: true,
+  },
+  {
+    id: uniqueId(),
+    title: 'Tài khoản nhân viên',
     icon: IconAperture,
+    href: '/TaiKhoanNhanVien', taikhoan: true,
+  },
+  {
+    id: uniqueId(),
+    title: 'Báo cáo theo ngày',
+    icon: IconReport,
     href: '/ReportDay',
     bbb:true
   },
   {
     id: uniqueId(),
     title: 'Báo cáo theo tháng',
-    icon: IconAperture,
+    icon: IconReport,
     href: '/ReportWeek',
     bbb: true
   },
   {
     id: uniqueId(),
     title: 'Báo cáo theo năm',
-    icon: IconAperture,
+    icon: IconReport,
     href: '/ReportYear',
     bbb: true
   },
