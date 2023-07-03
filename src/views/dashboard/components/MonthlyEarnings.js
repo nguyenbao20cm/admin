@@ -3,9 +3,10 @@ import Chart from 'react-apexcharts';
 import { useTheme } from '@mui/material/styles';
 import { Stack, Typography, Avatar, Fab, Container } from '@mui/material';
 import { IconArrowDownRight, IconCurrencyDollar } from '@tabler/icons';
-import DashboardCard from '../../../components/shared/DashboardCard';
+import DashboardCard from '../../../components/shared/DashboardCard1';
 import { useEffect } from 'react';
 import { variable } from '../../../Variable';
+import CountUp from 'react-countup';
 const MonthlyEarnings = () => {
   // chart color
   const theme = useTheme();
@@ -24,17 +25,13 @@ const MonthlyEarnings = () => {
     var month = abc.getMonth() + 1;
     var year = abc.getFullYear()
     const token = getToken();
-    fetch(variable.API_URL + "Inovices/GetMonthInvoice", {
-      method: "POST",
+    fetch(variable.API_URL + "ProductSizes/GetImportDayAllYear/" + year, {
+      method: "GET",
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
         'Authorization': `Bearer ${token.value}`
       },
-      body: JSON.stringify({
-        year: year,
-        month: month,
-      })
     })
       .then(response => response.json())
       .then(data => {
@@ -87,26 +84,28 @@ const MonthlyEarnings = () => {
     style: 'currency',
     currency: 'VND',
   });
+  const abc = new Date()
+  const a = "Chi phí nhập " + abc.getFullYear()
   return (
     <DashboardCard
-      title="Lợi nhuận kiếm được trong tháng"
-      // action={
-      //   <Fab color="secondary" size="medium" sx={{color: '#ffffff'}}>
-      //     <IconCurrencyDollar width={24} />
-      //   </Fab>
-      // }
-      footer={
-        // <Chart options={optionscolumnchart} series={seriescolumnchart} type="area" height="69px" />
-        <div style={{ height: "58px" }}>
+      title={a}
+    // action={
+    //   <Fab color="secondary" size="medium" sx={{color: '#ffffff'}}>
+    //     <IconCurrencyDollar width={24} />
+    //   </Fab>
+    // }
 
-        </div>
-      }
+    // footer={
+    //   // <Chart options={optionscolumnchart} series={seriescolumnchart} type="area" height="69px" />
+    //   <div style={{ height: "58px" }}>
+
+    //   </div>
+    // }
     >
       <>
         <Typography variant="h5" fontWeight="700" mt="-20px" style={{ marginTop: "5px" }}>
-          {
-            VND.format(Moth)
-          }
+       
+          <CountUp delay={0.4} end={Moth} duration={0.6} /> Đồng
         </Typography>
         <Stack direction="row" spacing={1} my={1} alignItems="center">
           <Avatar sx={{ bgcolor: errorlight, width: 27, height: 27 }}>

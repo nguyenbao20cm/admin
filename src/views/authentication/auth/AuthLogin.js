@@ -31,20 +31,24 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
         const now = new Date()
         const item = {
             value: userToken,
-            expiry: now.getDate() + 7,
+            expiry: addDays(now, 7),
         }
 
         localStorage.setItem('token', JSON.stringify(item));
     }
+    function addDays(date, days) {
+        date.setDate(date.getDate() + days);
+        return date;
+    }
     const Login = () => {
-        if (username == "" && password=="") return setTimeout(() => {
-            message.error("Wrong UserName and Password")
+        if (username == "" && password == "") return setTimeout(() => {
+            message.error("Tên đăng nhập và mật khẩu không hợp lệ")
         }, 0);
         if (username == "") return setTimeout(() => {
-            message.error("Wrong UserName")
+            message.error("Tên đăng nhập đang trống")
         }, 0);
         if (password == "") return setTimeout(() => {
-            message.error("Wrong Password")
+            message.error("Mật khẩu đang trống")
         }, 0);
 
         fetch(variable.API_URL + "Account/Signin", {
@@ -60,7 +64,9 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
         }).then(res => res.json())
             .then(result => {
                 if (result == "Failed") setTimeout(() => {
-                    message.error("Login Failed")
+                    message.error("Đăng nhập thất bại")
+                    setusername(username)
+                    setpassword("")
                 }, 0);
                 if (result != "Failed") {
                     setToken(result);
@@ -68,22 +74,25 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                     const decoded = jwt_decode(tokenString);
                     if (decoded.RoleUser == "Admin") {
                         setTimeout(() => {
-                            message.success("Login Sucess")
+                            message.success("Đăng nhập thành công")
                         }, 0);
                         setTimeout(() => {
                             history('/dashboard')
                         }, 50);
-                       
-                    }
 
+                    }
                     else
                         setTimeout(() => {
-                            message.error("Login Failed")
+                            message.error("Đăng nhập thất bại")
+                            setusername(username)
+                            setpassword("")
                         }, 0);
                 }
             }, (error) => {
                 setTimeout(() => {
-                    message.error("Login Failed")
+                    message.error("Đăng nhập thất bại")
+                    setusername(username)
+                    setpassword("")
                 }, 0);
             }
             )
@@ -139,7 +148,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                 <Box mt="25px">
                     <Typography variant="subtitle1"
                         fontWeight={600} component="label" htmlFor='password' mb="5px" >Password</Typography>
-                    <CustomTextField id="password" type="password" variant="outlined" fullWidth
+                    <CustomTextField id="password" type="password" variant="outlined" fullWidth value={password}
                         onChange={(e) => ChangePass(e.target.value)}
                     />
                 </Box>
@@ -169,12 +178,10 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                     variant="contained"
                     size="large"
                     fullWidth
-                    component={Link}
-                    to="/"
-                    type="submit"
+                    
                     onClick={() => Login()}
                 >
-                    Sign In
+                    Đăng nhập
                 </Button>
             </Box>
             {subtitle}

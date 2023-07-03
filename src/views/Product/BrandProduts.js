@@ -17,51 +17,29 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
-import { a } from 'react-spring';
 
 
 class CRUDProductType extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            Account: [], id1: "",
+            ProductType: [], id1: "",
             modelTitle: "",
             Name: "",
-            id: 0, StatusCheck: "", vouc: "",
+            id: 0, StatusCheck: "",
             currentPage: 1,
-            NameinputProductType: "", Status: "", Trangthai: "", open1: false, Voucher: [], data: {}, a: {}
+            NameinputProductType: "", Status: "", Trangthai: "", open1: false
 
         }
 
     }
-    getToken() {
-        const tokenString = localStorage.getItem('token');
-        const userToken = JSON.parse(tokenString);
-        return userToken
-    }
+
     refreshList() {
-        const token = this.getToken();
-        fetch(variable.API_URL + "Account/GetAllAcountCustomer", {
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            }
-        })
+
+        fetch(variable.API_URL + "BrandProducts/GetAllBrandProducts")
             .then(response => response.json())
             .then(data => {
-                this.setState({ Account: data, Trangthai: null, currentPage: this.state.currentPage });
-            })
-        fetch(variable.API_URL + "Vouchers/GetAllVoucher", {
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ Voucher: data });
+                this.setState({ ProductType: data, Trangthai: null, currentPage: this.state.currentPage });
             })
     }
     componentDidMount() {
@@ -70,17 +48,23 @@ class CRUDProductType extends React.Component {
     ChangeProdcutTypeName = (e) => {
         this.setState({ Name: e.target.value });
     }
-
+    getToken() {
+        const tokenString = localStorage.getItem('token');
+        const userToken = JSON.parse(tokenString);
+        return userToken
+    }
     CreateClick() {
+        const token = this.getToken();
         if (this.state.Status == "" || this.state.Name == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
         else
             if (this.state.Name == "") return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
             else {
-                fetch(variable.API_URL + "ProductTypes/CreateProductType", {
+                fetch(variable.API_URL + "BrandProducts/CreateBrandProducts", {
                     method: "POST",
                     headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
                     },
                     body: JSON.stringify({
                         name: this.state.Name,
@@ -88,7 +72,7 @@ class CRUDProductType extends React.Component {
                     })
                 }).then(res => res.json())
                     .then(result => {
-                        if (result == "Thành công") {
+                        if (result == true) {
                             message.success("Thành công")
                             this.state.Trangthai == true ? this.CheckTrue()
                                 : this.state.Trangthai == false ? this.CheckFalse()
@@ -96,7 +80,7 @@ class CRUDProductType extends React.Component {
                             document.getElementById("closeModal").click()
                         }
                         else
-                            message.error(result)
+                            message.error("result")
                     }, (error) => {
                         message.error("Failed")
                     });
@@ -104,15 +88,17 @@ class CRUDProductType extends React.Component {
 
     }
     UpdateClick(id) {
+        const token = this.getToken();
         if (this.state.Name == "") return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
         else
             if (this.state.Status == "") return this.loi("Trạng thái bị rỗng ", "Hãy nhập lại")
             else {
-                fetch(variable.API_URL + "ProductTypes/UpdateProductType/" + id, {
+                fetch(variable.API_URL + "BrandProducts/UpdateBrandProducts/" + id, {
                     method: "PUT",
                     headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
                     },
                     body: JSON.stringify({
                         name: this.state.Name,
@@ -145,28 +131,26 @@ class CRUDProductType extends React.Component {
     DeleteClick(dep) {
         this.setState({ open1: true, id1: dep })
     }
+    DeleteClick1() {
 
-    Delete() {
-        const token = this.getToken();
-        fetch(variable.API_URL + "Account/DeleteAccount/" + this.state.id1, {
+        fetch(variable.API_URL + "BrandProducts/DeleteBrandProducts/" + this.state.id1, {
             method: "PUT",
             headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            }
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
         }).then(res => res.json())
             .then(result => {
                 message.success(result)
                 this.setState({ open1: false })
                 this.refreshList();
             }, (error) => {
-                console.log(error)
                 message.error("Failed")
-
             }
             )
+
     }
+
     addClick() {
         this.setState({
             modelTitle: "Thêm loại sản phẩm",
@@ -271,57 +255,6 @@ class CRUDProductType extends React.Component {
                 })
         }
     }
-    Vouce() {
-        if (this.state.vouc == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
-        const token = this.getToken();
-        fetch(variable.API_URL + "Vouchers/GetVoucherByid/"+this.state.vouc.id, {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            },
-
-        }).then(res => res.json())
-            .then(result => {
-                this.setState({ a: result })
-            }, (error) => {
-                console.log(error)
-                message.error("Failed")
-            }
-            )
-        fetch(variable.API_URL + "Vouchers/SendVoucher", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            },
-            body: JSON.stringify({
-                email: this.state.data.email,
-                subject: this.state.a.title,
-                message: this.state.a.name,
-            })
-        }).then(res => res.json())
-            .then(result => {
-                if (result == "ok")
-                {
-                    document.getElementById("closeModal1").click()
-                    message.success("Thành công")
-                }
-                    
-            }, (error) => {
-                console.log(error)
-                message.error("Failed")
-
-            }
-            )
-    }
-    data(dep) {
-        this.setState({
-            data: dep
-        })
-    }
     CheckFalse() {
         if (this.state.StatusCheck != this.state.Status) {
             const recordsPerPage = 5;
@@ -353,28 +286,20 @@ class CRUDProductType extends React.Component {
     render() {
 
         const {
-            Account,
+            ProductType,
             modelTitle,
             id, NameinputProductType,
             Name,
-            currentPage, open1, Voucher,
-            Status, vouc
+            currentPage, open1,
+            Status,
         } = this.state;
         const recordsPerPage = 5;
         const options = ['Hiển thị', 'Ẩn']
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
-        const a = Account.slice(firstIndex, lastIndex);
-        const npage = Math.ceil(Account.length / recordsPerPage)
+        const a = ProductType.slice(firstIndex, lastIndex);
+        const npage = Math.ceil(ProductType.length / recordsPerPage)
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
-        // const optionProductType1 = []
-        // Voucher.forEach(element => {
-        //     optionProductType1.push({name: element.title ,id:element.id})
-        // });
-        const optionProductType1 = Voucher.map((dep) => ({
-            id: dep.id,
-            name: dep.title,
-        }))
         return (
             <>
                 <Dialog
@@ -385,7 +310,7 @@ class CRUDProductType extends React.Component {
                     }}
                     aria-describedby="alert-dialog-slide-description"
                 >
-                    <DialogTitle>{"Bạn có chắc chắc muốn khóa tài khoản"}</DialogTitle>
+                    <DialogTitle>{"Bạn có chắc chắc muốn hoàn tất đơn hàng"}</DialogTitle>
                     <DialogContent>
                         {/* <DialogContentText id="alert-dialog-slide-description">
                             Khi hủy xong thì sẽ không thể khôi phục lại được
@@ -393,7 +318,7 @@ class CRUDProductType extends React.Component {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => {
-                            this.Delete()
+                            this.DeleteClick1()
                         }}>Chấp nhận</Button>
                         <Button onClick={() => {
                             this.setState({ open1: false })
@@ -405,8 +330,8 @@ class CRUDProductType extends React.Component {
                         <div className="card-body" >
                             <div>
                                 <div className="form-group">
-                                    <label>Tìm kiếm theo Id tài khoản</label>
-                                    <div><input className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="ID Tài khoản" />
+                                    <label>Tìm kiếm theo tên thương hiệu</label>
+                                    <div><input className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Tên thương hiệu sản phẩm" />
                                     </div>
                                 </div>
 
@@ -420,63 +345,41 @@ class CRUDProductType extends React.Component {
                                 <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
                                 <label for="All">Tất cả</label><br />
                                 <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
-                                <label for="True">Hoạt động</label><br />
+                                <label for="True">Hiển thị</label><br />
                                 <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />
-                                <label for="False">Đã bị khóa</label>
+                                <label for="False">Ẩn</label>
                             </div>
                         </div>
                     </div>
                 </div>
-                {/* <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
+                <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
                     onClick={() => this.addClick()}>
-                    Thêm loại
-                </button> */}
+                    Tạo thương hiệu
+                </button>
                 <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                     <div>
                         <table id="example" className='table table-striped'>
                             <thead>
                                 <tr>
                                     <th>
-                                        ID Tài khoản
+                                        ID
                                     </th>
                                     <th>
-                                        Tên đăng nhập
-                                    </th>
-                                    <th>
-                                        Email
-                                    </th>
-                                    <th>
-                                        SĐT
-                                    </th>
-                                    <th>
-                                        Địa chỉ
-                                    </th>
-                                    <th>
-                                        Tên người dùng
-                                    </th>
-                                    <th>
-                                        Ảnh đại diện
-                                    </th>
-                                    {/* <th>
-                                        Quyền
-                                    </th>
-                                    <th>
-                                        Level
-                                    </th> */}
-                                    <th>
-                                        Gửi Voucher
+                                        Tên thương hiệu
                                     </th>
                                     <th>
                                         Trạng thái
                                     </th>
-
                                     <th>
-                                        Khóa
+                                        Sửa
+                                    </th>
+                                    <th>
+                                        Xóa
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {Account.filter((item) => {
+                                {ProductType.filter((item) => {
                                     return this.state.NameinputProductType === ""
                                         ? item
                                         : item.name.toString().includes(this.state.NameinputProductType);
@@ -487,43 +390,15 @@ class CRUDProductType extends React.Component {
                                                 {dep.id}
                                             </td>
                                             <td>
-                                                {dep.username}
-                                            </td>
-                                            <td>
-                                                {dep.email}
-                                            </td>
-                                            <td>
-                                                {dep.phone}
-                                            </td>
-                                            <td>
-                                                {dep.address}
-                                            </td>
-                                            <td>
-                                                {dep.fullName}
-                                            </td>
-                                            <td>
-                                                <img style={{ width: 50 }} src={'https://localhost:7067/wwwroot/Image/Avatar/' + dep.avatar} />
-                                            </td>
-                                            {/* <td>
-                                                {dep.permission}
-                                            </td>
-                                            <td>
-                                                {dep.level}
-                                            </td> */}
-                                            <td>
-                                                <button type='button' onClick={() => {
-                                                    this.data(dep)
-                                                }} className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#exampleModalCenter'>
-                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" > <path d="M2 8C2 7.44772 2.44772 7 3 7H21C21.5523 7 22 7.44772 22 8C22 8.55228 21.5523 9 21 9H3C2.44772 9 2 8.55228 2 8Z" fill="currentColor" /> <path d="M2 12C2 11.4477 2.44772 11 3 11H21C21.5523 11 22 11.4477 22 12C22 12.5523 21.5523 13 21 13H3C2.44772 13 2 12.5523 2 12Z" fill="currentColor" /> <path d="M3 15C2.44772 15 2 15.4477 2 16C2 16.5523 2.44772 17 3 17H15C15.5523 17 16 16.5523 16 16C16 15.4477 15.5523 15 15 15H3Z" fill="currentColor" /> </svg>
-                                                </button>
+                                                {dep.name}
                                             </td>
                                             <td>
 
                                                 {dep.status == true ?
-                                                    "Hoạt động" : "Khóa"
+                                                    "Hiển thị" : "Ẩn"
                                                 }
                                             </td>
-                                            {/* <td>
+                                            <td>
                                                 <button type='button' className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#exampleModal'
                                                     onClick={() => this.EditClick(dep)}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -531,7 +406,7 @@ class CRUDProductType extends React.Component {
                                                         <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
                                                     </svg>
                                                 </button>
-                                            </td> */}
+                                            </td>
                                             <td>
                                                 {
                                                     dep.status == false ? null : <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
@@ -569,46 +444,6 @@ class CRUDProductType extends React.Component {
                     {/* ? */}
 
                 </Paper>
-                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLongTitle">Kho Voucher</h5>
-                                <button id="closeModal1"type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <span >
-                                    Voucher
-                                </span>
-
-                                <Autocomplete
-                                    value={vouc}
-                                    disableClearable
-                                    onChange={(event, newValue) => {
-                                        this.setState({
-                                            vouc: newValue
-                                        });
-                                    }}
-                                    options={optionProductType1}
-                                    getOptionLabel={(e) => e.name||" " }
-                                    style={{ width: 300 }}
-                                    renderInput={(params) =>
-                                        <TextField {...params}
-                                            // label="Pay"
-                                            variant="outlined" />}
-                                />
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type='button' onClick={() => this.Vouce()} className='btn btn-primary float-start' >Gửi</button>
-                            </div>
-                            {/* <div class="modal-footer">
-                                        <h4>Tổng hóa đơn: {" "}{this.total(DetailsInvoice)}</h4>
-                                    </div> */}
-                        </div>
-                    </div>
-                </div>
                 <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
                     <div className="modal-dialog modal-lg modal-dialog-centered">
                         <div className="modal-content">
@@ -622,7 +457,7 @@ class CRUDProductType extends React.Component {
 
                                 <div className='input-group mb-3'>
                                     <span className='input-group-text'>
-                                        Tên loại
+                                        Tên thương hiệu
                                     </span>
                                     <input type='text' className='form-control' value={Name}
                                         onChange={(e) => this.ChangeProdcutTypeName(e)} />
@@ -653,7 +488,12 @@ class CRUDProductType extends React.Component {
 
                             </div>
                             <div class="modal-footer">
-                                <button type='button' className='btn btn-primary float-start' onClick={() => this.DeleteClick()}>Thêm</button> : null
+                                {id == 0 ?// eslint-disable-next-line
+                                    <button type='button' className='btn btn-primary float-start' onClick={() => this.CreateClick()}>Thêm</button> : null
+                                }
+                                {id != 0 ?// eslint-disable-next-line
+                                    <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.id)}>Sửa</button> : null
+                                }
                             </div>
                         </div>
                     </div>

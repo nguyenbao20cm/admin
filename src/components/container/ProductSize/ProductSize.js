@@ -6,7 +6,7 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import $ from "jquery"
 import Swal from 'sweetalert2/dist/sweetalert2.js'
-
+import CountUp from 'react-countup';
 import 'sweetalert2/src/sweetalert2.scss'
 class ReviewCRUD extends React.Component {
     constructor(props) {
@@ -89,7 +89,7 @@ class ReviewCRUD extends React.Component {
         if (Number(this.state.ImportPrice) == false) return this.loi("Dữ liệu bị sai ", "Hãy nhập lại")
         if (Number(this.state.ImportPrice) < 0) return this.loi("Giá nhập phải là số dương ", "Hãy nhập lại")
         const token = this.getToken();
-      
+
         fetch(variable.API_URL + "ProductSizes/CreateProductSize", {
             method: "POST",
             headers: {
@@ -101,26 +101,24 @@ class ReviewCRUD extends React.Component {
                 importPrice: this.state.ImportPrice,
                 // IssuedDate: Date.now(),
                 name: this.state.Name,
-                supplierId:this.PRID1(this.state.nhacungcap),
+                supplierId: this.PRID1(this.state.nhacungcap),
                 stock: this.state.Stock,
-                ProductId:  this.PRID(this.state.ProductId),
+                ProductId: this.PRID(this.state.ProductId),
                 status: this.state.Status == "Hiển thị" ? true : false,
             })
         }).then(res => res.json())
             .then(result => {
 
                 if (result == "Thành công") {
-                
+
                     message.success("Thành công")
                     this.state.Trangthai == true ? this.CheckTrue()
                         : this.state.Trangthai == false ? this.CheckFalse()
                             : this.refreshList()
                     document.getElementById("closeModal").click()
                 }
-                else
-                {
-                    if (result == "Thành công, nhưng trạng thái thành Ẩn vì Size này chỉ được 1 hiện thị ")
-                    {
+                else {
+                    if (result == "Thành công, nhưng trạng thái thành Ẩn vì Size này chỉ được 1 hiện thị ") {
                         this.loi(result, "")
                         document.getElementById("closeModal").click()
                         this.state.Trangthai == true ? this.CheckTrue()
@@ -129,14 +127,14 @@ class ReviewCRUD extends React.Component {
                         document.getElementById("closeModal").click()
                     }
                     else
-                        return this.loi("Đã xảy ra lỗi", "")
-                   
-                } 
+                        return this.loi(result, "")
+                    this.loi(result, "")
+                }
             }, (error) => {
                 return this.loi("Đã xảy ra lỗi", "")
             });
     }
-    
+
     UpdateClick(id) {
         const token = this.getToken();
         if (this.state.Name == "") return this.loi("Dữ liệu bị sai ", "Hãy nhập lại")
@@ -169,7 +167,7 @@ class ReviewCRUD extends React.Component {
                     if (result == "Không được vì Size này đã được hiện thị")
                         return this.loi(result, "")
                     else
-                    this.loi(result, "")
+                        this.loi(result, "")
             }, (error) => {
                 message.error("Failed")
             }
@@ -481,7 +479,7 @@ class ReviewCRUD extends React.Component {
                                         Số lượng kho
                                     </th>
                                     <th>
-                                        Nhà cung cấp 
+                                        Nhà cung cấp
                                     </th>
                                     <th>
                                         Ngày nhập
@@ -531,7 +529,7 @@ class ReviewCRUD extends React.Component {
                                                 }
                                             </td>
                                             <td>
-                                                {VND.format(dep.importPrice)}
+                                                <CountUp delay={0.4} end={dep.importPrice} duration={0.6} /> Đồng
                                             </td>
                                             <td>
 

@@ -75,7 +75,7 @@ class InvoiceCRUD extends React.Component {
     refreshList() {
         const token = this.getToken();
 
-        fetch(variable.API_URL + "Inovices/GetAllInovice", {
+        fetch(variable.API_URL + "HistoryAccount/GetHistoryAccountAdmin", {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
@@ -1212,7 +1212,7 @@ class InvoiceCRUD extends React.Component {
             DetailsInvoice,
             totalDetailInvoice
         } = this.state;
-        const recordsPerPage = 5;
+        const recordsPerPage = 10;
         const VND = new Intl.NumberFormat('vi-VN', {
             style: 'currency',
             currency: 'VND',
@@ -1251,7 +1251,7 @@ class InvoiceCRUD extends React.Component {
                         }}>Quay lại</Button>
                     </DialogActions>
                 </Dialog>
-                <div style={{ display: "flex" }}>
+                <div style={{ display: "flex",float:"right" }}>
                     <div className="card">
                         <div className="card-body">
                             <div>
@@ -1259,14 +1259,14 @@ class InvoiceCRUD extends React.Component {
                                     <label>Từ ngày:</label>
                                     <div>
                                         <input id="dates-range" className="form-control flatpickr-input"
-                                            type="datetime-local" onChange={(e) => this.ChangeStartDate(e)} />
+                                            type="date" onChange={(e) => this.ChangeStartDate(e)} />
                                     </div>
                                 </div>
 
                                 <div className="form-group" >
                                     <div>
                                         <input id="dates-range" className="form-control flatpickr-input"
-                                            type="datetime-local" onChange={(e) => this.ChangeEndDate(e)} />
+                                            type="date" onChange={(e) => this.ChangeEndDate(e)} />
                                     </div>
                                 </div>
 
@@ -1287,8 +1287,6 @@ class InvoiceCRUD extends React.Component {
                                         </button>
                                     </div>
                                 </div>
-
-
                             </div>
                         </div>
 
@@ -1335,8 +1333,6 @@ class InvoiceCRUD extends React.Component {
                                     <th>
                                         Ngày thực hiện
                                     </th>
-                                    
-
                                 </tr>
                             </thead>
                             <tbody>
@@ -1348,11 +1344,11 @@ class InvoiceCRUD extends React.Component {
                                     .map(dep =>
                                         <tr>
                                             <td>
-                                                {dep.id}
+                                                {dep.content}
                                             </td>
                                             <td>
                                                 {
-                                                    this.DatetimeFormat(dep.issuedDate)
+                                                    this.DatetimeFormat(dep.datetime)
                                                 }
                                             </td>
                                         </tr>

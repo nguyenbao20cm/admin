@@ -1,6 +1,6 @@
 import {
   IconAperture, IconCopy, IconLayoutDashboard, IconLogin, IconMoodHappy, IconTypography, IconUserPlus,
-  IconUser, IconSettings, IconReport,IconFileInvoice,IconMessage,IconAd2,IconDiscount,IconTicket,IconHistory
+  IconUser, IconSettings, IconReport, IconFileInvoice, IconMessage, IconAd2, IconDiscount, IconTicket, IconHistory, 
 } from '@tabler/icons';
 
 import { uniqueId } from 'lodash';
@@ -34,9 +34,15 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: 'Size sản phẩm',
+    title: 'Nhập Size sản phẩm',
     icon: IconAperture, bbb: false,
     href: '/ProductSize',
+  },
+  {
+    id: uniqueId(),
+    title: 'Thương hiệu sản phẩm',
+    icon: IconAperture, bbb: false,
+    href: '/Brand',
   },
   {
     id: uniqueId(),
@@ -56,6 +62,12 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+    title: 'Tài khoản người dùng',
+    icon: IconUser,
+    href: '/TaiKhoan', aaa: true,
+  },
+  {
+    id: uniqueId(),
     title: 'Bình luận',
     icon: IconMessage,
     href: '/ReviewPage',
@@ -63,16 +75,17 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: 'Panner Quảng cáo',
+    title: 'Pannel',
     icon: IconAd2,
     href: '/AdvertisingPanel', aaa: true,
   },
-  {
-    id: uniqueId(),
-    title: 'Giảm giá',
-    icon: IconDiscount,
-    href: '/Disscount', aaa: true,
-  },
+
+  // {
+  //   id: uniqueId(),
+  //   title: 'Giảm giá',
+  //   icon: IconDiscount,
+  //   href: '/Disscount', aaa: true,
+  // },
   {
     id: uniqueId(),
     title: 'Tài khoản khách hàng',
@@ -95,14 +108,16 @@ const Menuitems = [
     id: uniqueId(),
     title: 'Cài đặt',
     icon: IconSettings,
-    href: '/TaiKhoan', aaa: true,
+    href: '/Caidat', aaa: true,
   },
-  {
-    id: uniqueId(),
-    title: 'Tài khoản nhân viên',
-    icon: IconAperture,
-    href: '/TaiKhoanNhanVien', taikhoan: true,
-  },
+
+  // {
+  //   id: uniqueId(),
+  //   title: 'Tài khoản nhân viên',
+  //   icon: IconAperture,
+  //   href: '/TaiKhoanNhanVien', taikhoan: true,
+  // },
+  
   {
     id: uniqueId(),
     title: 'Báo cáo theo ngày',
@@ -112,18 +127,18 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: 'Báo cáo theo tháng',
+    title: 'Báo cáo chi tiết  ',
     icon: IconReport,
     href: '/ReportWeek',
     bbb: true
   },
-  {
-    id: uniqueId(),
-    title: 'Báo cáo theo năm',
-    icon: IconReport,
-    href: '/ReportYear',
-    bbb: true
-  },
+  // {
+  //   id: uniqueId(),
+  //   title: 'Báo cáo theo năm',
+  //   icon: IconReport,
+  //   href: '/ReportYear',
+  //   bbb: true
+  // },
   
 ];
 

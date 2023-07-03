@@ -21,7 +21,7 @@ class ReviewCRUD extends React.Component {
             Name: "",
             id: 0,
             currentPage: 1, ProductAPI: [],
-            NameinputProductType: "", image: "", Iimage: "", Status: "", sanpham: "", loaisanpham: "", s: ""
+            NameinputProductType: "", image: "", Iimage: "", Status: "", sanpham: "", loaisanpham: "", s: "", Link: ""
 
         }
     }
@@ -98,38 +98,37 @@ class ReviewCRUD extends React.Component {
             return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
         if (this.state.Status == "")
             return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
-        if (this.state.sanpham == "female") {
-            const token = this.getToken();
-            fetch(variable.API_URL + "AdvertisingPanels/CreateAdvertisingPanel", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Authorization': `Bearer ${token.value}`
-                },
-                body: JSON.stringify({
-                    linkProduct: this.PRID(this.state.Product),
-                    linkProductType: null,
-                    status: this.state.Status == "Hiển thị" ? true : false,
-                    image: this.state.image
+
+        const token = this.getToken();
+        fetch(variable.API_URL + "AdvertisingPanels/CreateAdvertisingPanel", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+            body: JSON.stringify({
+                link: this.state.Link,
+                status: this.state.Status == "Hiển thị" ? true : false,
+                image: this.state.image
+            })
+        }).then(res => res.json())
+            .then(result => {
+                this.setState({
+                    s: result.data.advertisingPanelID
                 })
-            }).then(res => res.json())
-                .then(result => {
-                    this.setState({
-                        s: result.data.advertisingPanelID
-                    })
-                    const token = this.getToken();
-                    const response = fetch(
-                        variable.API_URL + "AdvertisingPanels/GetAdvertisingPanelById/" + result.data.advertisingPanelID, {
-                        method: "GET",
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Accept: 'application/json',
-                            'Authorization': `Bearer ${token.value}`
-                        },
-                    }
-                    ).then((response) => response.json())
-                        .then(result => {
+                const token = this.getToken();
+                const response = fetch(
+                    variable.API_URL + "AdvertisingPanels/GetAdvertisingPanelById/" + result.data.advertisingPanelID, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
+                    },
+                }
+                ).then((response) => response.json())
+                    .then(result => {
                         const formData = new FormData()
                         const token = this.getToken();
                         var imagelName = this.state.s + ".jpg"
@@ -149,8 +148,7 @@ class ReviewCRUD extends React.Component {
                                 JSON.stringify({
                                     image: imagelName,
                                     status: this.state.Status == "Hiển thị" ? true : false,
-                                    linkProduct: this.PRID(this.state.Product),
-                                    linkProductType: null,
+                                    link: this.state.Link,
                                 })
                         }).then(res => res.json()).then(result => {
                             if (result == "Thành công") {
@@ -163,83 +161,13 @@ class ReviewCRUD extends React.Component {
                     });
 
 
-                },
-                    (error) => {
-                        console.error(error)
-                        message.error("Failed")
-                    });
-        }
-        if (this.state.sanpham == "male") {
-            const token = this.getToken();
-            fetch(variable.API_URL + "AdvertisingPanels/CreateAdvertisingPanel", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Authorization': `Bearer ${token.value}`
-                },
-                body: JSON.stringify({
-                    linkProduct:  null,
-                    linkProductType: this.PRID1(this.state.ProductType),
-                    status: this.state.Status == "Hiển thị" ? true : false,
-                    image: this.state.image
-                })
-            }).then(res => res.json())
-                .then(result => {
-                    this.setState({
-                        s: result.data.advertisingPanelID
-                    })
-                    const token = this.getToken();
-                    const response = fetch(
-                        variable.API_URL + "AdvertisingPanels/GetAdvertisingPanelById/" + result.data.advertisingPanelID, {
-                        method: "GET",
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Accept: 'application/json',
-                            'Authorization': `Bearer ${token.value}`
-                        },
-                    }
-                    ).then((response) => response.json())
-                        .then(result => {
-                            const formData = new FormData()
-                            const token = this.getToken();
-                            var imagelName = this.state.s + ".jpg"
-                            formData.append("model", this.state.Iimage, imagelName)
-                            fetch(variable.API_URL + "AdvertisingPanels/CreateImageAdvertisingPanel", {
-                                method: "POST",
-                                body: formData
-                            }).then(res => res.json())
-                            fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + this.state.s, {
-                                method: "PUT",
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    Accept: 'application/json',
-                                    'Authorization': `Bearer ${token.value}`
-                                },
-                                body:
-                                    JSON.stringify({
-                                        image: imagelName,
-                                        status: this.state.Status == "Hiển thị" ? true : false,
-                                        linkProduct: null,
-                                        linkProductType: this.PRID1(this.state.ProductType),
-                                    })
-                            }).then(res => res.json()).then(result => {
-                                if (result == "Thành công") {
-                                    document.getElementById("closeModal").click()
-                                    message.success(result)
-                                    window.location.reload(false);
-                                }
-                            })
-
-                        });
+            },
+                (error) => {
+                    console.error(error)
+                    message.error("Failed")
+                });
 
 
-                },
-                    (error) => {
-                        console.error(error)
-                        message.error("Failed")
-                    });
-        }
 
     }
     UpdateClick(id) {
@@ -250,168 +178,86 @@ class ReviewCRUD extends React.Component {
 
         const token = this.getToken();
         var imagelName = id + ".jpg"
-        if (this.state.sanpham == "female") {
-            if (this.state.image == imagelName) {
-                fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + id, {
-                    method: "PUT",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json',
-                        'Authorization': `Bearer ${token.value}`
-                    },
-                    body:
 
-                        JSON.stringify({
-                            image: imagelName,
-                            status: this.state.Status == "Hiển thị" ? true : false,
-                            linkProduct: this.PRID(this.state.Product) ,
-                            linkProductType: null  ,
-                        })
-                }).then(res => res.json())
-                    .then(result => {
+        if (this.state.image == imagelName) {
+            fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + id, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                },
+                body:
 
-                        if (result == "Thành công") {
-                            message.success(result)
-                            this.refreshList()
-                            document.getElementById("closeModal").click()
-                        }
-                        else
-                            message.error(result)
-                    },
-                        (error) => {
+                    JSON.stringify({
+                        image: imagelName,
+                        status: this.state.Status == "Hiển thị" ? true : false,
+                        link: this.state.Link,
+                    })
+            }).then(res => res.json())
+                .then(result => {
 
-                            message.error("Failed")
-                        });
-            }
-            else if (this.state.image == "") {
-                message.error("Chưa nhập hình ảnh")
-            } else {
+                    if (result == "Thành công") {
+                        message.success(result)
+                        this.refreshList()
+                        document.getElementById("closeModal").click()
+                    }
+                    else
+                        message.error(result)
+                },
+                    (error) => {
 
-                const formData = new FormData()
-                var imagelName = id + ".jpg"
-
-                formData.append("model", this.state.Iimage, imagelName)
-
-                fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + id, {
-                    method: "PUT",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json',
-                        'Authorization': `Bearer ${token.value}`
-                    },
-                    body:
-                        JSON.stringify({
-                            image: imagelName,
-                            status: this.state.Status == "Hiển thị" ? true : false,
-                            linkProduct: this.PRID(this.state.Product),
-                            linkProductType: null,
-                        })
-                }).then(res => res.json())
-                    .then(result => {
-                        if (result === "Thành công") {
-                            fetch(variable.API_URL + "AdvertisingPanels/CreateImageAdvertisingPanel", {
-                                method: "POST",
-                                body: formData
-                            }).then(res => res.json())
-
-                        }
-
-                        if (result == "Thành công") {
-                            document.getElementById("closeModal").click()
-                            message.success(result)
-                            window.location.reload(false);
-                        }
-                        else
-                            message.error(result)
-                    },
-                        (error) => {
-                            console.error(error)
-                            message.error("Failed")
-                        });
-
-            }
+                        message.error("Failed")
+                    });
         }
-        if (this.state.sanpham == "male") {
-            if (this.state.image == imagelName) {
-                fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + id, {
-                    method: "PUT",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json',
-                        'Authorization': `Bearer ${token.value}`
-                    },
-                    body:
+        else if (this.state.image == "") {
+            message.error("Chưa nhập hình ảnh")
+        } else {
 
-                        JSON.stringify({
-                            image: imagelName,
-                            status: this.state.Status == "Hiển thị" ? true : false,
-                            linkProduct: null,
-                            linkProductType: this.PRID1(this.state.ProductType),
-                        })
-                }).then(res => res.json())
-                    .then(result => {
+            const formData = new FormData()
+            var imagelName = id + ".jpg"
 
-                        if (result == "Thành công") {
-                            message.success(result)
-                            this.refreshList()
-                            document.getElementById("closeModal").click()
-                        }
-                        else
-                            message.error(result)
-                    },
-                        (error) => {
+            formData.append("model", this.state.Iimage, imagelName)
 
-                            message.error("Failed")
-                        });
-            }
-            else if (this.state.image == "") {
-                message.error("Chưa nhập hình ảnh")
-            } else {
+            fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + id, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                },
+                body:
+                    JSON.stringify({
+                        image: imagelName,
+                        status: this.state.Status == "Hiển thị" ? true : false,
+                        link: this.state.Link,
+                    })
+            }).then(res => res.json())
+                .then(result => {
+                    if (result === "Thành công") {
+                        fetch(variable.API_URL + "AdvertisingPanels/CreateImageAdvertisingPanel", {
+                            method: "POST",
+                            body: formData
+                        }).then(res => res.json())
 
-                const formData = new FormData()
-                var imagelName = id + ".jpg"
+                    }
 
-                formData.append("model", this.state.Iimage, imagelName)
+                    if (result == "Thành công") {
+                        document.getElementById("closeModal").click()
+                        message.success(result)
+                        window.location.reload(false);
+                    }
+                    else
+                        message.error(result)
+                },
+                    (error) => {
+                        console.error(error)
+                        message.error("Failed")
+                    });
 
-                fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + id, {
-                    method: "PUT",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json',
-                        'Authorization': `Bearer ${token.value}`
-                    },
-                    body:
-                        JSON.stringify({
-                            image: imagelName,
-                            status: this.state.Status == "Hiển thị" ? true : false,
-                            linkProduct: null,
-                            linkProductType: this.PRID1(this.state.ProductType),
-                        })
-                }).then(res => res.json())
-                    .then(result => {
-                        if (result === "Thành công") {
-                            fetch(variable.API_URL + "AdvertisingPanels/CreateImageAdvertisingPanel", {
-                                method: "POST",
-                                body: formData
-                            }).then(res => res.json())
-
-                        }
-
-                        if (result == "Thành công") {
-                            document.getElementById("closeModal").click()
-                            message.success(result)
-                            window.location.reload(false);
-                        }
-                        else
-                            message.error(result)
-                    },
-                        (error) => {
-                            console.error(error)
-                            message.error("Failed")
-                        });
-
-            }
         }
+
+
 
     }
     DeleteClick(id) {
@@ -448,7 +294,7 @@ class ReviewCRUD extends React.Component {
             image: "",
             Status: "",
             Product: "",
-            ProductType: "",sanpham :""
+            ProductType: "", sanpham: ""
         });
     }
     EditClick(dep) {
@@ -457,7 +303,7 @@ class ReviewCRUD extends React.Component {
             id: dep.advertisingPanelID,
             Name: dep.name,
             image: dep.image,
-            Product: dep.product != null?(dep.product).name:null,
+            Product: dep.product != null ? (dep.product).name : null,
             ProductType: dep.productType != null ? (dep.productType).name : null,
             Status:
                 dep.status == true ?
@@ -551,7 +397,7 @@ class ReviewCRUD extends React.Component {
         const {
             AdvertisingPanel,
             modelTitle, sanpham, loaisanpham,
-            id, ProductAPI,
+            id, ProductAPI, Link,
             Name, Status,
             currentPage,
             image, Product, ProductType, APIProductType
@@ -609,17 +455,18 @@ class ReviewCRUD extends React.Component {
                                         ID
                                     </th>
                                     <th>
+                                        Tiêu đề
+                                    </th>
+                                    <th>
+                                        Nội dung
+                                    </th>
+                                    <th>
                                         Hình ảnh
                                     </th>
                                     <th>
                                         Link tới sản phẩm
                                     </th>
-                                    <th>
-                                        Link tới loại sản phẩm
-                                    </th>
-                                    <th>
-                                        Trạng thái
-                                    </th>
+
                                     <th>
                                         Sửa
                                     </th>
@@ -641,20 +488,18 @@ class ReviewCRUD extends React.Component {
                                                 {dep.advertisingPanelID}
                                             </td>
                                             <td>
+                                                {dep.title}
+                                            </td>
+                                            <td>
+                                                {dep.content}
+                                            </td>
+                                            <td>
                                                 <img style={{ width: 50 }} src={'https://localhost:7067/wwwroot/Image/AdvertisingPanel/' + dep.image} />
                                             </td>
                                             <td>
-                                                {dep.product != null ? (dep.product).name:null}
+                                                {dep.link}
                                             </td>
-                                            <td>
-                                                {dep.productType != null ? (dep.productType).name:null}
-                                            </td>
-                                            <td>
 
-                                                {dep.status == true ?
-                                                    "Hiển thị" : "Ẩn"
-                                                }
-                                            </td>
                                             <td>
                                                 <button type='button' className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#exampleModal'
                                                     onClick={() => this.EditClick(dep)}>
@@ -681,10 +526,25 @@ class ReviewCRUD extends React.Component {
                                     <div className="modal-header">
                                         <h5 className='modal-title'>{modelTitle}</h5>
                                         <button type='button' id="closeModal" className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
-
                                         </button>
                                     </div>
                                     <div className='modal-body'>
+                                        <div className='input-group mb-3'>
+                                            <span className='input-group-text'>
+                                                Tiêu đề
+                                            </span>
+                                            <input type='text' className='form-control' value={Name}
+                                                onChange={(e) => this.ChangeProdcutTypeName(e)} />
+
+                                        </div>
+                                        <div className='input-group mb-3'>
+                                            <span className='input-group-text'>
+                                                Nội dung
+                                            </span>
+                                            <area type='text' className='form-control' value={Name}
+                                                onChange={(e) => this.ChangeProdcutTypeName(e)} />
+
+                                        </div>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
                                                 Hình ảnh
@@ -694,7 +554,7 @@ class ReviewCRUD extends React.Component {
                                             <input type="file" id="img" name="img" accept="image/*" onChange={(e) => this.ChangeProdcutImage(e)}></input>
                                         </div>
                                         <div className='input-group mb-3'>
-                                            <FormControl>
+                                            {/* <FormControl>
                                                 <FormLabel id="demo-controlled-radio-buttons-group">Link tới</FormLabel>
                                                 <RadioGroup
                                                     aria-labelledby="demo-controlled-radio-buttons-group"
@@ -751,31 +611,28 @@ class ReviewCRUD extends React.Component {
                                                             : null
                                                     }
                                                 </RadioGroup>
-                                            </FormControl>
-
-                                        </div>
-                                        <div className='input-group mb-3'>
+                                            </FormControl> */}
                                             <span className='input-group-text'>
-                                                Trạng thái
+                                                Link tới sản phẩm
                                             </span>
                                             <Autocomplete
                                                 disableClearable
-                                                value={Status}
+                                                value={Product}
                                                 onChange={(event, newValue) => {
                                                     this.setState({
-                                                        Status: newValue
+                                                        Product: newValue
                                                     });
                                                 }}
 
-                                                options={options}
+                                                options={optionProductType}
                                                 style={{ width: 300 }}
                                                 renderInput={(params) =>
                                                     <TextField {...params}
                                                         // label="Pay"
                                                         variant="outlined" />}
                                             />
-
                                         </div>
+
                                     </div>
                                     <div class="modal-footer">
                                         {id == 0 ?// eslint-disable-next-line

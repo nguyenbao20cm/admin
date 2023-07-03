@@ -2,20 +2,18 @@ import React from "react";
 import { Typography } from '@mui/material';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
+import BrandProduts from "../Product/BrandProduts"
 
-import InvoicePage from "../Invoice/Invoice"
-import { Box } from '@mui/material';
 
 const ProductTypeList = () => {
 
     return (
         <>
-          
-            <PageContainer title="Hóa đơn" description="this is Sample page">
+            <PageContainer title="Thương hiệu sản phẩm" description="this is Sample page">
 
-                <DashboardCard title="Danh sách Hóa đơn">
+                <DashboardCard title="Danh sách thương hiệu sản phẩm ">
                     <Typography paragraph>
-                        <InvoicePage />
+                        <BrandProduts />
                     </Typography>
                 </DashboardCard>
             </PageContainer>

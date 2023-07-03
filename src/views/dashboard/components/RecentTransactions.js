@@ -1,5 +1,5 @@
 import React from 'react';
-import DashboardCard from '../../../components/shared/DashboardCard';
+import DashboardCard from '../../../components/shared/DashboardCard1';
 import {
   Timeline,
   TimelineItem,
@@ -41,7 +41,7 @@ const RecentTransactions = () => {
         setInvoiceTotalMonth(data)
       })
   }, []);
- const DatetimeFormat=((e) =>{
+  const DatetimeFormat = ((e) => {
     const abc = new Date(e)
     var day = abc.getDate() + "/";
     var month = abc.getMonth() + 1 + "/";
@@ -71,12 +71,65 @@ const RecentTransactions = () => {
             },
           }}
         >
-          {products.slice(0,10).map((dep) => (
+          <div style={{ marginTop: 20 }}></div>
+          {products.slice(0, 2).map((dep) => (
             <>
               <TimelineItem>
                 <TimelineOppositeContent>{DatetimeFormat(dep.datetime)}</TimelineOppositeContent>
                 <TimelineSeparator>
                   <TimelineDot color="secondary" variant="outlined" />
+                  <TimelineConnector />
+                </TimelineSeparator>
+                <TimelineContent>{dep.content}</TimelineContent>
+              </TimelineItem>
+            </>
+          )
+          )}
+          {products.slice(2, 4).map((dep) => (
+            <>
+              <TimelineItem>
+                <TimelineOppositeContent>{DatetimeFormat(dep.datetime)}</TimelineOppositeContent>
+                <TimelineSeparator>
+                  <TimelineDot color="success" variant="outlined" />
+                  <TimelineConnector />
+                </TimelineSeparator>
+                <TimelineContent>{dep.content}</TimelineContent>
+              </TimelineItem>
+            </>
+          )
+          )}
+          {products.slice(4, 6).map((dep) => (
+            <>
+              <TimelineItem>
+                <TimelineOppositeContent>{DatetimeFormat(dep.datetime)}</TimelineOppositeContent>
+                <TimelineSeparator>
+                  <TimelineDot color="warning" variant="outlined" />
+                  <TimelineConnector />
+                </TimelineSeparator>
+                <TimelineContent>{dep.content}</TimelineContent>
+              </TimelineItem>
+            </>
+          )
+          )}
+          {products.slice(6, 8).map((dep) => (
+            <>
+              <TimelineItem>
+                <TimelineOppositeContent>{DatetimeFormat(dep.datetime)}</TimelineOppositeContent>
+                <TimelineSeparator>
+                  <TimelineDot color="error" variant="outlined" />
+                  <TimelineConnector />
+                </TimelineSeparator>
+                <TimelineContent>{dep.content}</TimelineContent>
+              </TimelineItem>
+            </>
+          )
+          )}
+          {products.slice(8, 10).map((dep) => (
+            <>
+              <TimelineItem>
+                <TimelineOppositeContent>{DatetimeFormat(dep.datetime)}</TimelineOppositeContent>
+                <TimelineSeparator>
+                  <TimelineDot color="inherit" variant="outlined" />
                   <TimelineConnector />
                 </TimelineSeparator>
                 <TimelineContent>{dep.content}</TimelineContent>

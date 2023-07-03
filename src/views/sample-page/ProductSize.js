@@ -9,11 +9,13 @@ const ProductTypeList = () => {
 
     return (
         <>
-            <DashboardCard title="Danh sách Size sản phẩm">
-                <Typography paragraph>
-                    <ProductSize />
-                </Typography>
-            </DashboardCard>
+            <PageContainer title="Hóa đơn nhập sản phẩm" description="this is Sample page">
+                <DashboardCard title="Danh sách Size sản phẩm">
+                    <Typography paragraph>
+                        <ProductSize />
+                    </Typography>
+                </DashboardCard>
+            </PageContainer>
         </>
     );
 };

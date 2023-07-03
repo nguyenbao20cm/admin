@@ -7,6 +7,7 @@ import { ConstructionOutlined, Login } from '@mui/icons-material';
 import { Alert, Space, message } from 'antd';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import "./Invoice.css"
+import CountUp from 'react-countup';
 import 'sweetalert2/src/sweetalert2.scss'
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -69,7 +70,7 @@ class InvoiceCRUD extends React.Component {
 
             .then(response => response.json())
             .then(data => {
-                this.setState({currentPage:1, Invoice: data, APIInvoice: data });
+                this.setState({ currentPage: 1, Invoice: data, APIInvoice: data });
             })
     }
     refreshList() {
@@ -1252,6 +1253,16 @@ class InvoiceCRUD extends React.Component {
                     </DialogActions>
                 </Dialog>
                 <div style={{ display: "flex" }}>
+
+                    <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
+                        <div className="card-body">
+                            <div className="form-group">
+                                <label>Tìm kiếm theo Id Hóa đơn:</label>
+                                <div><input className="form-control w-100" value={ChangeId} onChange={(e) => this.ChangeId(e)} type="text" placeholder="Id" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div className="card">
                         <div className="card-body">
                             <div>
@@ -1314,16 +1325,6 @@ class InvoiceCRUD extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
-                        <div className="card-body">
-                            <div className="form-group">
-                                <label>Tìm kiếm theo Id Hóa đơn:</label>
-                                <div><input className="form-control w-100" value={ChangeId} onChange={(e) => this.ChangeId(e)} type="text" placeholder="Id" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
                 <Dialog
                     open={open}
@@ -1433,7 +1434,7 @@ class InvoiceCRUD extends React.Component {
                                                 {dep.shippingPhone}
                                             </td>
                                             <td>
-                                                {VND.format(dep.total)}
+                                                <CountUp delay={0.4} end={dep.total} duration={0.6} />
                                             </td>
                                             {/* <td>
                                                 {dep.status == true ?

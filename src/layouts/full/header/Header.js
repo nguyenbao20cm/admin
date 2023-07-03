@@ -28,7 +28,20 @@ const Header = (props) => {
 
   return (
     <>
-      <div style={{float:"right"}}>
+      <IconButton
+        color="inherit"
+        aria-label="menu"
+        onClick={props.toggleMobileSidebar}
+        sx={{
+          display: {
+            lg: "none",
+            xs: "inline",
+          },
+        }}
+      >
+        <IconMenu width="20" height="20" />
+      </IconButton>
+      <div style={{ float: "right" }}>
         <Profile />
       </div>
     </>

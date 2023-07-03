@@ -68,7 +68,8 @@ const FullLayout = () => {
     //   </PageWrapper>
     // </MainWrapper>
     <>
-  
+
+      
       <Header toggleSidebar={() => setSidebarOpen(!isSidebarOpen)} toggleMobileSidebar={() => setMobileSidebarOpen(true)} />
       <Box sx={{ display: 'flex' }}>
         <Sidebar isSidebarOpen={isSidebarOpen}

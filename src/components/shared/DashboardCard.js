@@ -20,6 +20,7 @@ const DashboardCard = ({
       elevation={9}
       variant={undefined}
       height={height}
+      style={{marginLeft:"-50px"}}
     >
       {cardheading ? (
         <CardContent>

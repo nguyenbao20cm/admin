@@ -263,6 +263,9 @@ class ReviewCRUD extends React.Component {
                                         Nội dung
                                     </th>
                                     <th>
+                                        Ảnh
+                                    </th>
+                                    <th>
                                         Ngày tạo
                                     </th>
                                     <th>
@@ -297,6 +300,9 @@ class ReviewCRUD extends React.Component {
                                             </td>
                                             <td>
                                                 {dep.content}
+                                            </td>
+                                            <td>
+                                                <img style={{ width: 50 }} src={'https://localhost:7067/wwwroot/Image/ReviewImage/' + dep.image} />
                                             </td>
                                             <td>
                                                 {this.DatetimeFormat(dep.dateTime)}

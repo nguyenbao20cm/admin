@@ -19,7 +19,7 @@ function App() {
     const userToken = JSON.parse(tokenString);
     if (userToken == null) return null;
     const now = new Date()
-    if (now.getDate() >= userToken.expiry) {
+    if (now >= userToken.expiry) {
       localStorage.clear()
       message.error("Đăng nhập đã hết hạn")
       return null
@@ -32,14 +32,14 @@ function App() {
   }
 
   const decoded = jwt_decode(token);
-  if (decoded.RoleUser =="Admin")
-  return (
-    <ThemeProvider theme={theme}>
+  if (decoded.RoleUser == "Admin")
+    return (
+      <ThemeProvider theme={theme}>
 
-      <CssBaseline />
-      {routing}
+        <CssBaseline />
+        {routing}
 
-    </ThemeProvider>
+      </ThemeProvider>
     );
   else
     return <Login />

@@ -5,9 +5,10 @@ import { Grid, Stack, Typography, Avatar } from '@mui/material';
 import { IconArrowUpLeft } from '@tabler/icons';
 import { useEffect } from 'react';
 import { variable } from '../../../Variable';
-import DashboardCard from '../../../components/shared/DashboardCard';
+import DashboardCard from '../../../components/shared/DashboardCard1';
 import "../components/style.css"
 import { IconArrowDownRight, IconCurrencyDollar } from '@tabler/icons';
+import CountUp from 'react-countup';
 const YearlyBreakup = () => {
   // chart color
   const theme = useTheme();
@@ -64,7 +65,7 @@ const YearlyBreakup = () => {
       },
     ],
   };
-  const seriescolumnchart = [-15, 6, 7];
+  const seriescolumnchart = [15, 6, 7];
   var [TotalYear, setTotalYear] = React.useState(0);
   var [TotalYearAgo, setTotalYearAgo] = React.useState(0);
   let year = new Date();
@@ -92,6 +93,7 @@ const YearlyBreakup = () => {
       .then(data => {
         setTotalYear(data)
       })
+
     fetch(variable.API_URL + "Inovices/ProfitForYearAgo/" + year.getFullYear() - 1, {
       method: "GET",
       headers: {
@@ -107,15 +109,15 @@ const YearlyBreakup = () => {
   }, []);
   var abc = new Date()
   const errorlight = '#fdede8';
-  var nam = "Lợi nhuận trong năm " + abc.getFullYear()
+  var nam = "Lợi nhuận năm " + abc.getFullYear()
   return (
-    <DashboardCard title={nam} >
+    <DashboardCard title={nam}>
       <Grid container spacing={3}>
 
         {/* column */}
         <Grid item xs={9} sm={9}>
           <Typography variant="h5" fontWeight="700" alignContent={'center'}>
-            {VND.format(TotalYear)}
+            <CountUp delay={0.4} end={TotalYear} duration={0.6} /> Đồng
           </Typography>
           {abc.getFullYear() == 2021 ? null :
             <>
@@ -160,7 +162,9 @@ const YearlyBreakup = () => {
           </Stack> */}
         </Grid>
         {/* column */}
-        <div className='ChartPie'>
+
+
+        {/* <div className='ChartPie'>
           <Grid item xs={7} sm={7} >
             <Chart
               options={optionscolumnchart}
@@ -169,7 +173,7 @@ const YearlyBreakup = () => {
               height="900px"
             />
           </Grid>
-        </div>
+        </div> */}
       </Grid>
     </DashboardCard>
   );

@@ -8,10 +8,10 @@ import {
     TableRow,
     Chip
 } from '@mui/material';
-import DashboardCard from '../../../components/shared/DashboardCard';
+import DashboardCard from '../../../components/shared/DashboardCard1';
 import { useEffect } from 'react';
 import { variable } from '../../../Variable';
-
+import CountUp from 'react-countup';
 
 
 const ProductPerformance = () => {
@@ -78,7 +78,12 @@ const ProductPerformance = () => {
                                     Số lượt bán
                                 </Typography>
                             </TableCell>
-                            <TableCell align="right">
+                            <TableCell>
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                    Ảnh
+                                </Typography>
+                            </TableCell>
+                            <TableCell>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Giá
                                 </Typography>
@@ -86,7 +91,7 @@ const ProductPerformance = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {products.map((product) => (
+                        {products.slice(0, 8).map((product) => (
                             <TableRow key={product.name}>
                                 <TableCell>
                                     <Typography
@@ -125,7 +130,7 @@ const ProductPerformance = () => {
                                         {product.sku}
                                     </Typography>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell align="inherit">
                                     <Chip
                                         sx={{
                                             px: "4px",
@@ -136,8 +141,13 @@ const ProductPerformance = () => {
                                         label={product.countSell}
                                     ></Chip>
                                 </TableCell>
-                                <TableCell align="right">
-                                    <Typography variant="h6">{VND.format(product.price)}</Typography>
+                                <TableCell align="left">
+                                    <img style={{ width: 50 }} src={'https://localhost:7067/wwwroot/Image/Product/' + product.image} />
+                                </TableCell>
+                                <TableCell align="left">
+                                    <Typography variant="h6">
+                                        <CountUp delay={0.4} end={product.price} duration={0.6} /> Đồng
+                                    </Typography>
                                 </TableCell>
                             </TableRow>
                         ))}

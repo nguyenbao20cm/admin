@@ -6,9 +6,9 @@ import { Box } from '@mui/material';
 import AdvertisingPanel from "../../components/container/AdvertisingPanel/AdvertisingPanelCRUD"
 const ReviewList = () => {
     return (
-        <PageContainer title="Sample Page" description="this is Sample page">
+        <PageContainer title="Banner quảng cáo" description="this is Sample page">
 
-            <DashboardCard title="Quản lý Banner quảng cáo">
+            <DashboardCard title="Banner quảng cáo">
                 <Typography paragraph>
                     <AdvertisingPanel />
                 </Typography>

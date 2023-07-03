@@ -26,7 +26,7 @@ class CRUDProductType extends React.Component {
             Voucher: [], id1: "",
             modelTitle: "",
             Name: "", Ma: "", Giamgia: "",
-            id: 0, StatusCheck: "",
+            id: 0, StatusCheck: "", noidung:"", tieude:"",
             currentPage: 1,
             NameinputProductType: "", Status: "", Trangthai: "", open1: false
 
@@ -80,6 +80,8 @@ class CRUDProductType extends React.Component {
                                 this.state.Giamgia == "70%" ? 70 :
                                     this.state.Giamgia == "80%" ? 80 :
                                         this.state.Giamgia == "90%" ? 90 : null,
+              
+                title: this.state.tieude,
                 status: this.state.Status == "Hiển thị" ? true : false,
             })
         }).then(res => res.json())
@@ -100,17 +102,28 @@ class CRUDProductType extends React.Component {
 
     }
     UpdateClick(id) {
+        const token = this.getToken();
         if (this.state.Ma == null) return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
         if (this.state.Giamgia == null) return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
         if (this.state.Status == null) return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
-        fetch(variable.API_URL + "ProductTypes/UpdateProductType/" + id, {
+        fetch(variable.API_URL + "Vouchers/UpdateVoucher/" + id, {
             method: "PUT",
             headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
             },
             body: JSON.stringify({
-                name: this.state.Name,
+                name: this.state.Ma,
+                disscount: this.state.Giamgia == "10%" ? 10 : this.state.Giamgia == "20%" ?
+                    20 : this.state.Giamgia == "30%" ? 30 : this.state.Giamgia == "40%" ?
+                        40 : this.state.Giamgia == "50%" ? 50 :
+                            this.state.Giamgia == "60%" ? 60 :
+                                this.state.Giamgia == "70%" ? 70 :
+                                    this.state.Giamgia == "80%" ? 80 :
+                                        this.state.Giamgia == "90%" ? 90 : null,
+
+                title: this.state.tieude,
                 status: this.state.Status == "Hiển thị" ? true : false,
             })
         }).then(res => res.json())
@@ -120,7 +133,6 @@ class CRUDProductType extends React.Component {
                     this.setState({
                         currentPage: this.state.currentPage
                     });
-
                     this.state.Trangthai == true ? this.CheckTrue()
                         : this.state.Trangthai == false ? this.CheckFalse()
                             : this.refreshList()
@@ -166,11 +178,13 @@ class CRUDProductType extends React.Component {
     }
     EditClick(dep) {
         this.setState({
+            tieude:dep.title,
             StatusCheck: dep.status == true ?
                 "Hiển thị" : "Ẩn",
             modelTitle: "Sửa loại sản phẩm ",
             id: dep.id,
-            Name: dep.name, Ma: dep.name, Giamgia: dep.disscount,
+            Name: dep.name, Ma: dep.name,
+            Giamgia: dep.disscount+"%",
             Status:
                 dep.status == true ?
                     "Hiển thị" : "Ẩn"
@@ -292,7 +306,7 @@ class CRUDProductType extends React.Component {
 
         const {
             Voucher, Ma, Giamgia,
-            modelTitle,
+            modelTitle, noidung,tieude,
             id, NameinputProductType,
             Name,
             currentPage, open1,
@@ -372,6 +386,10 @@ class CRUDProductType extends React.Component {
                                     <th>
                                         Mã
                                     </th>
+                                  
+                                    <th>
+                                        Nội dung 
+                                    </th>
                                     <th>
                                         Giảm giá
                                     </th>
@@ -400,8 +418,12 @@ class CRUDProductType extends React.Component {
                                             <td>
                                                 {dep.name}
                                             </td>
+                                           
                                             <td>
-                                                {dep.disscount}
+                                                {dep.title}
+                                            </td>
+                                            <td>
+                                                {dep.disscount}%
                                             </td>
                                             <td>
 
@@ -475,6 +497,16 @@ class CRUDProductType extends React.Component {
                                             Ma: e.target.value
                                         })} />
                                 </div>
+                                <div className='input-group mb-3'>
+                                    <span className='input-group-text'>
+                                        Tiêu đề
+                                    </span>
+                                    <input type='text' className='form-control' value={tieude}
+                                        onChange={(e) => this.setState({
+                                            tieude: e.target.value
+                                        })} />
+                                </div>
+                              
                                     <div className='input-group mb-3'>
                                         {/* <span className='input-group-text'>
                                                 Giảm giá

@@ -1,14 +1,14 @@
 import React from 'react';
 import { Select, MenuItem, Container } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import DashboardCard from '../../../components/shared/DashboardCard';
+import DashboardCard from '../../../components/shared/DashboardCard1';
 import Chart from 'react-apexcharts';
 import { useEffect } from 'react';
 import { variable } from '../../../Variable';
 import { parseNonNullablePickerDate } from '@mui/x-date-pickers/internals';
 import { Stack, Typography, Avatar } from '@mui/material';
 const SalesOverview = () => {
-
+    
     // select
     let year = new Date();
     const [month, setMonth] = React.useState(year.getFullYear());
@@ -17,8 +17,12 @@ const SalesOverview = () => {
     const handleChange = (event) => {
         setMonth(event.target.value);
     };
+    const getToken = (() => {
+        const tokenString = localStorage.getItem('token');
+        const userToken = JSON.parse(tokenString);
+        return userToken
+    })
     useEffect(() => {
-
         const token = getToken();
         fetch(variable.API_URL + "Inovices/GetAllInoviceTotalMonth/" + month, {
             method: "GET",
@@ -47,11 +51,7 @@ const SalesOverview = () => {
             })
 
     }, [month]);
-    const getToken = (() => {
-        const tokenString = localStorage.getItem('token');
-        const userToken = JSON.parse(tokenString);
-        return userToken
-    })
+  
     // chart color
     const theme = useTheme();
     const primary = theme.palette.primary.main;
