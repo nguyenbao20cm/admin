@@ -40,7 +40,7 @@ class CRUDProductType extends React.Component {
     }
     refreshList() {
         const token = this.getToken();
-        fetch(variable.API_URL + "Inovices/GetTotalByDay", {
+        fetch(variable.API_URL + "Inovices/GetAllChiPhi", {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
@@ -51,18 +51,6 @@ class CRUDProductType extends React.Component {
             .then(response => response.json())
             .then(data => {
                 this.setState({ ProductType: data, Trangthai: null, currentPage: this.state.currentPage });
-            })
-        fetch(variable.API_URL + "ProductSizes/GetAllImportPriceByDay", {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ chiphinhap: data, });
             })
     }
     componentDidMount() {
@@ -322,7 +310,8 @@ class CRUDProductType extends React.Component {
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
         const a = ProductType.slice(firstIndex, lastIndex);
-        const npage = Math.ceil(ProductType.length / recordsPerPage + (chiphinhap.length / recordsPerPage))
+
+        const npage = Math.ceil(ProductType.length / recordsPerPage)
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
         const VND = new Intl.NumberFormat('vi-VN', {
             style: 'currency',
@@ -408,6 +397,9 @@ class CRUDProductType extends React.Component {
                                     <th>
                                         Chi phí bên giao hàng
                                     </th>
+                                    <th>
+                                        Chi phí nhập sản phẩm
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -418,74 +410,38 @@ class CRUDProductType extends React.Component {
                                             : item.name.toString().includes(this.state.NameinputProductType);
                                     }).slice(firstIndex, lastIndex)
                                         .map(dep =>
-                                            <> <tr>
-                                                <td>
-                                                    {this.DatetimeFormat(dep.ngayLap)}
-                                                </td>
-                                                <td>
-                                                    {VND.format(dep.tongTien)}
-                                                </td>
-                                                <td>
-                                                    {VND.format(dep.chiPhi * 20000)}
-                                                </td>
-                                            </tr>
-                                            </>
+                                            dep.thuNhap == 0 && dep.chiPhiVanChuyen == 0 && dep.chiPhiNhap == 0 ? null :
+                                                <tr>
+                                                    <td>
+                                                        {this.DatetimeFormat(dep.dateTime)}
+                                                    </td>
+                                                    <td>
+                                                        {VND.format(dep.thuNhap)}
+                                                    </td>
+                                                    <td>
+                                                        {VND.format(dep.chiPhiVanChuyen)}
+                                                    </td>
+                                                    <td>
+                                                        {VND.format(dep.chiPhiNhap)}
+                                                    </td>
+                                                </tr>
                                         )}
                             </tbody >
                         </table>
-                        <br/>
-                        <table id="example" className='table table-striped'>
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Thời gian
-                                    </th>
-                                    <th>
-                                        Chi phí nhập
-                                    </th>
+                        <br />
 
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {chiphinhap.filter((item) => {
-                                    return this.state.NameinputProductType === ""
-                                        ? item
-                                        : item.name.toString().includes(this.state.NameinputProductType);
-                                }).slice(firstIndex, lastIndex)
-                                    .map(dep =>
-                                        <tr >
-                                            <td>
-                                                {this.DatetimeFormat(dep.ngayLap)}
-                                            </td>
-                                            <td>
-                                                {VND.format(dep.tongTien)}
-                                            </td>
-
-                                        </tr>
-                                    )}
-                            </tbody>
-                        </table>
                         {/* sss */}
-                        <nav>
+                        <div class="scrollmenu">
                             <ul className='pagination'>
-                                <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.PrePage(this.state.currentPage)}>{"<"}</a>
-                                </li>
-                                {
-                                    numbers.map((n, i) => (
-                                        <li className={`page-item  ${currentPage === n ? 'active' : ''}`} key={i}>
-                                            <a href='#' className='page-link'
-                                                onClick={() => this.changePage(n)}>{n}</a>
-                                        </li>
-                                    ))
+                                {numbers.map((n, i) => (
+                                    <li className={`page-item  ${currentPage === n ? 'active' : ''}`} key={i}>
+                                        <a href='#' className='page-link'
+                                            onClick={() => this.changePage(n)}>{n}</a>
+                                    </li>
+                                ))
                                 }
-                                <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.NextPage(this.state.currentPage, npage)}>{">"}</a>
-                                </li>
-
                             </ul>
-                        </nav>
+                        </div>
                     </div>
                     {/* ? */}
 

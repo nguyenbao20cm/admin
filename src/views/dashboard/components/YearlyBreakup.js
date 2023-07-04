@@ -122,23 +122,31 @@ const YearlyBreakup = () => {
           {abc.getFullYear() == 2021 ? null :
             <>
               {
-                TotalYear == "" || TotalYearAgo == "" ? null :
-                  <Stack direction="row" alignItems="center">
-                    {((TotalYearAgo - TotalYear) / TotalYear) * 100 < 0 ?
-                      <Avatar sx={{ bgcolor: errorlight, width: 27, height: 27 }}>
-                        <IconArrowDownRight width={20} color="#FA896B" />
-                      </Avatar> : <Avatar sx={{ bgcolor: successlight, width: 27, height: 27 }}>
-                        <IconArrowUpLeft width={20} color="#39B69A" />
-                      </Avatar>
+                <Stack direction="row" alignItems="center">
+                  {
+                    TotalYearAgo == 0 ? null :
+                      (((TotalYear - TotalYearAgo) / TotalYearAgo) * 100) < 0 ?
+                        <Avatar sx={{ bgcolor: errorlight, width: 27, height: 27 }}>
+                          <IconArrowDownRight width={20} color="#FA896B" />
+                        </Avatar>
+                        :
+                        <Avatar sx={{ bgcolor: successlight, width: 27, height: 27 }}>
+                          <IconArrowUpLeft width={20} color="#39B69A" />
+                        </Avatar>
+                  }
+                  <Typography marginLeft="7px" variant="subtitle2" fontWeight="600" >
+                    {
+                      TotalYearAgo == 0 ? null :
+                        (((TotalYear - TotalYearAgo) / TotalYearAgo) * 100) + "%"
                     }
-                    <Typography marginLeft="7px" variant="subtitle2" fontWeight="600" >
-
-                      {TotalYear == "" || TotalYearAgo == "" ? null : ((TotalYearAgo - TotalYear) / TotalYear) * 100}%
-                    </Typography>
-                    <Typography marginLeft="7px" variant="subtitle2" color="textSecondary">
+                  </Typography>
+                  {
+                    TotalYearAgo == 0 ? null :
+                      <Typography marginLeft="7px" variant="subtitle2" color="textSecondary">
                       so với năm trước
                     </Typography>
-                  </Stack>
+                  }
+                </Stack>
               }
             </>
           }

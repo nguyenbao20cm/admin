@@ -25,13 +25,13 @@ class ReviewCRUD extends React.Component {
             Disscounts: [],
             modelTitle: "",
             Name: "",
-            id: 0, nameDisscount:"",
+            id: 0, nameDisscount: "",
             currentPage: 1,
             NameinputProductType: "",
             DisscountEdit: "",
             ProductId: "",
             Status: "",
-            ProductType: [], open1: false, check:"",data:""
+            ProductType: [], open1: false, check: "", data: ""
 
         }
     }
@@ -53,7 +53,7 @@ class ReviewCRUD extends React.Component {
         })
             .then(response => response.json())
             .then(data => {
-                this.setState({ Disscounts: data ,currentPage:this.state.currentPage});
+                this.setState({ Disscounts: data, currentPage: this.state.currentPage });
             })
         fetch(variable.API_URL + "Products/GetAllProduct", {
             method: "GET",
@@ -165,24 +165,24 @@ class ReviewCRUD extends React.Component {
     }
     DeleteClick() {
         const token = this.getToken();
-     
-            fetch(variable.API_URL + "Disscounts/DeleteDisscount/" + this.state.data, {
-                method: "PUT",
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Authorization': `Bearer ${token.value}`
-                }
-            }).then(res => res.json())
-                .then(result => {
-                    message.success(result)
-                    this.refreshList();
-                    this.setState({ open1: false })
-                }, (error) => {
-                    this.loi("Đã xảy ra lỗi", "")
-                }
-                )
-        
+
+        fetch(variable.API_URL + "Disscounts/DeleteDisscount/" + this.state.data, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            }
+        }).then(res => res.json())
+            .then(result => {
+                message.success(result)
+                this.refreshList();
+                this.setState({ open1: false })
+            }, (error) => {
+                this.loi("Đã xảy ra lỗi", "")
+            }
+            )
+
     }
 
     addClick() {
@@ -191,25 +191,25 @@ class ReviewCRUD extends React.Component {
             id: 0,
             ProductId: "",
             nameDisscount: "", check: 0,
-          
+
         });
     }
     EditClick(dep) {
         this.setState({
             modelTitle: "Chỉnh sửa",
             id: dep.id,
-            check:1,
+            check: 1,
             ProductId: dep.product.name,
-            nameDisscount: dep.nameDisscount+"%",
+            nameDisscount: dep.nameDisscount + "%",
             Giagoc: dep.product.price,
             GiaSale: Number(dep.product.price) * Number(dep.name),
         });
     }
     DeleteClick1(id) {
         this.setState({
-       
-            open1: true, data: id 
-         
+
+            open1: true, data: id
+
         })
     }
     NextPage(id, npage) {
@@ -246,8 +246,8 @@ class ReviewCRUD extends React.Component {
         });
 
     }
-  
-    
+
+
 
     render() {
 
@@ -476,7 +476,7 @@ class ReviewCRUD extends React.Component {
                                                             variant="outlined" />}
                                                 />
                                                 : <Autocomplete
-                                                   
+
                                                     value={ProductId}
                                                     disableClearable
                                                     onChange={(event, newValue) => {
@@ -492,7 +492,7 @@ class ReviewCRUD extends React.Component {
                                                             // label="Pay"
                                                             variant="outlined" />}
                                                 />
-                                                }
+                                            }
                                         </div>
                                         <div class="modal-footer">
                                             {id == 0 ?// eslint-disable-next-line
@@ -502,30 +502,22 @@ class ReviewCRUD extends React.Component {
                                                 <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.id)}>Update</button> : null
                                             }
                                         </div>
-                                      
+
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <nav>
+                        <div class="scrollmenu">
                             <ul className='pagination'>
-                                <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.PrePage(this.state.currentPage)}>{"<"}</a>
-                                </li>
-                                {
-                                    numbers.map((n, i) => (
-                                        <li className={`page-item  ${currentPage === n ? 'active' : ''}`} key={i}>
-                                            <a href='#' className='page-link'
-                                                onClick={() => this.changePage(n)}>{n}</a>
-                                        </li>
-                                    ))
+                                {numbers.map((n, i) => (
+                                    <li className={`page-item  ${currentPage === n ? 'active' : ''}`} key={i}>
+                                        <a href='#' className='page-link'
+                                            onClick={() => this.changePage(n)}>{n}</a>
+                                    </li>
+                                ))
                                 }
-                                <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.NextPage(this.state.currentPage, npage)}>{">"}</a>
-                                </li>
-
                             </ul>
-                        </nav>
+                        </div>
                     </div>
 
                 </Paper>

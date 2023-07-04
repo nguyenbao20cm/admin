@@ -117,15 +117,15 @@ const YearlyBreakup = () => {
                 {/* column */}
                 <Grid item xs={9} sm={9}>
                     <Typography variant="h5" fontWeight="700" alignContent={'center'}>
-                     
+
                         <CountUp delay={0.4} end={TotalYear} duration={0.6} /> Đồng
                     </Typography>
                     {abc.getFullYear() == 2021 ? null :
                         <>
                             {
-                                TotalYear == "" || TotalYearAgo == "" ? null :
+                                TotalYearAgo == 0 ? null :
                                     <Stack direction="row" alignItems="center">
-                                        {((TotalYearAgo - TotalYear) / TotalYear) * 100 < 0 ?
+                                        {((TotalYear - TotalYearAgo) / TotalYearAgo) * 100 < 0 ?
                                             <Avatar sx={{ bgcolor: errorlight, width: 27, height: 27 }}>
                                                 <IconArrowDownRight width={20} color="#FA896B" />
                                             </Avatar> : <Avatar sx={{ bgcolor: successlight, width: 27, height: 27 }}>
@@ -134,11 +134,14 @@ const YearlyBreakup = () => {
                                         }
                                         <Typography marginLeft="7px" variant="subtitle2" fontWeight="600" >
 
-                                            {TotalYear == "" || TotalYearAgo == "" ? null : ((TotalYearAgo - TotalYear) / TotalYear) * 100}%
+                                            {TotalYearAgo == 0 ? null : (((TotalYear - TotalYearAgo) / TotalYearAgo) * 100) + "%"}
                                         </Typography>
-                                        <Typography marginLeft="7px" variant="subtitle2" color="textSecondary">
-                                            so với năm trước
-                                        </Typography>
+                                        {
+                                            TotalYearAgo == 0 ? null : <Typography marginLeft="7px" variant="subtitle2" color="textSecondary">
+                                                so với năm trước
+                                            </Typography>
+                                        }
+
                                     </Stack>
                             }
                         </>

@@ -10,16 +10,39 @@ import {
   ListItemIcon,
   ListItemText
 } from '@mui/material';
+import { useEffect } from 'react';
+import { variable } from '../../../Variable';
 import { NavLink } from 'react-router-dom';
-import { IconListCheck, IconMail, IconUser,IconHistory } from '@tabler/icons';
- import { useNavigate } from 'react-router-dom';
-import ProfileImg from 'src/assets/images/profile/user-1.jpg';
+import { IconListCheck, IconMail, IconUser, IconHistory } from '@tabler/icons';
+import { useNavigate } from 'react-router-dom';
+
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
   const handleClick2 = (event) => {
     setAnchorEl2(event.currentTarget);
   };
+  const getToken = (() => {
+    const tokenString = localStorage.getItem('token');
+    const userToken = JSON.parse(tokenString);
+    return userToken
+  })
+  var [Account, setAccount] = React.useState([]);
+  useEffect(() => {
+    const token = getToken();
+    fetch(variable.API_URL + "Account/GetDetailAccount", {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Authorization': `Bearer ${token.value}`
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        setAccount(data)
+      })
+  }, []);
   const history = useNavigate();
   const handleClose2 = () => {
     setAnchorEl2(null);
@@ -44,8 +67,8 @@ const Profile = () => {
         onClick={handleClick2}
       >
         <Avatar
-          src={ProfileImg}
-          alt={ProfileImg}
+          src={'https://localhost:7067/wwwroot/Image/Avatar/' + Account.avatar}
+          alt={'https://localhost:7067/wwwroot/Image/Avatar/' + Account.avatar}
           sx={{
             width: 50,
             height: 50,
@@ -75,7 +98,7 @@ const Profile = () => {
           </ListItemIcon>
           <ListItemText onClick={() => {
             history("/TaiKhoan")
-            }}>Tài khoản</ListItemText>
+          }}>Tài khoản</ListItemText>
         </MenuItem>
         {/* <MenuItem>
           <ListItemIcon>

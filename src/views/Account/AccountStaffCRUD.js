@@ -33,7 +33,7 @@ class CRUDProductType extends React.Component {
             SDT: "",
             DiaChi: "",
             FullName: "", matkhau: "",
-            Anh: "", History:[]
+            Anh: "", History: []
 
         }
 
@@ -102,7 +102,7 @@ class CRUDProductType extends React.Component {
                             : this.refreshList()
                 }
                 else
-                    this.loi("Thất bại","Hãy nhập lại")
+                    this.loi("Thất bại", "Hãy nhập lại")
             }, (error) => {
                 console.log(error)
                 message.error("Failed")
@@ -158,8 +158,8 @@ class CRUDProductType extends React.Component {
                     : this.state.Trangthai == false ? this.CheckFalse()
                         : this.refreshList()
             }, (error) => {
-                
-                this.loi("Đã xảy ra lỗi","Hãy nhập lại")
+
+                this.loi("Đã xảy ra lỗi", "Hãy nhập lại")
             }
             )
     }
@@ -270,7 +270,7 @@ class CRUDProductType extends React.Component {
             const lastIndex = this.state.currentPage * recordsPerPage;
             const firstIndex = lastIndex - recordsPerPage;
             const a = this.state.ProductType.slice(firstIndex, lastIndex);
-         
+
             const token = this.getToken();
             fetch(variable.API_URL + "Account/GetAllAccountStaff", {
                 headers: {
@@ -361,9 +361,9 @@ class CRUDProductType extends React.Component {
         })
             .then(response => response.json())
             .then(data => {
-                this.setState({ History:data });
+                this.setState({ History: data });
             })
-        
+
     }
     DatetimeFormat(e) {
         const abc = new Date(e)
@@ -554,7 +554,7 @@ class CRUDProductType extends React.Component {
                                                 <button type='button' className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#data'
                                                     onClick={() => this.DetailsClick(dep)}>
                                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" > <path d="M2 8C2 7.44772 2.44772 7 3 7H21C21.5523 7 22 7.44772 22 8C22 8.55228 21.5523 9 21 9H3C2.44772 9 2 8.55228 2 8Z" fill="currentColor" /> <path d="M2 12C2 11.4477 2.44772 11 3 11H21C21.5523 11 22 11.4477 22 12C22 12.5523 21.5523 13 21 13H3C2.44772 13 2 12.5523 2 12Z" fill="currentColor" /> <path d="M3 15C2.44772 15 2 15.4477 2 16C2 16.5523 2.44772 17 3 17H15C15.5523 17 16 16.5523 16 16C16 15.4477 15.5523 15 15 15H3Z" fill="currentColor" /> </svg>
-                                                </button> 
+                                                </button>
                                             </td>
                                             <td>
                                                 {
@@ -569,27 +569,19 @@ class CRUDProductType extends React.Component {
                                     )}
                             </tbody>
                         </table>
-              
-                        {/* sss */}
-                        <nav>
-                            <ul className='pagination'>
-                                <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.PrePage(this.state.currentPage)}>{"<"}</a>
-                                </li>
-                                {
-                                    numbers.map((n, i) => (
-                                        <li className={`page-item  ${currentPage === n ? 'active' : ''}`} key={i}>
-                                            <a href='#' className='page-link'
-                                                onClick={() => this.changePage(n)}>{n}</a>
-                                        </li>
-                                    ))
-                                }
-                                <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.NextPage(this.state.currentPage, npage)}>{">"}</a>
-                                </li>
 
+                        {/* sss */}
+                        <div class="scrollmenu">
+                            <ul className='pagination'>
+                                {numbers.map((n, i) => (
+                                    <li className={`page-item  ${currentPage === n ? 'active' : ''}`} key={i}>
+                                        <a href='#' className='page-link'
+                                            onClick={() => this.changePage(n)}>{n}</a>
+                                    </li>
+                                ))
+                                }
                             </ul>
-                        </nav>
+                        </div>
                     </div>
                     {/* ? */}
 
@@ -612,7 +604,7 @@ class CRUDProductType extends React.Component {
                                             <th>
                                                 Ngày
                                             </th>
-                                           
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -621,12 +613,12 @@ class CRUDProductType extends React.Component {
 
                                             <tr >
                                                 <td>
-                                                  {dep.content}
+                                                    {dep.content}
                                                 </td>
                                                 <td>
                                                     {this.DatetimeFormat(dep.datetime)}
                                                 </td>
-                                                
+
 
                                             </tr>
                                         )}
@@ -708,8 +700,8 @@ class CRUDProductType extends React.Component {
                                     <span className='input-group-text'>
                                         Ảnh
                                     </span>
-                                    <input type="file" name="file" id="file" class="inputfile" onChange={(e)=>
-                                       this.ChangeProdcutImage(e)
+                                    <input type="file" name="file" id="file" class="inputfile" onChange={(e) =>
+                                        this.ChangeProdcutImage(e)
                                     } />
 
                                 </div>

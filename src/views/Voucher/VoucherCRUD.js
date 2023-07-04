@@ -26,7 +26,7 @@ class CRUDProductType extends React.Component {
             Voucher: [], id1: "",
             modelTitle: "",
             Name: "", Ma: "", Giamgia: "",
-            id: 0, StatusCheck: "", noidung:"", tieude:"",
+            id: 0, StatusCheck: "", noidung: "", tieude: "",
             currentPage: 1,
             NameinputProductType: "", Status: "", Trangthai: "", open1: false
 
@@ -80,7 +80,7 @@ class CRUDProductType extends React.Component {
                                 this.state.Giamgia == "70%" ? 70 :
                                     this.state.Giamgia == "80%" ? 80 :
                                         this.state.Giamgia == "90%" ? 90 : null,
-              
+
                 title: this.state.tieude,
                 status: this.state.Status == "Hiển thị" ? true : false,
             })
@@ -178,13 +178,13 @@ class CRUDProductType extends React.Component {
     }
     EditClick(dep) {
         this.setState({
-            tieude:dep.title,
+            tieude: dep.title,
             StatusCheck: dep.status == true ?
                 "Hiển thị" : "Ẩn",
             modelTitle: "Sửa loại sản phẩm ",
             id: dep.id,
             Name: dep.name, Ma: dep.name,
-            Giamgia: dep.disscount+"%",
+            Giamgia: dep.disscount + "%",
             Status:
                 dep.status == true ?
                     "Hiển thị" : "Ẩn"
@@ -306,7 +306,7 @@ class CRUDProductType extends React.Component {
 
         const {
             Voucher, Ma, Giamgia,
-            modelTitle, noidung,tieude,
+            modelTitle, noidung, tieude,
             id, NameinputProductType,
             Name,
             currentPage, open1,
@@ -386,9 +386,9 @@ class CRUDProductType extends React.Component {
                                     <th>
                                         Mã
                                     </th>
-                                  
+
                                     <th>
-                                        Nội dung 
+                                        Nội dung
                                     </th>
                                     <th>
                                         Giảm giá
@@ -418,7 +418,7 @@ class CRUDProductType extends React.Component {
                                             <td>
                                                 {dep.name}
                                             </td>
-                                           
+
                                             <td>
                                                 {dep.title}
                                             </td>
@@ -454,25 +454,17 @@ class CRUDProductType extends React.Component {
                             </tbody>
                         </table>
                         {/* sss */}
-                        <nav>
+                        <div class="scrollmenu">
                             <ul className='pagination'>
-                                <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.PrePage(this.state.currentPage)}>{"<"}</a>
-                                </li>
-                                {
-                                    numbers.map((n, i) => (
-                                        <li className={`page-item  ${currentPage === n ? 'active' : ''}`} key={i}>
-                                            <a href='#' className='page-link'
-                                                onClick={() => this.changePage(n)}>{n}</a>
-                                        </li>
-                                    ))
+                                {numbers.map((n, i) => (
+                                    <li className={`page-item  ${currentPage === n ? 'active' : ''}`} key={i}>
+                                        <a href='#' className='page-link'
+                                            onClick={() => this.changePage(n)}>{n}</a>
+                                    </li>
+                                ))
                                 }
-                                <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.NextPage(this.state.currentPage, npage)}>{">"}</a>
-                                </li>
-
                             </ul>
-                        </nav>
+                        </div>
                     </div>
                     {/* ? */}
 
@@ -506,32 +498,32 @@ class CRUDProductType extends React.Component {
                                             tieude: e.target.value
                                         })} />
                                 </div>
-                              
-                                    <div className='input-group mb-3'>
-                                        {/* <span className='input-group-text'>
+
+                                <div className='input-group mb-3'>
+                                    {/* <span className='input-group-text'>
                                                 Giảm giá
                                             </span>
                                             <input type='text' className='form-control' value={DisscountEdit}
                                                 onChange={(e) => this.ChangeDisscountEdit(e)} /> */}
-                                        <span className='input-group-text'>
-                                            Giảm giá
-                                        </span>
-                                        <Autocomplete
-                                            value={Giamgia}
-                                            disableClearable
-                                            onChange={(event, newValue) => {
-                                                this.setState({
-                                                    Giamgia: newValue
-                                                });
-                                            }}
+                                    <span className='input-group-text'>
+                                        Giảm giá
+                                    </span>
+                                    <Autocomplete
+                                        value={Giamgia}
+                                        disableClearable
+                                        onChange={(event, newValue) => {
+                                            this.setState({
+                                                Giamgia: newValue
+                                            });
+                                        }}
 
-                                            options={Sale}
-                                            style={{ width: 300 }}
-                                            renderInput={(params) =>
-                                                <TextField {...params}
-                                                    // label="Pay"
-                                                    variant="outlined" />}
-                                        />
+                                        options={Sale}
+                                        style={{ width: 300 }}
+                                        renderInput={(params) =>
+                                            <TextField {...params}
+                                                // label="Pay"
+                                                variant="outlined" />}
+                                    />
                                 </div>
                                 <div className='input-group mb-3'>
                                     <span className='input-group-text'>

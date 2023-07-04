@@ -68,7 +68,12 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                     setusername(username)
                     setpassword("")
                 }, 0);
-                if (result != "Failed") {
+                if (result == "Chưa xác minh Email") setTimeout(() => {
+                    message.error("Bạn chưa xác minh Email")
+                    setusername(username)
+                    setpassword("")
+                }, 0);
+                else if (result != "Failed") {
                     setToken(result);
                     const tokenString = localStorage.getItem('token');
                     const decoded = jwt_decode(tokenString);
@@ -76,9 +81,8 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                         setTimeout(() => {
                             message.success("Đăng nhập thành công")
                         }, 0);
-                        setTimeout(() => {
-                            history('/dashboard')
-                        }, 50);
+                        history('/dashboard')
+
 
                     }
                     else
@@ -153,23 +157,24 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                     />
                 </Box>
                 <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}>
-                    {/* <FormGroup>
-                        <FormControlLabel
+                    <FormGroup>
+                        {/* <FormControlLabel
                             control={<Checkbox defaultChecked />}
                             label="Remeber this Device"
-                        />
-                    </FormGroup> */}
-                    {/* <Typography
+                        /> */}
+                    </FormGroup>
+                    <Typography
                         component={Link}
-                        to="/"
+                        to="/auth/register"
                         fontWeight="500"
                         sx={{
                             textDecoration: 'none',
                             color: 'primary.main',
                         }}
+                        style={{ float: 'right' }}
                     >
-                        Forgot Password ?
-                    </Typography> */}
+                        Quên mật khẩu
+                    </Typography>
                 </Stack>
             </Stack>
             <Box>
@@ -178,7 +183,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                     variant="contained"
                     size="large"
                     fullWidth
-                    
+
                     onClick={() => Login()}
                 >
                     Đăng nhập

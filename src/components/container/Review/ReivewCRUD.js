@@ -15,7 +15,7 @@ class ReviewCRUD extends React.Component {
             Name: "",
             id: 0,
             currentPage: 1,
-            NameinputProductType: "", Trangthai:""
+            NameinputProductType: "", Trangthai: ""
 
         }
     }
@@ -64,30 +64,30 @@ class ReviewCRUD extends React.Component {
     }
     DeleteClick(id) {
         const token = this.getToken();
-        
-            fetch(variable.API_URL + "Reviews/DeleteReviewByAdmin/" + id, {
-                method: "PUT",
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Authorization': `Bearer ${token.value}`
-                }
-            }).then(res => res.json())
-                .then(result => {
-                    if (result == "Thành công") {
-                        message.success("Thành công")
-                        this.state.Trangthai == true ? this.CheckTrue()
-                            : this.state.Trangthai == false ? this.CheckFalse()
-                                : this.refreshList()
-                    }
-                    else
-                        message.error(result)
 
-                }, (error) => {
-                    message.error("Failed")
+        fetch(variable.API_URL + "Reviews/DeleteReviewByAdmin/" + id, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            }
+        }).then(res => res.json())
+            .then(result => {
+                if (result == "Thành công") {
+                    message.success("Thành công")
+                    this.state.Trangthai == true ? this.CheckTrue()
+                        : this.state.Trangthai == false ? this.CheckFalse()
+                            : this.refreshList()
                 }
-                )
-        
+                else
+                    message.error(result)
+
+            }, (error) => {
+                message.error("Failed")
+            }
+            )
+
     }
 
     addClick() {
@@ -147,7 +147,7 @@ class ReviewCRUD extends React.Component {
         })
             .then(response => response.json())
             .then(data => {
-                this.setState({ ReviewList: data , Trangthai:null});
+                this.setState({ ReviewList: data, Trangthai: null });
             })
     }
     CheckTrue() {
@@ -167,7 +167,8 @@ class ReviewCRUD extends React.Component {
                 this.setState({
                     ReviewList: data,
                     currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == false ? 1 : this.state.currentPage,
-                    Trangthai: true, NameinputProductType: "" });
+                    Trangthai: true, NameinputProductType: ""
+                });
             })
     }
     CheckFalse() {
@@ -185,8 +186,9 @@ class ReviewCRUD extends React.Component {
             .then(data => {
                 this.setState({
                     ReviewList: data,
-                    currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1  : this.state.currentPage,
-                    Trangthai: false, NameinputProductType: "" });
+                    currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : this.state.currentPage,
+                    Trangthai: false, NameinputProductType: ""
+                });
             })
 
 
@@ -355,25 +357,17 @@ class ReviewCRUD extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        <nav>
+                        <div class="scrollmenu">
                             <ul className='pagination'>
-                                <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.PrePage(this.state.currentPage)}>{"<"}</a>
-                                </li>
-                                {
-                                    numbers.map((n, i) => (
-                                        <li className={`page-item  ${currentPage === n ? 'active' : ''}`} key={i}>
-                                            <a href='#' className='page-link'
-                                                onClick={() => this.changePage(n)}>{n}</a>
-                                        </li>
-                                    ))
+                                {numbers.map((n, i) => (
+                                    <li className={`page-item  ${currentPage === n ? 'active' : ''}`} key={i}>
+                                        <a href='#' className='page-link'
+                                            onClick={() => this.changePage(n)}>{n}</a>
+                                    </li>
+                                ))
                                 }
-                                <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.NextPage(this.state.currentPage, npage)}>{">"}</a>
-                                </li>
-
                             </ul>
-                        </nav>
+                        </div>
                     </div>
 
                 </Paper>

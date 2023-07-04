@@ -28,55 +28,29 @@ const History = Loadable(lazy(() => import('../views/sample-page/History')))
 const Caidat = Loadable(lazy(() => import('../views/sample-page/Caidat')))
 
 const Brand = Loadable(lazy(() => import('../views/sample-page/Brand')))
-
-
-
-
-
-
 const Error = Loadable(lazy(() => import('../views/authentication/Error')));
 const Register = Loadable(lazy(() => import('../views/authentication/Register')));
 const Login = Loadable(lazy(() => import('../views/authentication/Login')));
 
 const Router = [
-  {
-    path: '/',
-    element: <FullLayout />,
-    children: [
-      { path: '/', element: <Navigate to="/dashboard" /> },
-      { path: '/dashboard', exact: true, element: <Dashboard /> },
-      { path: '/sample-page', exact: true, element: <SamplePage /> },
-      { path: '/ProductTypepage', exact: true, element: < ProductTypepage /> },
-      { path: '/InvoicePage', exact: true, element: < InvoicePage /> },
-      { path: '/ReviewPage', exact: true, element: < ReviewPage /> },
-      { path: '/AdvertisingPanel', exact: true, element: < AdvertisingPanel /> },
-      // { path: '/Disscount', exact: true, element: < Disscount /> },
-      { path: '/ProductSize', exact: true, element: < ProductSize /> },
-      { path: '/ReportWeek', exact: true, element: < ReportWeek /> },
-      { path: '/ReportYear', exact: true, element: < ReportYear /> },
-      { path: '/ReportDay', exact: true, element: < ReportDay /> },
-      { path: '/Voucher', exact: true, element: < Voucher /> },
-      { path: '/Account', exact: true, element: < Account /> },
-      { path: '/TaiKhoanNhanVien', exact: true, element: < AccountStaff /> },
-      { path: '/NhaCungCapSanPham', exact: true, element: < Supplier /> },
-      { path: '/TaiKhoan', exact: true, element: < TaiKhoan /> },
-      { path: '/Brand', exact: true, element: < Brand /> },
-      { path: '/LichSuThaoTac', exact: true, element: < History /> },
-      { path: '/Caidat', exact: true, element: < Caidat /> },
-      { path: '*', element: <Navigate to="/auth/404" /> },
-    ],
-  },
-
-  {
-    path: '/auth',
-    element: <BlankLayout />,
-    children: [
-      { path: '404', element: <Error /> },
-      { path: '/auth/register', element: <Register /> },
-      { path: '/auth/login', element: <Login /> },
-      { path: '*', element: <Navigate to="/auth/404" /> },
-    ],
-  },
+    {
+        path: '/',
+        element: <BlankLayout />,
+        children: [
+            { path: '/', element: <Login /> },
+            { path: '*', element: <Navigate to="/auth/404" /> },
+        ],
+    },
+    {
+        path: '/auth',
+        element: <BlankLayout />,
+        children: [
+            { path: '404', element: <Error /> },
+            { path: '/auth/register', element: <Register /> },
+            { path: '/auth/login', element: <Login /> },
+            { path: '*', element: <Navigate to="/auth/404" /> },
+        ],
+    },
 ];
 
 export default Router;

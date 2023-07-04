@@ -7,9 +7,11 @@ import DashboardCard from '../../../components/shared/DashboardCard1';
 import { useEffect } from 'react';
 import { variable } from '../../../Variable';
 import CountUp from 'react-countup';
+import { IconArrowUpLeft } from '@tabler/icons';
 const MonthlyEarnings = () => {
   // chart color
   const theme = useTheme();
+  const successlight = theme.palette.success.light;
   const secondary = theme.palette.secondary.main;
   const secondarylight = '#f5fcff';
   const errorlight = '#fdede8';
@@ -19,6 +21,7 @@ const MonthlyEarnings = () => {
     return userToken
   })
   var [Moth, setInvoiceTotalMonth] = React.useState(0);
+  var [Mothago, setInvoiceTotalMonthago] = React.useState(0);
 
   useEffect(() => {
     const abc = new Date()
@@ -36,6 +39,18 @@ const MonthlyEarnings = () => {
       .then(response => response.json())
       .then(data => {
         setInvoiceTotalMonth(data)
+      })
+    fetch(variable.API_URL + "ProductSizes/GetImportDayAllYear/" + year - 1, {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Authorization': `Bearer ${token.value}`
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        setInvoiceTotalMonthago(data)
       })
   }, []);
   // chart
@@ -104,19 +119,32 @@ const MonthlyEarnings = () => {
     >
       <>
         <Typography variant="h5" fontWeight="700" mt="-20px" style={{ marginTop: "5px" }}>
-       
+
           <CountUp delay={0.4} end={Moth} duration={0.6} /> Đồng
         </Typography>
         <Stack direction="row" spacing={1} my={1} alignItems="center">
-          <Avatar sx={{ bgcolor: errorlight, width: 27, height: 27 }}>
-            <IconArrowDownRight width={20} color="#FA896B" />
-          </Avatar>
-          <Typography variant="subtitle2" fontWeight="600">
-            +9%
-          </Typography>
-          <Typography variant="subtitle2" color="textSecondary">
-            so với tháng trước
-          </Typography>
+          {
+            Mothago == 0 ? null :
+              <Stack direction="row" alignItems="center">
+                {((Moth - Mothago) / Mothago) * 100 < 0 ?
+                  <Avatar sx={{ bgcolor: errorlight, width: 27, height: 27 }}>
+                    <IconArrowDownRight width={20} color="#FA896B" />
+                  </Avatar> : <Avatar sx={{ bgcolor: successlight, width: 27, height: 27 }}>
+                    <IconArrowUpLeft width={20} color="#39B69A" />
+                  </Avatar>
+                }
+                <Typography marginLeft="7px" variant="subtitle2" fontWeight="600" >
+
+                  {Mothago == 0 ? null : (((Moth - Mothago) / Mothago) * 100) + "%"}
+                </Typography>
+                {
+                  Mothago == 0 ? null : <Typography marginLeft="7px" variant="subtitle2" color="textSecondary">
+                    so với năm trước
+                  </Typography>
+                }
+
+              </Stack>
+          }
         </Stack>
       </>
     </DashboardCard>

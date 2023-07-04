@@ -34,8 +34,8 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: 'Nhập Size sản phẩm',
-    icon: IconAperture, bbb: false,
+    title: 'Hóa đơn nhập ',
+    icon: IconAperture, ccc: false,
     href: '/ProductSize',
   },
   {
@@ -47,7 +47,7 @@ const Menuitems = [
   {
     id: uniqueId(),
     title: 'Nhà cung cấp',
-    icon: IconAperture, bbb: false,
+    icon: IconAperture, ccc: false,
     href: '/NhaCungCapSanPham',
   },
   {
@@ -56,9 +56,9 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: 'Hóa đơn',
+    title: 'Hóa đơn bán',
     icon: IconFileInvoice,
-    href: '/InvoicePage',
+    href: '/InvoicePage', ccc: false,
   },
   {
     id: uniqueId(),
@@ -111,12 +111,12 @@ const Menuitems = [
     href: '/Caidat', aaa: true,
   },
 
-  // {
-  //   id: uniqueId(),
-  //   title: 'Tài khoản nhân viên',
-  //   icon: IconAperture,
-  //   href: '/TaiKhoanNhanVien', taikhoan: true,
-  // },
+  {
+    id: uniqueId(),
+    title: 'Tài khoản nhân viên',
+    icon: IconAperture,
+    href: '/TaiKhoanNhanVien', taikhoan: true,
+  },
   
   {
     id: uniqueId(),

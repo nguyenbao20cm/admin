@@ -13,7 +13,7 @@ import {
   ListItemText, useTheme, styled
 } from '@mui/material';
 import PropTypes from 'prop-types'; import {
-  IconAperture, IconCopy, IconLayoutDashboard, IconLogin, IconMoodHappy, IconTypography, IconUserPlus, IconReport,IconUsers,IconBorderAll
+  IconAperture, IconCopy, IconLayoutDashboard, IconFileInvoice, IconLogin, IconMoodHappy, IconTypography, IconUserPlus, IconReport, IconUsers, IconBorderAll
 } from '@tabler/icons';
 import { ListSubheader } from '@mui/material';
 import {
@@ -25,6 +25,7 @@ const SidebarItems = () => {
   const { pathname } = useLocation();
   const pathDirect = pathname;
   const Icon = IconAperture;
+  const itemIcon1234 = <IconFileInvoice stroke={1.5} size="1.3rem" />;
   const itemIcon123 = <IconBorderAll stroke={1.5} size="1.3rem" />;
   const itemIcon12 = <IconUsers stroke={1.5} size="1.3rem" />;
   const itemIcon1 = <IconReport stroke={1.5} size="1.3rem" />;
@@ -50,12 +51,44 @@ const SidebarItems = () => {
             return <NavGroup item={item} key={item.subheader} />;
           }
           else
-            if (item.bbb == null && item.aaa == null && item.taikhoan ==null) {
+            if (item.ccc == null && item.bbb == null && item.aaa == null && item.taikhoan == null) {
               return (
                 <NavItem item={item} key={item.id} pathDirect={pathDirect} />
               );
             }
         })}
+        <ListSubheaderStyle></ListSubheaderStyle>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            id="panel1a-header"
+            button
+            component={NavLink}
+            target={''}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: '36px',
+                p: '3px 0',
+                color: 'inherit',
+              }}
+            >
+              {itemIcon1234}
+            </ListItemIcon>
+            <ListItemText>
+              <>Hóa đơn</>
+            </ListItemText>
+          </AccordionSummary>
+          <AccordionDetails>
+            {Menuitems.map((item) => {
+              if (item.ccc == false) {
+                return (
+                  <Buttonside item={item} key={item.id} pathDirect={pathDirect} />
+                );
+              }
+            })}
+          </AccordionDetails>
+        </Accordion>
         <ListSubheaderStyle></ListSubheaderStyle>
         <Accordion>
           <AccordionSummary

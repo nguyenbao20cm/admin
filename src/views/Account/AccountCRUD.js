@@ -274,7 +274,7 @@ class CRUDProductType extends React.Component {
     Vouce() {
         if (this.state.vouc == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
         const token = this.getToken();
-        fetch(variable.API_URL + "Vouchers/GetVoucherByid/"+this.state.vouc.id, {
+        fetch(variable.API_URL + "Vouchers/GetVoucherByid/" + this.state.vouc.id, {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
@@ -304,12 +304,11 @@ class CRUDProductType extends React.Component {
             })
         }).then(res => res.json())
             .then(result => {
-                if (result == "ok")
-                {
+                if (result == "ok") {
                     document.getElementById("closeModal1").click()
                     message.success("Thành công")
                 }
-                    
+
             }, (error) => {
                 console.log(error)
                 message.error("Failed")
@@ -546,25 +545,17 @@ class CRUDProductType extends React.Component {
                             </tbody>
                         </table>
                         {/* sss */}
-                        <nav>
+                        <div class="scrollmenu">
                             <ul className='pagination'>
-                                <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.PrePage(this.state.currentPage)}>{"<"}</a>
-                                </li>
-                                {
-                                    numbers.map((n, i) => (
-                                        <li className={`page-item  ${currentPage === n ? 'active' : ''}`} key={i}>
-                                            <a href='#' className='page-link'
-                                                onClick={() => this.changePage(n)}>{n}</a>
-                                        </li>
-                                    ))
+                                {numbers.map((n, i) => (
+                                    <li className={`page-item  ${currentPage === n ? 'active' : ''}`} key={i}>
+                                        <a href='#' className='page-link'
+                                            onClick={() => this.changePage(n)}>{n}</a>
+                                    </li>
+                                ))
                                 }
-                                <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.NextPage(this.state.currentPage, npage)}>{">"}</a>
-                                </li>
-
                             </ul>
-                        </nav>
+                        </div>
                     </div>
                     {/* ? */}
 
@@ -574,7 +565,7 @@ class CRUDProductType extends React.Component {
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLongTitle">Kho Voucher</h5>
-                                <button id="closeModal1"type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
+                                <button id="closeModal1" type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
                                 </button>
                             </div>
                             <div class="modal-body">
@@ -591,7 +582,7 @@ class CRUDProductType extends React.Component {
                                         });
                                     }}
                                     options={optionProductType1}
-                                    getOptionLabel={(e) => e.name||" " }
+                                    getOptionLabel={(e) => e.name || " "}
                                     style={{ width: 300 }}
                                     renderInput={(params) =>
                                         <TextField {...params}

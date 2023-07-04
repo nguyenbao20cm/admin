@@ -24,7 +24,7 @@ class CRUDProductType extends React.Component {
         super(props);
         this.state = {
             Voucher: [], id1: "",
-            modelTitle: "", address: "", email: "", phone:'',taxcode:"",
+            modelTitle: "", address: "", email: "", phone: '', taxcode: "",
             Name: "", Ma: "", Giamgia: "",
             id: 0, StatusCheck: "",
             currentPage: 1,
@@ -73,7 +73,7 @@ class CRUDProductType extends React.Component {
             },
             body: JSON.stringify({
                 name: this.state.Ma,
-                email: this.state.email, phone: this.state.phone, taxCode:this.state.taxcode,
+                email: this.state.email, phone: this.state.phone, taxCode: this.state.taxcode,
                 address: this.state.address
             })
         }).then(res => res.json())
@@ -106,10 +106,10 @@ class CRUDProductType extends React.Component {
                 'Authorization': `Bearer ${token.value}`
             },
             body: JSON.stringify({
-                    name: this.state.Ma,
+                name: this.state.Ma,
                 email: this.state.email, taxCode: this.state.taxcode,
-                    phone: this.state.phone,
-                    address: this.state.address
+                phone: this.state.phone,
+                address: this.state.address
             })
         }).then(res => res.json())
             .then(result => {
@@ -159,13 +159,13 @@ class CRUDProductType extends React.Component {
             modelTitle: "Thêm loại sản phẩm",
             id: 0,
             Name: "", Ma: "", Giamgia: "",
-            Status: "",email:"", phone:"",address:"",taxcode:""
+            Status: "", email: "", phone: "", address: "", taxcode: ""
         });
     }
     EditClick(dep) {
         this.setState({
-            Ma: dep.name, taxcode:dep.taxCode,
-            email: dep.email, phone:dep.phone, address: dep.address,
+            Ma: dep.name, taxcode: dep.taxCode,
+            email: dep.email, phone: dep.phone, address: dep.address,
             StatusCheck: dep.status == true ?
                 "Hiển thị" : "Ẩn",
             modelTitle: "Sửa loại sản phẩm ",
@@ -293,7 +293,7 @@ class CRUDProductType extends React.Component {
         const {
             Voucher, Ma, Giamgia,
             modelTitle, phone,
-            id, NameinputProductType,taxcode,
+            id, NameinputProductType, taxcode,
             Name, address, email,
             currentPage, open1,
             Status,
@@ -435,25 +435,17 @@ class CRUDProductType extends React.Component {
                             </tbody>
                         </table>
                         {/* sss */}
-                        <nav>
+                        <div class="scrollmenu">
                             <ul className='pagination'>
-                                <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.PrePage(this.state.currentPage)}>{"<"}</a>
-                                </li>
-                                {
-                                    numbers.map((n, i) => (
-                                        <li className={`page-item  ${currentPage === n ? 'active' : ''}`} key={i}>
-                                            <a href='#' className='page-link'
-                                                onClick={() => this.changePage(n)}>{n}</a>
-                                        </li>
-                                    ))
+                                {numbers.map((n, i) => (
+                                    <li className={`page-item  ${currentPage === n ? 'active' : ''}`} key={i}>
+                                        <a href='#' className='page-link'
+                                            onClick={() => this.changePage(n)}>{n}</a>
+                                    </li>
+                                ))
                                 }
-                                <li className='page-item'>
-                                    <a href='#' className='page-link' onClick={() => this.NextPage(this.state.currentPage, npage)}>{">"}</a>
-                                </li>
-
                             </ul>
-                        </nav>
+                        </div>
                     </div>
                     {/* ? */}
 
