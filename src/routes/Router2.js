@@ -31,6 +31,11 @@ const Brand = Loadable(lazy(() => import('../views/sample-page/Brand')))
 const Error = Loadable(lazy(() => import('../views/authentication/Error')));
 const Register = Loadable(lazy(() => import('../views/authentication/Register')));
 const Login = Loadable(lazy(() => import('../views/authentication/Login')));
+const ForgotPassword = Loadable(lazy(() => import('../views/authentication/ForgotPass')))
+
+const Reset = Loadable(lazy(() => import('../views/authentication/ResetPassword')))
+
+
 
 const Router = [
     {
@@ -46,8 +51,10 @@ const Router = [
         element: <BlankLayout />,
         children: [
             { path: '404', element: <Error /> },
+            { path: '/auth/DoiMatKhau', element: <Reset /> },
+            { path: '/auth/QuenMatKhau', element: <ForgotPassword /> },
             { path: '/auth/register', element: <Register /> },
-            { path: '/auth/login', element: <Login /> },
+            { path: '/auth/DangNhap', element: <Login /> },
             { path: '*', element: <Navigate to="/auth/404" /> },
         ],
     },

@@ -309,8 +309,6 @@ class CRUDProductType extends React.Component {
         const options = ['Hiển thị', 'Ẩn']
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
-        const a = ProductType.slice(firstIndex, lastIndex);
-
         const npage = Math.ceil(ProductType.length / recordsPerPage)
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
         const VND = new Intl.NumberFormat('vi-VN', {

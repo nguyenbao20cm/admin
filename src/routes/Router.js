@@ -29,15 +29,24 @@ const Caidat = Loadable(lazy(() => import('../views/sample-page/Caidat')))
 
 const Brand = Loadable(lazy(() => import('../views/sample-page/Brand')))
 
+const ForgotPassword = Loadable(lazy(() => import('../views/authentication/ForgotPass')))
+
+const HoaDonNhap = Loadable(lazy(() => import('../views/sample-page/ImportInvoice')))
+const GiaoDichThanhToan = Loadable(lazy(() => import('../views/sample-page/GiaoDichThanhToan')))
 
 
 
 
 
+
+
+
+
+
+const Reset = Loadable(lazy(() => import('../views/authentication/ResetPassword')))
 const Error = Loadable(lazy(() => import('../views/authentication/Error')));
 const Register = Loadable(lazy(() => import('../views/authentication/Register')));
 const Login = Loadable(lazy(() => import('../views/authentication/Login')));
-
 const Router = [
   {
     path: '/',
@@ -62,18 +71,22 @@ const Router = [
       { path: '/TaiKhoan', exact: true, element: < TaiKhoan /> },
       { path: '/Brand', exact: true, element: < Brand /> },
       { path: '/LichSuThaoTac', exact: true, element: < History /> },
+      { path: '/HoaDonNhap', exact: true, element: < HoaDonNhap /> },
       { path: '/Caidat', exact: true, element: < Caidat /> },
+      { path: '/GiaoDich', exact: true, element: < GiaoDichThanhToan /> },
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },
-
+  
   {
     path: '/auth',
     element: <BlankLayout />,
     children: [
       { path: '404', element: <Error /> },
+      { path: '/auth/DoiMatKhau', element: <Reset /> },
+      { path: '/auth/QuenMatKhau', element: <ForgotPassword /> },
       { path: '/auth/register', element: <Register /> },
-      { path: '/auth/login', element: <Login /> },
+      { path: '/auth/DangNhap', element: <Login /> },
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },

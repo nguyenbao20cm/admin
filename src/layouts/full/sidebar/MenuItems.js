@@ -36,6 +36,18 @@ const Menuitems = [
     id: uniqueId(),
     title: 'Hóa đơn nhập ',
     icon: IconAperture, ccc: false,
+    href: '/HoaDonNhap',
+  },
+  {
+    id: uniqueId(),
+    title: 'Hóa đơn GD VNPay ',
+    icon: IconAperture, ccc: false,
+    href: '/GiaoDich',
+  },
+  {
+    id: uniqueId(),
+    title: 'Size sản phẩm',
+    icon: IconAperture, bbb: false,
     href: '/ProductSize',
   },
   {

@@ -23,9 +23,9 @@ class CRUDProductType extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            Voucher: [], id1: "",
-            modelTitle: "", address: "", email: "", phone: '', taxcode: "",
-            Name: "", Ma: "", Giamgia: "",
+            ProductType: [], id1: "",
+            modelTitle: "",
+            Name: "",
             id: 0, StatusCheck: "",
             currentPage: 1,
             NameinputProductType: "", Status: "", Trangthai: "", open1: false
@@ -33,23 +33,20 @@ class CRUDProductType extends React.Component {
         }
 
     }
-    getToken() {
-        const tokenString = localStorage.getItem('token');
-        const userToken = JSON.parse(tokenString);
-        return userToken
-    }
+
     refreshList() {
         const token = this.getToken();
-        fetch(variable.API_URL + "Suppliers/GetAllSupplier", {
+        fetch(variable.API_URL + "ImportInvoices/GetAllImportInvoice", {
+            method: "GET",
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
                 'Authorization': `Bearer ${token.value}`
-            }
+            },
         })
             .then(response => response.json())
             .then(data => {
-                this.setState({ Voucher: data, Trangthai: null, currentPage: this.state.currentPage });
+                this.setState({ ProductType: data, Trangthai: null, currentPage: this.state.currentPage });
             })
     }
     componentDidMount() {
@@ -58,85 +55,92 @@ class CRUDProductType extends React.Component {
     ChangeProdcutTypeName = (e) => {
         this.setState({ Name: e.target.value });
     }
-
+    getToken() {
+        const tokenString = localStorage.getItem('token');
+        const userToken = JSON.parse(tokenString);
+        return userToken
+    }
     CreateClick() {
         const token = this.getToken();
-        if (this.state.Ma == null) return this.loi("Tên nhà cung cấp bị rỗng ", "Hãy nhập lại")
-        if (this.state.email == null) return this.loi("Email nhà cung cấp bị rỗng ", "Hãy nhập lại")
-        if (this.state.address == null) return this.loi("Địa chỉ nhà cung cấp bị rỗng ", "Hãy nhập lại")
-        fetch(variable.API_URL + "Suppliers/CreateSupplier", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            },
-            body: JSON.stringify({
-                name: this.state.Ma,
-                email: this.state.email, phone: this.state.phone, taxCode: this.state.taxcode,
-                address: this.state.address
-            })
-        }).then(res => res.json())
-            .then(result => {
-                if (result == true) {
-                    message.success("Thành công")
-                    this.state.Trangthai == true ? this.CheckTrue()
-                        : this.state.Trangthai == false ? this.CheckFalse()
-                            : this.refreshList()
-                    document.getElementById("closeModal").click()
-                }
-                else
-                    message.error(result)
-            }, (error) => {
-                message.error("Failed")
-            });
-
+        if (this.state.Status == "" || this.state.Name == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
+        else
+            if (this.state.Name == "") return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
+            else {
+                fetch(variable.API_URL + "BrandProducts/CreateBrandProducts", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
+                    },
+                    body: JSON.stringify({
+                        name: this.state.Name,
+                        status: this.state.Status == "Hiển thị" ? true : false,
+                    })
+                }).then(res => res.json())
+                    .then(result => {
+                        if (result == true) {
+                            message.success("Thành công")
+                            this.state.Trangthai == true ? this.CheckTrue()
+                                : this.state.Trangthai == false ? this.CheckFalse()
+                                    : this.refreshList()
+                            document.getElementById("closeModal").click()
+                        }
+                        else
+                            message.error("result")
+                    }, (error) => {
+                        message.error("Failed")
+                    });
+            }
 
     }
     UpdateClick(id) {
         const token = this.getToken();
-        if (this.state.Ma == null) return this.loi("Tên nhà cung cấp bị rỗng ", "Hãy nhập lại")
-        if (this.state.email == null) return this.loi("Email nhà cung cấp bị rỗng ", "Hãy nhập lại")
-        if (this.state.address == null) return this.loi("Địa chỉ nhà cung cấp bị rỗng ", "Hãy nhập lại")
-        fetch(variable.API_URL + "Suppliers/UpdateSupplier/" + id, {
-            method: "PUT",
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            },
-            body: JSON.stringify({
-                name: this.state.Ma,
-                email: this.state.email, taxCode: this.state.taxcode,
-                phone: this.state.phone,
-                address: this.state.address
-            })
-        }).then(res => res.json())
-            .then(result => {
-                if (result == true) {
-                    message.success("Thành công")
-                    this.setState({
-                        currentPage: this.state.currentPage
-                    });
+        if (this.state.Name == "") return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
+        else
+            if (this.state.Status == "") return this.loi("Trạng thái bị rỗng ", "Hãy nhập lại")
+            else {
+                fetch(variable.API_URL + "BrandProducts/UpdateBrandProducts/" + id, {
+                    method: "PUT",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
+                    },
+                    body: JSON.stringify({
+                        name: this.state.Name,
+                        status: this.state.Status == "Hiển thị" ? true : false,
+                    })
+                }).then(res => res.json())
+                    .then(result => {
+                        if (result == "Thành công") {
+                            message.success("Thành công")
+                            this.setState({
+                                currentPage: this.state.currentPage
+                            });
 
-                    this.state.Trangthai == true ? this.CheckTrue()
-                        : this.state.Trangthai == false ? this.CheckFalse()
-                            : this.refreshList()
-                    document.getElementById("closeModal").click()
-                }
-                else
-                    message.error("")
-            }, (error) => {
-                message.error("Failed")
+                            this.state.Trangthai == true ? this.CheckTrue()
+                                : this.state.Trangthai == false ? this.CheckFalse()
+                                    : this.refreshList()
+
+
+                            document.getElementById("closeModal").click()
+                        }
+                        else
+                            message.error(result)
+                    }, (error) => {
+                        message.error("Failed")
+                    }
+                    )
             }
-            )
+
     }
     DeleteClick(dep) {
         this.setState({ open1: true, id1: dep })
     }
     DeleteClick1() {
 
-        fetch(variable.API_URL + "ProductTypes/DeleteProductType/" + this.state.id1, {
+        fetch(variable.API_URL + "BrandProducts/DeleteBrandProducts/" + this.state.id1, {
             method: "PUT",
             headers: {
                 "Accept": "application/json",
@@ -158,19 +162,17 @@ class CRUDProductType extends React.Component {
         this.setState({
             modelTitle: "Thêm loại sản phẩm",
             id: 0,
-            Name: "", Ma: "", Giamgia: "",
-            Status: "", email: "", phone: "", address: "", taxcode: ""
+            Name: "",
+            Status: "",
         });
     }
     EditClick(dep) {
         this.setState({
-            Ma: dep.name, taxcode: dep.taxCode,
-            email: dep.email, phone: dep.phone, address: dep.address,
             StatusCheck: dep.status == true ?
                 "Hiển thị" : "Ẩn",
             modelTitle: "Sửa loại sản phẩm ",
             id: dep.id,
-            Name: dep.name, Ma: dep.name, Giamgia: dep.disscount,
+            Name: dep.name,
             Status:
                 dep.status == true ?
                     "Hiển thị" : "Ẩn"
@@ -225,7 +227,7 @@ class CRUDProductType extends React.Component {
             .then(response => response.json())
             .then(data => {
                 this.setState({
-                    Voucher: data, currentPage: 1,
+                    ProductType: data, currentPage: 1,
                     Trangthai: null,
                     NameinputProductType: ""
                 });
@@ -237,12 +239,12 @@ class CRUDProductType extends React.Component {
             const recordsPerPage = 5;
             const lastIndex = this.state.currentPage * recordsPerPage;
             const firstIndex = lastIndex - recordsPerPage;
-            const a = this.state.Voucher.slice(firstIndex, lastIndex);
+            const a = this.state.ProductType.slice(firstIndex, lastIndex);
             fetch(variable.API_URL + "ProductTypes/GetAllProductTypeStatusTrue")
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
-                        Voucher: data,
+                        ProductType: data,
                         currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == false ? 1 : a.length == 1 ? this.state.currentPage - 1 : this.state.currentPage,
                         Trangthai: true, NameinputProductType: ""
                     });
@@ -253,7 +255,7 @@ class CRUDProductType extends React.Component {
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
-                        Voucher: data,
+                        ProductType: data,
                         currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == false ? 1 : this.state.currentPage,
                         Trangthai: true, NameinputProductType: ""
                     });
@@ -265,12 +267,12 @@ class CRUDProductType extends React.Component {
             const recordsPerPage = 5;
             const lastIndex = this.state.currentPage * recordsPerPage;
             const firstIndex = lastIndex - recordsPerPage;
-            const a = this.state.Voucher.slice(firstIndex, lastIndex);
+            const a = this.state.ProductType.slice(firstIndex, lastIndex);
             fetch(variable.API_URL + "ProductTypes/GetAllProductTypeStatusFalse")
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
-                        Voucher: data,
+                        ProductType: data,
                         currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : a.length == 1 ? this.state.currentPage - 1 : this.state.currentPage,
                         Trangthai: false, NameinputProductType: ""
                     });
@@ -281,7 +283,7 @@ class CRUDProductType extends React.Component {
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
-                        Voucher: data,
+                        ProductType: data,
                         currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : this.state.currentPage,
                         Trangthai: false, NameinputProductType: ""
                     });
@@ -291,20 +293,19 @@ class CRUDProductType extends React.Component {
     render() {
 
         const {
-            Voucher, Ma, Giamgia,
-            modelTitle, phone,
-            id, NameinputProductType, taxcode,
-            Name, address, email,
+            ProductType,
+            modelTitle,
+            id, NameinputProductType,
+            Name,
             currentPage, open1,
             Status,
         } = this.state;
         const recordsPerPage = 5;
         const options = ['Hiển thị', 'Ẩn']
-        const Sale = ["10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%"]
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
-        const a = Voucher.slice(firstIndex, lastIndex);
-        const npage = Math.ceil(Voucher.length / recordsPerPage)
+        const a = ProductType.slice(firstIndex, lastIndex);
+        const npage = Math.ceil(ProductType.length / recordsPerPage)
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
         return (
             <>
@@ -336,19 +337,16 @@ class CRUDProductType extends React.Component {
                         <div className="card-body" >
                             <div>
                                 <div className="form-group">
-                                    <label>Tìm kiếm theo tên nhà cung cấp</label>
-                                    <div><input className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Tên nhà cung cấp" />
+                                    <label>Tìm kiếm theo tên thương hiệu</label>
+                                    <div><input className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Tên thương hiệu sản phẩm" />
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
-                    
-                </div>
-                <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
-                    onClick={() => this.addClick()}>
-                    Thêm nhà cung cấp
-                </button>
+                    </div>
+                
                 <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                     <div>
                         <table id="example" className='table table-striped'>
@@ -358,27 +356,33 @@ class CRUDProductType extends React.Component {
                                         ID
                                     </th>
                                     <th>
-                                        Tên nhà cung cấp
+                                        Mã giao dịch VnPay
                                     </th>
                                     <th>
-                                        Email
+                                        Thời gian thanh toán
                                     </th>
                                     <th>
-                                        Số điện thoại
+                                        Loại tài khoản/thẻ
                                     </th>
                                     <th>
-                                        Mã số thuế
+                                        Mã Ngân hàng
                                     </th>
                                     <th>
-                                        Địa chỉ
+                                        Mã giao dịch tại Ngân hàng
                                     </th>
                                     <th>
-                                        Sửa
+                                        ID người dùng
+                                    </th>
+                                    <th>
+                                        ID Hóa đơn
+                                    </th>
+                                    <th>
+                                        Tổng tiền
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {Voucher.filter((item) => {
+                                {ProductType.filter((item) => {
                                     return this.state.NameinputProductType === ""
                                         ? item
                                         : item.name.toString().includes(this.state.NameinputProductType);
@@ -389,25 +393,30 @@ class CRUDProductType extends React.Component {
                                                 {dep.id}
                                             </td>
                                             <td>
-                                                {dep.name}
+                                                {dep.VNBillId}
                                             </td>
                                             <td>
-                                                {dep.email}
+                                                {dep.dateTime}
                                             </td>
-                                            <td>
 
-                                                {dep.phone
-                                                }
+                                            <td>
+                                                {dep.cardType}
                                             </td>
                                             <td>
-
-                                                {dep.taxCode
-                                                }
+                                                {dep.codeBank}
                                             </td>
                                             <td>
+                                                {dep.invoiceBankID}
+                                            </td>
 
-                                                {dep.address
-                                                }
+                                            <td>
+                                                {dep.accountId}
+                                            </td>
+                                            <td>
+                                                {dep.invoiceId}
+                                            </td>
+                                            <td>
+                                                {dep.total}
                                             </td>
                                             <td>
                                                 <button type='button' className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#exampleModal'
@@ -417,6 +426,15 @@ class CRUDProductType extends React.Component {
                                                         <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
                                                     </svg>
                                                 </button>
+                                            </td>
+                                            <td>
+                                                {
+                                                    dep.status == false ? null : <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                                        </svg>
+                                                    </button>
+                                                }
                                             </td>
                                         </tr>
                                     )}
@@ -437,7 +455,7 @@ class CRUDProductType extends React.Component {
                     </div>
                     {/* ? */}
 
-                </Paper>
+                </Paper >
                 <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
                     <div className="modal-dialog modal-lg modal-dialog-centered">
                         <div className="modal-content">
@@ -451,45 +469,32 @@ class CRUDProductType extends React.Component {
 
                                 <div className='input-group mb-3'>
                                     <span className='input-group-text'>
-                                        Tên nhà cung cấp
+                                        Tên thương hiệu
                                     </span>
-                                    <input type='text' className='form-control' value={Ma}
-                                        onChange={(e) => this.setState({
-                                            Ma: e.target.value
-                                        })} />
-                                </div>     <div className='input-group mb-3'>
-                                    <span className='input-group-text'>
-                                        Số điện thoại nhà cung cấp
-                                    </span>
-                                    <input type='text' className='form-control' value={phone}
-                                        onChange={(e) => this.setState({
-                                            phone: e.target.value
-                                        })} />
-                                    <span className='input-group-text'>
-                                        Mã số thuế
-                                    </span>
-                                    <input type='text' className='form-control' value={taxcode}
-                                        onChange={(e) => this.setState({
-                                            taxcode: e.target.value
-                                        })} />
+                                    <input type='text' className='form-control' value={Name}
+                                        onChange={(e) => this.ChangeProdcutTypeName(e)} />
                                 </div>
                                 <div className='input-group mb-3'>
                                     <span className='input-group-text'>
-                                        Email
+                                        Trạng thái
                                     </span>
-                                    <input type='text' className='form-control' value={email}
-                                        onChange={(e) => this.setState({
-                                            email: e.target.value
-                                        })} />
-                                </div>
-                                <div className='input-group mb-3'>
-                                    <span className='input-group-text'>
-                                        Địa chỉ
-                                    </span>
-                                    <input type='text' className='form-control' value={address}
-                                        onChange={(e) => this.setState({
-                                            address: e.target.value
-                                        })} />
+                                    <Autocomplete
+                                        value={Status}
+                                        disableClearable
+                                        onChange={(event, newValue) => {
+                                            this.setState({
+                                                Status: newValue
+                                            });
+
+                                        }}
+
+                                        options={options}
+                                        style={{ width: 300 }}
+                                        renderInput={(params) =>
+                                            <TextField {...params}
+                                                // label="Pay"
+                                                variant="outlined" />}
+                                    />
 
                                 </div>
 

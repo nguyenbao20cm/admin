@@ -22,6 +22,7 @@ const Profile = () => {
   const handleClick2 = (event) => {
     setAnchorEl2(event.currentTarget);
   };
+
   const getToken = (() => {
     const tokenString = localStorage.getItem('token');
     const userToken = JSON.parse(tokenString);
@@ -49,7 +50,7 @@ const Profile = () => {
   };
   const handleSignOut = () => {
     localStorage.clear()
-    window.location.reload(false);
+    history("/")
   };
   return (
     <Box>
@@ -115,7 +116,7 @@ const Profile = () => {
           }}>Lịch sử thao tác</ListItemText>
         </MenuItem>
         <Box mt={1} py={1} px={2}>
-          <Button to="/auth/login" variant="outlined" color="primary" component={Link} fullWidth onClick={handleSignOut}>
+          <Button variant="outlined" color="primary" fullWidth onClick={handleSignOut}>
             Đăng xuất
           </Button>
         </Box>

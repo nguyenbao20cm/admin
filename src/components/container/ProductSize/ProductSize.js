@@ -98,11 +98,7 @@ class ReviewCRUD extends React.Component {
                 'Authorization': `Bearer ${token.value}`
             },
             body: JSON.stringify({
-                importPrice: this.state.ImportPrice,
-                // IssuedDate: Date.now(),
                 name: this.state.Name,
-                supplierId: this.PRID1(this.state.nhacungcap),
-                stock: this.state.Stock,
                 ProductId: this.PRID(this.state.ProductId),
                 status: this.state.Status == "Hiển thị" ? true : false,
             })
@@ -147,10 +143,7 @@ class ReviewCRUD extends React.Component {
             },
             body: JSON.stringify
                 ({
-                    importPrice: this.state.ImportPrice,
                     name: this.state.Name,
-                    stock: this.state.Stock,
-                    supplierId: this.PRID1(this.state.nhacungcap),
                     ProductId: this.PRID(this.state.ProductId),
                     status: this.state.Status == "Hiển thị" ? true : false,
                 })
@@ -473,21 +466,11 @@ class ReviewCRUD extends React.Component {
                                         Size
                                     </th>
                                     <th>
-                                        Của sản phẩm
+                                        Sản phẩm
                                     </th>
                                     <th>
                                         Số lượng kho
                                     </th>
-                                    <th>
-                                        Nhà cung cấp
-                                    </th>
-                                    <th>
-                                        Ngày nhập
-                                    </th>
-                                    <th>
-                                        Giá nhập
-                                    </th>
-
                                     <th>
                                         Trạng thái
                                     </th>
@@ -519,17 +502,6 @@ class ReviewCRUD extends React.Component {
                                             </td>
                                             <td>
                                                 {dep.stock}
-                                            </td>
-                                            <td>
-                                                {dep.supplier.name}
-                                            </td>
-                                            <td>
-                                                {
-                                                    this.DatetimeFormat(dep.issuedDate)
-                                                }
-                                            </td>
-                                            <td>
-                                                <CountUp delay={0.4} end={dep.importPrice} duration={0.6} /> Đồng
                                             </td>
                                             <td>
 
@@ -595,40 +567,6 @@ class ReviewCRUD extends React.Component {
                                                         variant="outlined" />}
                                             />
                                         </div>
-                                        <div className='input-group mb-3'>
-                                            <span className='input-group-text'>
-                                                Của nhà cung cấp
-                                            </span>
-                                            <Autocomplete
-                                                disableClearable
-                                                value={nhacungcap}
-                                                onChange={(event, newValue) => {
-                                                    this.setState({
-                                                        nhacungcap: newValue
-                                                    });
-                                                }}
-
-                                                options={optionProductTyp1}
-                                                style={{ width: 300 }}
-                                                renderInput={(params) =>
-                                                    <TextField {...params}
-                                                        // label="Pay"
-                                                        variant="outlined" />}
-                                            />
-                                        </div>
-                                        <div className='input-group mb-3'>
-                                            <span className='input-group-text'>
-                                                Số lương kho
-                                            </span>
-                                            <input type='text' className='form-control' value={Stock}
-                                                onChange={(e) => this.ChangeStock(e)} />
-                                            <span className='input-group-text'>
-                                                Giá nhập
-                                            </span>
-                                            <input type='text' className='form-control' value={ImportPrice}
-                                                onChange={(e) => this.ChangeImportPrice(e)} />
-                                        </div>
-
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
                                                 Trạng thái

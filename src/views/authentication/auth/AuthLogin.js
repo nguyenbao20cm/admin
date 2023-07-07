@@ -165,7 +165,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                     </FormGroup>
                     <Typography
                         component={Link}
-                        to="/auth/register"
+                        to="/auth/QuenMatKhau"
                         fontWeight="500"
                         sx={{
                             textDecoration: 'none',

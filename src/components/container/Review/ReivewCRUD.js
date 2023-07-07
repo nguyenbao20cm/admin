@@ -304,7 +304,9 @@ class ReviewCRUD extends React.Component {
                                                 {dep.content}
                                             </td>
                                             <td>
-                                                <img style={{ width: 50 }} src={'https://localhost:7067/wwwroot/Image/ReviewImage/' + dep.image} />
+                                                {
+                                                    dep.image == null ? null : <img style={{ width: 50 }} src={'https://localhost:7067/wwwroot/Image/ReviewImage/' + dep.image} />
+                                                }
                                             </td>
                                             <td>
                                                 {this.DatetimeFormat(dep.dateTime)}

@@ -11,12 +11,14 @@ import { useEffect } from 'react';
 import { useRef, useState } from 'react';
 import { func } from 'prop-types';
 import { message } from 'antd';
+import { useNavigate } from 'react-router';
 const ReviewList = () => {
     const getToken = (() => {
         const tokenString = localStorage.getItem('token');
         const userToken = JSON.parse(tokenString);
         return userToken
     })
+    const history = useNavigate()
     const input = useRef(null)
     var [ta, setta] = React.useState(0);
     var [Account, setAccount] = React.useState([]);
@@ -118,6 +120,9 @@ const ReviewList = () => {
                                             <input type='text' className='form-control'
                                             />
                                             <div class="modal-footer">
+                                                <button type='button' onClick={() => {
+                                                    history('/auth/QuenMatKhau')
+                                                }} className='btn btn-primary float-start'>Quên mật khẩu</button>
                                                 <button type='button' className='btn btn-primary float-start'>Thay đổi</button>
                                             </div>
                                         </div>
