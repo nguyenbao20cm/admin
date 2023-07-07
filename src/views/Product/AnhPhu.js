@@ -17,6 +17,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
+import { result } from 'lodash';
 
 
 class CRUDProductType extends React.Component {
@@ -24,29 +25,26 @@ class CRUDProductType extends React.Component {
         super(props);
         this.state = {
             ProductType: [], id1: "",
-            modelTitle: "", quantity: "",
-            Name: "",
+            modelTitle: "",
+            Name: "", image: "", Iimage: "",
             id: 0, StatusCheck: "",
-            currentPage: 1,
-            NameinputProductType: "", Status: "", Trangthai: "", open1: false, GiaNhap: "", Size: "", ProductSizeId: "",
-            APIProduct: [], ProductId: "", Nhacungcap: "", APINhaCungCap: [], APIProductSize: []
+            currentPage: 1, APIProduct: [],
+            NameinputProductType: "", Status: "", Trangthai: "", open1: false, APIImageProduct: [], productId: ""
+
         }
-
     }
-
     refreshList() {
         const token = this.getToken();
-        fetch(variable.API_URL + "ImportInvoices/GetAllImportInvoice", {
+        fetch(variable.API_URL + "ImageProduct/GetAllImageProduct", {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
                 'Authorization': `Bearer ${token.value}`
-            },
-        })
-            .then(response => response.json())
+            }
+        }).then(response => response.json())
             .then(data => {
-                this.setState({ ProductType: data, Trangthai: null, currentPage: this.state.currentPage });
+                this.setState({ APIImageProduct: data, });
             })
         fetch(variable.API_URL + "Products/GetAllProduct", {
             method: "GET",
@@ -61,18 +59,12 @@ class CRUDProductType extends React.Component {
                 this.setState({ APIProduct: data, });
             })
 
-        fetch(variable.API_URL + "Suppliers/GetAllSupplier", {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            },
-        })
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ APINhaCungCap: data, });
-            })
+
+    }
+    ChangeProdcutImage = (e) => {
+        if (e.target.files[0] != null)
+            this.setState({ image: e.target.files[0].name, Iimage: e.target.files[0] });
+
     }
     componentDidMount() {
         this.refreshList();
@@ -87,33 +79,26 @@ class CRUDProductType extends React.Component {
     }
     CreateClick() {
         const token = this.getToken();
-        fetch(variable.API_URL + "ImportInvoices/CreateImportInvoice", {
+        const formData = new FormData()
+        formData.append("model", this.state.Iimage,)
+        fetch(variable.API_URL + "ImageProduct/CreateImagesProduct/" + this.state.productId, {
             method: "POST",
+            body: formData,
             headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
                 'Authorization': `Bearer ${token.value}`
             },
-            body: JSON.stringify({
-                productSizeId: this.state.ProductSizeId,
-                supplierId: this.state.Nhacungcap,
-                importPrice: this.state.GiaNhap,
-                quantity: this.state.quantity,
-            })
         }).then(res => res.json())
             .then(result => {
-                if (result == true) {
+                console.log(result)
+                if (result === "Thành công") {
+                    this.refreshList();
                     message.success("Thành công")
-                    this.state.Trangthai == true ? this.CheckTrue()
-                        : this.state.Trangthai == false ? this.CheckFalse()
-                            : this.refreshList()
                     document.getElementById("closeModal").click()
                 }
-                else
-                    message.error("result")
             }, (error) => {
                 message.error("Failed")
-            });
+            }
+            )
     }
     UpdateClick(id) {
         const token = this.getToken();
@@ -181,23 +166,17 @@ class CRUDProductType extends React.Component {
 
     addClick() {
         this.setState({
-            modelTitle: "Tạo hóa đơn nhập",
+            modelTitle: "Thêm loại sản phẩm",
             id: 0,
             Name: "",
             Status: "",
-            GiaNhap: 0,
-            quantity: 0,
         });
     }
     EditClick(dep) {
         this.setState({
-            GiaNhap: dep.importPrice,
-            quantity: dep.quantity,
-            Nhacungcap:dep.supplier,
-            ProductSizeId: dep.productSizeId,
             StatusCheck: dep.status == true ?
                 "Hiển thị" : "Ẩn",
-            modelTitle: "Sửa hóa đơn",
+            modelTitle: "Sửa loại sản phẩm ",
             id: dep.id,
             Name: dep.name,
             Status:
@@ -317,62 +296,27 @@ class CRUDProductType extends React.Component {
                 })
         }
     }
-    GetProductSIzeAPI(id) {
-        const token = this.getToken();
-        fetch(variable.API_URL + "ProductSizes/GetProductSizeByProductId/" + id, {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            },
-        })
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ APIProductSize: data, });
-            })
-    }
-    DatetimeFormat(e) {
-        const abc = new Date(e)
-        var day = abc.getDate() + "/";
-        var month = abc.getMonth() + 1 + "/";
-        var year = abc.getFullYear()
-        let format4 = day + month + year;
-        return format4;
-    }
     render() {
 
         const {
-            ProductType, GiaNhap, Size, ProductSizeId, APIProductSize,
+            ProductType, APIImageProduct, productId, image,
             modelTitle,
             id, NameinputProductType,
-            Name, Nhacungcap,
+            Name, APIProduct,
             currentPage, open1,
-            Status, APIProduct, ProductId, APINhaCungCap, quantity
+            Status,
         } = this.state;
-
-        const OPtionProduct = APIProduct.map((dep) => ({
-            id: dep.id,
-            nameProduct: dep.name,
-
-        }))
-        const OPtionProductSize = APIProductSize.map((dep) => ({
-            id: dep.id,
-            nameProduct: dep.name,
-
-        }))
-        const OptionNhaCungCap = APINhaCungCap.map((dep) => ({
-            id: dep.id,
-            nameProduct: dep.name,
-
-        }))
-
         const recordsPerPage = 5;
+        const OptionNhaCungCap = APIProduct.map((dep) => ({
+            id: dep.id,
+            nameProduct: dep.name,
+
+        }))
         const options = ['Hiển thị', 'Ẩn']
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
-        const a = ProductType.slice(firstIndex, lastIndex);
-        const npage = Math.ceil(ProductType.length / recordsPerPage)
+        const a = APIImageProduct.slice(firstIndex, lastIndex);
+        const npage = Math.ceil(APIImageProduct.length / recordsPerPage)
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
         return (
             <>
@@ -404,59 +348,31 @@ class CRUDProductType extends React.Component {
                         <div className="card-body" >
                             <div>
                                 <div className="form-group">
-                                    <label>Tìm kiếm theo ID hóa đơn</label>
-                                    <div><input className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="ID" />
+                                    <label>Tìm kiếm theo tên thương hiệu</label>
+                                    <div><input className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Tên thương hiệu sản phẩm" />
                                     </div>
                                 </div>
 
                             </div>
                         </div>
                     </div>
-                    <div className="card">
+                    <div className="card" style={{ width: "135px" }}>
                         <div className="card-body">
-                            <div>
-                                <div className="form-group">
-                                    <label>Từ ngày:</label>
-                                    <div>
-                                        <input id="dates-range" className="form-control flatpickr-input"
-                                            type="datetime-local" onChange={(e) => this.ChangeStartDate(e)} />
-                                    </div>
-                                </div>
-
-                                <div className="form-group" >
-                                    <div>
-                                        <input id="dates-range" className="form-control flatpickr-input"
-                                            type="datetime-local" onChange={(e) => this.ChangeEndDate(e)} />
-                                    </div>
-                                </div>
-
-                                <div className="form-group" >
-                                    <div>
-                                        <button type='button' className='btn btn-primary m-2 float-end'
-                                            onClick={() => this.refreshList1()}>
-                                            Reset Trang
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div className="form-group" >
-                                    <div>
-                                        <button type='button' className='btn btn-primary m-2 float-end'
-                                            onClick={() => this.ApplyClick()}>
-                                            Áp dụng
-                                        </button>
-                                    </div>
-                                </div>
-
-
+                            <label>Trạng thái:</label>
+                            <div className>
+                                <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
+                                <label for="All">Tất cả</label><br />
+                                <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
+                                <label for="True">Hiển thị</label><br />
+                                <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />
+                                <label for="False">Ẩn</label>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
                     onClick={() => this.addClick()}>
-                    Tạo hóa đơn nhập
+                    Tạo ảnh sản phẩm
                 </button>
                 <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                     <div>
@@ -467,22 +383,10 @@ class CRUDProductType extends React.Component {
                                         ID
                                     </th>
                                     <th>
-                                        Tên sản phẩm
+                                        Ảnh
                                     </th>
                                     <th>
-                                        Size sản phẩm
-                                    </th>
-                                    <th>
-                                        Ngày lập
-                                    </th>
-                                    <th>
-                                        Giá nhập
-                                    </th>
-                                    <th>
-                                        Số lượng
-                                    </th>
-                                    <th>
-                                        Nhà cung cấp
+                                        Của sản phẩm
                                     </th>
                                     <th>
                                         Sửa
@@ -490,7 +394,7 @@ class CRUDProductType extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {ProductType.filter((item) => {
+                                {APIImageProduct.filter((item) => {
                                     return this.state.NameinputProductType === ""
                                         ? item
                                         : item.name.toString().includes(this.state.NameinputProductType);
@@ -501,22 +405,12 @@ class CRUDProductType extends React.Component {
                                                 {dep.id}
                                             </td>
                                             <td>
-                                                {((dep.productSize).product).name}
+                                                {dep.name}
                                             </td>
                                             <td>
-                                                {(dep.productSize).name}
-                                            </td>
-                                            <td>
-                                                {this.DatetimeFormat(dep.issuedDate)}
-                                            </td>
-                                            <td>
-                                                {dep.importPrice}
-                                            </td>
-                                            <td>
-                                                {dep.quantity}
-                                            </td>
-                                            <td>
-                                                {(dep.supplier).name}
+                                                {
+                                                    <img style={{ width: 50 }} src={"https://localhost:7067/wwwroot/Image/ImageProduct/" + dep.image} />
+                                                }
                                             </td>
                                             <td>
                                                 <button type='button' className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#exampleModal'
@@ -527,6 +421,7 @@ class CRUDProductType extends React.Component {
                                                     </svg>
                                                 </button>
                                             </td>
+
                                         </tr>
                                     )}
                             </tbody>
@@ -556,88 +451,36 @@ class CRUDProductType extends React.Component {
                                 </button>
                             </div>
                             <div className='modal-body'>
+
+                                <div className='input-group mb-3'>
+                                    <span className='input-group-text'>
+                                        Hình ảnh
+                                    </span>
+                                    <input type='text' className='form-control' value={image}
+                                        onChange={(e) => this.ChangeProdcutImage(e)} readOnly />
+                                    <input type="file" onChange={(e) => this.ChangeProdcutImage(e)}></input>
+
+                                </div>
                                 <div className='input-group mb-3'>
                                     <span className='input-group-text'>
                                         Sản phẩm
                                     </span>
-                                    <select value={ProductId} onChange={(e) => {
-                                        this.GetProductSIzeAPI(e.target.value)
-                                        this.setState({
-                                            ProductId: e.target.value
-                                        })
-                                    }} className="custom-select" style={{ width: 300 }}>
-                                        <option value={0}>Hãy chọn sản phẩm</option>
-                                        {
-                                            APIProduct.map(e =>
-                                                <option value={e.id}>{e.name}</option>
-                                            )
-                                        }
-                                    </select>
-                                    {/* <Autocomplete
+                                    <Autocomplete
                                         disableClearable
                                         onChange={(event, newValue) => {
-                                            this.GetProductSIzeAPI(newValue.id)
                                             this.setState({
-                                                ProductSizeId: ""
-                                            })
+                                                productId: newValue.id
+                                            });
                                         }}
                                         getOptionLabel={(e) => e.nameProduct || " "}
+                                        options={OptionNhaCungCap}
                                         style={{ width: 300 }}
-                                        options={OPtionProduct}
                                         renderInput={(params) =>
                                             <TextField {...params}
                                                 // label="Pay"
                                                 variant="outlined" />}
-                                    /> */}
-                                    <span className='input-group-text'>
-                                        Size
-                                    </span>
-                                    <select value={ProductSizeId} onChange={(e) => {
+                                    />
 
-                                        this.setState({
-                                            ProductSizeId: e.target.value
-                                        })
-                                    }} className="custom-select" style={{ width: "41%" }}>
-                                        <option value={0}>Hãy chọn size sản phẩm</option>
-                                        {
-                                            APIProductSize.map(e =>
-                                                <option value={e.id}>{e.name}</option>
-                                            )
-                                        }
-                                    </select>
-                                    {/* var select = document.getElementById('language');
-                                    var value = select.options[select.selectedIndex].value;
-                                    console.log(value); //  */}
-                                </div>
-                                <div className='input-group mb-3'>
-                                    <span className='input-group-text'>
-                                        Số lượng
-                                    </span>
-                                    <input type='text' className='form-control' value={this.state.quantity}
-                                        onChange={(e) => this.setState({ quantity: e.target.value })} />
-
-                                    <span className='input-group-text'>
-                                        Giá nhập
-                                    </span>
-                                    <input type='text' className='form-control' value={this.state.GiaNhap}
-                                        onChange={(e) => this.setState({ GiaNhap: e.target.value })} />
-                                </div>
-                                <div className='input-group mb-3'>
-                                    <span className='input-group-text'>
-                                        Nhà cung cấp
-                                    </span>
-                                    <select value={Nhacungcap} onChange={(e) => {
-                                        this.setState({
-                                            Nhacungcap: e.target.value
-                                        })
-                                    }} className="custom-select" style={{ width: "41%" }}>
-                                        <option value={0}>Hãy chọn nhà cung cấp</option>
-                                        {
-                                            APINhaCungCap.map(e =>
-                                                <option value={e.id}>{e.name}</option>
-                                            )
-                                        }
-                                    </select>
                                 </div>
 
                             </div>
@@ -651,7 +494,7 @@ class CRUDProductType extends React.Component {
                             </div>
                         </div>
                     </div>
-                </div >
+                </div>
             </>
         )
     }

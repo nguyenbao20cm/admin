@@ -37,7 +37,6 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                UserName: Username,
                 Password: Password,
                 ConfirmPassword: ConfirmPassword,
                 Token: token1.replace(/\s/g, "+"),
@@ -89,9 +88,6 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             {subtext}
             <Box>
                 <Stack mb={3}>
-                    <Typography variant="subtitle1"
-                        fontWeight={600} component="label" htmlFor='email' mb="5px" mt="25px">UserName</Typography>
-                    <CustomTextField id="email" onChange={(e) => setUsername(e.target.value)} variant="outlined" fullWidth />
                     <Typography variant="subtitle1"
                         fontWeight={600} component="label" htmlFor='email' mb="5px" mt="25px">Mật khẩu</Typography>
                     <CustomTextField id="email" onChange={(e) => setPassword(e.target.value)} variant="outlined" fullWidth />

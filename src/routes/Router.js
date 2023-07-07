@@ -33,6 +33,9 @@ const ForgotPassword = Loadable(lazy(() => import('../views/authentication/Forgo
 
 const HoaDonNhap = Loadable(lazy(() => import('../views/sample-page/ImportInvoice')))
 const GiaoDichThanhToan = Loadable(lazy(() => import('../views/sample-page/GiaoDichThanhToan')))
+const AnhPhu = Loadable(lazy(() => import('../views/sample-page/AnhPhu')))
+
+
 
 
 
@@ -74,10 +77,11 @@ const Router = [
       { path: '/HoaDonNhap', exact: true, element: < HoaDonNhap /> },
       { path: '/Caidat', exact: true, element: < Caidat /> },
       { path: '/GiaoDich', exact: true, element: < GiaoDichThanhToan /> },
+      { path: '/AnhPhu', exact: true, element: < AnhPhu /> },
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },
-  
+
   {
     path: '/auth',
     element: <BlankLayout />,

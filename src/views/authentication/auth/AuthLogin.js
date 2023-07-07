@@ -10,6 +10,7 @@ import {
     Stack,
     Checkbox
 } from '@mui/material';
+import { Oval } from 'react-loader-spinner'
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import jwt_decode from "jwt-decode";
@@ -18,6 +19,7 @@ import { Alert, Space, message } from 'antd';
 const AuthLogin = ({ title, subtitle, subtext }) => {
     const history = useNavigate();
 
+    const [loading, setloading] = useState(false)
 
     const [username, setusername] = useState("")
     const [password, setpassword] = useState("")
@@ -40,7 +42,10 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
         date.setDate(date.getDate() + days);
         return date;
     }
+    const [messageApi, contextHolder] = message.useMessage();
+
     const Login = () => {
+       
         if (username == "" && password == "") return setTimeout(() => {
             message.error("Tên đăng nhập và mật khẩu không hợp lệ")
         }, 0);
@@ -50,7 +55,11 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
         if (password == "") return setTimeout(() => {
             message.error("Mật khẩu đang trống")
         }, 0);
-
+        messageApi.open({
+            type: 'loading',
+            content: 'Đợi tí xíu nha ..',
+            duration: 0,
+        });
         fetch(variable.API_URL + "Account/Signin", {
             method: "POST",
             headers: {
@@ -100,46 +109,18 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                 }, 0);
             }
             )
+        messageApi.destroy()
     }
     return (
         <>
-            {/* <Space direction="vertical" style={{ width: '100%' }}>
-                <Alert message="Success Tips" type="success" showIcon />
-                <Alert message="Informational Notes" type="info" showIcon />
-                <Alert message="Warning" type="warning" showIcon closable />
-                <Alert message="Error" type="error" showIcon />
-                <Alert
-                    message="Success Tips"
-                    description="Detailed description and advice about successful copywriting."
-                    type="success"
-                    showIcon
-                />
-                <Alert
-                    message="Informational Notes"
-                    description="Additional description and information about copywriting."
-                    type="info"
-                    showIcon
-                />
-                <Alert
-                    message="Warning"
-                    description="This is a warning notice about copywriting."
-                    type="warning"
-                    showIcon
-                    closable
-                />
-                <Alert
-                    message="Error"
-                    description="This is an error message about copywriting."
-                    type="error"
-                    showIcon
-                />
-            </Space> */}
+            {contextHolder}
             {
                 title ? (
                     <Typography fontWeight="700" variant="h2" mb={1} >
                         {title}
                     </Typography >
-                ) : null}
+                ) : null
+            }
             {subtext}
             <Stack>
                 <Box>
@@ -195,3 +176,34 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 };
 
 export default AuthLogin;
+{/* <Space direction="vertical" style={{ width: '100%' }}>
+                <Alert message="Success Tips" type="success" showIcon />
+                <Alert message="Informational Notes" type="info" showIcon />
+                <Alert message="Warning" type="warning" showIcon closable />
+                <Alert message="Error" type="error" showIcon />
+                <Alert
+                    message="Success Tips"
+                    description="Detailed description and advice about successful copywriting."
+                    type="success"
+                    showIcon
+                />
+                <Alert
+                    message="Informational Notes"
+                    description="Additional description and information about copywriting."
+                    type="info"
+                    showIcon
+                />
+                <Alert
+                    message="Warning"
+                    description="This is a warning notice about copywriting."
+                    type="warning"
+                    showIcon
+                    closable
+                />
+                <Alert
+                    message="Error"
+                    description="This is an error message about copywriting."
+                    type="error"
+                    showIcon
+                />
+            </Space> */}

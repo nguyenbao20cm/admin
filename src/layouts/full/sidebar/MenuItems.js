@@ -34,6 +34,12 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+    title: 'Ảnh phụ sản phẩm', bbb: false,
+    icon: IconAperture,
+    href: '/AnhPhu',
+  },
+  {
+    id: uniqueId(),
     title: 'Hóa đơn nhập ',
     icon: IconAperture, ccc: false,
     href: '/HoaDonNhap',

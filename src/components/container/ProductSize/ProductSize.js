@@ -81,13 +81,8 @@ class ReviewCRUD extends React.Component {
 
     CreateClick() {
         if (this.state.Name == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
-        if (this.state.Stock == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
         if (this.state.ProductId == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
         if (this.state.Status == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
-        if (this.state.ImportPrice == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
-        if (Number(this.state.Stock) == false) return this.loi("Dữ liệu bị sai ", "Hãy nhập lại")
-        if (Number(this.state.ImportPrice) == false) return this.loi("Dữ liệu bị sai ", "Hãy nhập lại")
-        if (Number(this.state.ImportPrice) < 0) return this.loi("Giá nhập phải là số dương ", "Hãy nhập lại")
         const token = this.getToken();
 
         fetch(variable.API_URL + "ProductSizes/CreateProductSize", {
