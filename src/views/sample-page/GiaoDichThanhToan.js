@@ -6,9 +6,9 @@ import { Box } from '@mui/material';
 import GiaoDich from "../Invoice/GiaoDich"
 const ReviewList = () => {
     return (
-        <PageContainer title="Sample Page" description="this is Sample page">
+        <PageContainer title="Giao Dịch VNPay" description="this is Sample page">
 
-            <DashboardCard title="Giảm giá">
+            <DashboardCard title="Giao Dịch VNPay">
                 <Typography paragraph>
                     <GiaoDich />
                 </Typography>

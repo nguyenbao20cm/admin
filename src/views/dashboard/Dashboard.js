@@ -16,20 +16,18 @@ import PieChart1 from './components/Piechart1';
 import React from 'react';
 import DashboardCard from '../../components/shared/DashboardCard1';
 import { Card, CardContent, Typography, Stack, CardActionArea } from '@mui/material';
+import { BackTop } from 'antd';
 const Dashboard = () => {
-
-
   const namhientai = new Date().getFullYear()
-
   return (
     <PageContainer title="Trang chủ" description="this is Dashboard">
       <Box>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={8} >
             {/* <SalesOverview /> */}
-            <Card sx={{  boxShadow: "none" }}>
+            <Card sx={{ boxShadow: "none" }}>
               <CardContent >
-                <div style={{ marginLeft: 30, padding:10}}>
+                <div style={{ marginLeft: 30, padding: 10 }}>
                   <PieChart />
                 </div>
                 <div style={{ marginTop: 30, marginLeft: 30, padding: 10 }}>
@@ -39,7 +37,7 @@ const Dashboard = () => {
             </Card>
           </Grid>
           <Grid item xs={12} lg={4}>
-            
+
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <YearlyBreakup />
@@ -63,6 +61,8 @@ const Dashboard = () => {
           </Grid>
         </Grid>
       </Box>
+      <BackTop />
+      <strong style={{ color: "rgba(64, 64, 64, 0.6)" }}>  </strong>
     </PageContainer>
   );
 };

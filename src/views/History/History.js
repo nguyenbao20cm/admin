@@ -359,17 +359,9 @@ class InvoiceCRUD extends React.Component {
     }
     ApplyClick() {
         const token = this.getToken();
-
         if (this.state.startDate == "") return message.warning("Dữ liệu bị trống")
         if (this.state.endDate == "") return message.warning("Dữ liệu bị trống")
-        document.getElementById("All").checked = false;
-        document.getElementById("All1").checked = false;
-        document.getElementById("All2").checked = false;
-        document.getElementById("All3").checked = false;
-        document.getElementById("All4").checked = false;
-        document.getElementById("All5").checked = false;
-        document.getElementById("All6").checked = false;
-        fetch(variable.API_URL + "Inovices/GetAllInoviceFilterByDate/" + this.state.startDate + "," + this.state.endDate, {
+        fetch(variable.API_URL + "HistoryAccount/GetHistoryAccountFilter/" + this.state.startDate + "," + this.state.endDate, {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
@@ -379,10 +371,8 @@ class InvoiceCRUD extends React.Component {
         })
             .then(response => response.json())
             .then(data => {
-                this.setState({ APdungCheck: true, Invoice: data, currentPage: 1 });
+                this.setState({ Invoice: data, currentPage:1 });
             })
-
-
     }
     ChangeShippingPhone(e) {
         this.setState({
@@ -1251,9 +1241,9 @@ class InvoiceCRUD extends React.Component {
                         }}>Quay lại</Button>
                     </DialogActions>
                 </Dialog>
-                <div style={{ display: "flex",float:"right" }}>
-                    <div className="card">
-                        <div className="card-body">
+                <div style={{ display: "flex", }}>
+                    <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
+                        <div className="card-body" >
                             <div>
                                 <div className="form-group">
                                     <label>Từ ngày:</label>
@@ -1273,7 +1263,7 @@ class InvoiceCRUD extends React.Component {
                                 <div className="form-group" >
                                     <div>
                                         <button type='button' className='btn btn-primary m-2 float-end'
-                                            onClick={() => this.refreshList1()}>
+                                            onClick={() => this.refreshList()}>
                                             Reset Trang
                                         </button>
                                     </div>
@@ -1287,9 +1277,10 @@ class InvoiceCRUD extends React.Component {
                                         </button>
                                     </div>
                                 </div>
+
+
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <Dialog

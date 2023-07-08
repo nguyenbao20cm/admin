@@ -19,10 +19,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
     // .replace(/\s/g, "+");
     const a = queryString.parse(location.search)
     const Forget = () => {
-        if (Username == "") return message.error("Bạn chưa nhập tên tài khoản!")
-        const usernameRegex = /^(?=.*[A-Z])[a-zA-Z0-9]{5,}$/;
-        if (!usernameRegex.test(Username))
-            return message.error(" Vui lòng nhập tên tài khoản có ít nhất 5 ký tự (không dùng tiếng việt có dấu) và ít nhất 1 chữ viết hoa.")
+      
         if (Password != ConfirmPassword) return message.error('Mật khẩu xác thực không khớp')
         const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()])[a-zA-Z0-9!@#$%^&*()]{8,}$/;
         if (Password == "") return message.error("Bạn chưa nhập mật khẩu!")
@@ -90,10 +87,10 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                 <Stack mb={3}>
                     <Typography variant="subtitle1"
                         fontWeight={600} component="label" htmlFor='email' mb="5px" mt="25px">Mật khẩu</Typography>
-                    <CustomTextField id="email" onChange={(e) => setPassword(e.target.value)} variant="outlined" fullWidth />
+                    <CustomTextField  id="email" onChange={(e) => setPassword(e.target.value)} variant="outlined" fullWidth />
                     <Typography variant="subtitle1"
                         fontWeight={600} component="label" htmlFor='email' mb="5px" mt="25px">Mật khẩu xác thực</Typography>
-                    <CustomTextField id="email" onChange={(e) => setConfirmPassword(e.target.value)} variant="outlined" fullWidth />
+                    <CustomTextField type={"password"} id="email" onChange={(e) => setConfirmPassword(e.target.value)} variant="outlined" fullWidth />
                 </Stack>
                 <Button onClick={() => Forget()} color="primary" variant="contained" size="large" fullWidth component={Link} >
                     Thay đổi

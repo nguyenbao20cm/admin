@@ -18,7 +18,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import { result } from 'lodash';
+import { result } from 'lodash'; import { Select } from 'antd';
 class InvoiceCRUD extends React.Component {
     constructor(props) {
         super(props);
@@ -58,7 +58,7 @@ class InvoiceCRUD extends React.Component {
         document.getElementById("All3").checked = false;
         document.getElementById("All4").checked = false;
         document.getElementById("All5").checked = false;
-        document.getElementById("All6").checked = false;
+     
         fetch(variable.API_URL + "Inovices/GetAllInovice", {
             method: "GET",
             headers: {
@@ -1225,7 +1225,7 @@ class InvoiceCRUD extends React.Component {
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
         const options = ['Đã thanh toán', 'Chưa thanh toán']
         const options2 = ['Hoàn tất',
-            'Đang giao', 'Chưa xác nhận', 'Đang chuẩn bị', 'Đã giao']
+            'Đang giao', 'Chưa xác nhận', 'Đang chuẩn bị', ]
         {/* //1 chưa xác nhận //2 la chua đang chuẩn bị //3 đang giao//6 đã giao//4 đã hủy,//5hoàn tất */ }
         return (
             <>
@@ -1260,6 +1260,10 @@ class InvoiceCRUD extends React.Component {
                                 <label>Tìm kiếm theo Id Hóa đơn:</label>
                                 <div><input className="form-control w-100" value={ChangeId} onChange={(e) => this.ChangeId(e)} type="text" placeholder="Id" />
                                 </div>
+                                <button type='button' className='btn btn-primary m-2 float-end'
+                                    onClick={() => this.refreshList1()}>
+                                    Reset Trang
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1270,26 +1274,16 @@ class InvoiceCRUD extends React.Component {
                                     <label>Từ ngày:</label>
                                     <div>
                                         <input id="dates-range" className="form-control flatpickr-input"
-                                            type="datetime-local" onChange={(e) => this.ChangeStartDate(e)} />
+                                            type="date" onChange={(e) => this.ChangeStartDate(e)} />
                                     </div>
                                 </div>
 
                                 <div className="form-group" >
                                     <div>
                                         <input id="dates-range" className="form-control flatpickr-input"
-                                            type="datetime-local" onChange={(e) => this.ChangeEndDate(e)} />
+                                            type="date" onChange={(e) => this.ChangeEndDate(e)} />
                                     </div>
                                 </div>
-
-                                <div className="form-group" >
-                                    <div>
-                                        <button type='button' className='btn btn-primary m-2 float-end'
-                                            onClick={() => this.refreshList1()}>
-                                            Reset Trang
-                                        </button>
-                                    </div>
-                                </div>
-
                                 <div className="form-group" >
                                     <div>
                                         <button type='button' className='btn btn-primary m-2 float-end'
@@ -1306,22 +1300,21 @@ class InvoiceCRUD extends React.Component {
                     </div>
                     <div className="card" style={{ width: "217px" }}>
                         <div className="card-body">
+                           
                             <label>Trạng thái:</label>
                             <div className>
                                 <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
                                 <label for="All">Tất cả</label><br />
-                                <input type="radio" id="All1" name="fav_language" value="All" onClick={() => this.CheckHuy()} />
-                                <label for="All">Đã hủy</label><br />
                                 <input type="radio" id="All2" name="fav_language" value="True" onClick={() => this.CheckCXN()} />
                                 <label for="True">Chưa xác nhận</label><br />
-                                <input type="radio" id="All3" name="fav_language" value="False" onClick={() => this.CheckHT()} />
-                                <label for="False">Hoàn tất</label><br />
                                 <input type="radio" id="All4" name="fav_language" value="False" onClick={() => this.CheckCB()} />
                                 <label for="False">Đang chuẩn bị</label><br />
                                 <input type="radio" id="All5" name="fav_language" value="False" onClick={() => this.CheckDG()} />
                                 <label for="False">Đang giao</label><br />
-                                <input type="radio" id="All6" name="fav_language" value="False" onClick={() => this.CheckDangG()} />
-                                <label for="False">Đã giao</label><br />
+                                <input type="radio" id="All3" name="fav_language" value="False" onClick={() => this.CheckHT()} />
+                                <label for="False">Hoàn tất</label><br />
+                                <input type="radio" id="All1" name="fav_language" value="All" onClick={() => this.CheckHuy()} />
+                                <label for="All">Đã hủy</label><br />
                             </div>
                         </div>
                     </div>

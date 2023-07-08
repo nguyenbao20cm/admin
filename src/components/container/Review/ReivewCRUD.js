@@ -224,19 +224,7 @@ class ReviewCRUD extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="card" style={{ width: "135px" }}>
-                        <div className="card-body">
-                            <label>Trạng thái:</label>
-                            <div className>
-                                <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
-                                <label for="All">Tất cả</label><br />
-                                <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
-                                <label for="True">Hiển thị</label><br />
-                                <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />
-                                <label for="False">Ẩn</label>
-                            </div>
-                        </div>
-                    </div>
+                   
 
                 </div>
 
@@ -273,12 +261,10 @@ class ReviewCRUD extends React.Component {
                                     <th>
                                         Đánh giá
                                     </th>
-                                    <th>
-                                        Trạng thái
-                                    </th>
+                                    
 
                                     <th>
-                                        Ẩn
+                                        Xóa
                                     </th>
                                 </tr>
                             </thead>
@@ -314,13 +300,6 @@ class ReviewCRUD extends React.Component {
                                             <td>
                                                 {dep.star}
                                             </td>
-                                            <td>
-
-                                                {dep.status == true ?
-                                                    "Hiển thị" : "Ẩn"
-                                                }
-                                            </td>
-
                                             <td>
                                                 <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.reviewId)}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">

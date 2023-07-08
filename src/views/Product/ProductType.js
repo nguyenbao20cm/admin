@@ -50,6 +50,7 @@ class CRUDProductType extends React.Component {
     }
 
     CreateClick() {
+        const token = this.getToken();
         if (this.state.Status == "" || this.state.Name == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
         else
             if (this.state.Name == "") return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
@@ -57,8 +58,9 @@ class CRUDProductType extends React.Component {
                 fetch(variable.API_URL + "ProductTypes/CreateProductType", {
                     method: "POST",
                     headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
                     },
                     body: JSON.stringify({
                         name: this.state.Name,
@@ -82,6 +84,7 @@ class CRUDProductType extends React.Component {
 
     }
     UpdateClick(id) {
+        const token = this.getToken();
         if (this.state.Name == "") return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
         else
             if (this.state.Status == "") return this.loi("Trạng thái bị rỗng ", "Hãy nhập lại")
@@ -89,8 +92,9 @@ class CRUDProductType extends React.Component {
                 fetch(variable.API_URL + "ProductTypes/UpdateProductType/" + id, {
                     method: "PUT",
                     headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${token.value}`
                     },
                     body: JSON.stringify({
                         name: this.state.Name,
@@ -120,16 +124,22 @@ class CRUDProductType extends React.Component {
             }
 
     }
+    getToken() {
+        const tokenString = localStorage.getItem('token');
+        const userToken = JSON.parse(tokenString);
+        return userToken
+    }
     DeleteClick(dep) {
         this.setState({ open1: true,  id1: dep })
     }
     DeleteClick1() {
-      
+        const token = this.getToken();
             fetch(variable.API_URL + "ProductTypes/DeleteProductType/" + this.state.id1, {
                 method: "PUT",
                 headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
                 },
             }).then(res => res.json())
                 .then(result => {
@@ -302,7 +312,7 @@ class CRUDProductType extends React.Component {
                     }}
                     aria-describedby="alert-dialog-slide-description"
                 >
-                    <DialogTitle>{"Bạn có chắc chắc muốn hoàn tất đơn hàng"}</DialogTitle>
+                    <DialogTitle>{"Bạn có chắc chắc"}</DialogTitle>
                     <DialogContent>
                         {/* <DialogContentText id="alert-dialog-slide-description">
                             Khi hủy xong thì sẽ không thể khôi phục lại được

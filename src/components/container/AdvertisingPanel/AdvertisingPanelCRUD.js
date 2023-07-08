@@ -12,17 +12,26 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import 'sweetalert2/src/sweetalert2.scss'
+
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+
 class ReviewCRUD extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            AdvertisingPanel: [],
+            AdvertisingPanel: [], ida:"",
             modelTitle: "", Product: "", ProductType: "", APIProductType: [],
-            Name: "",
+            Name: "", advertisingPanelID: "",
             id: 0,
             currentPage: 1, ProductAPI: [],
-            NameinputProductType: "", image: "", Iimage: "", Status: "", sanpham: "", loaisanpham: "", s: "", Link: ""
-
+            NameinputProductType: "", image: "", Iimage: "", Status: "", sanpham: "", loaisanpham: "", s: "", Link: "",
+            noidung: "", tieude: "", open1: false,
         }
     }
     loi(title, text) {
@@ -90,77 +99,36 @@ class ReviewCRUD extends React.Component {
     }
     PRID1(a) {
         var b = this.state.APIProductType.filter((item) => { return item.name == a ? item : null }).map((dep) => dep.id)
-
         return b[0]
     }
+
     CreateClick() {
         if (this.state.image == "")
             return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
-        if (this.state.Status == "")
+        if (this.state.Product == "")
             return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
+        if (this.state.tieude == "")
+            return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
+        if (this.state.noidung == "")
+            return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
+        const formData = new FormData()
 
+        formData.append("model", this.state.Iimage)
         const token = this.getToken();
-        fetch(variable.API_URL + "AdvertisingPanels/CreateAdvertisingPanel", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            },
-            body: JSON.stringify({
-                link: this.state.Link,
-                status: this.state.Status == "Hiển thị" ? true : false,
-                image: this.state.image
-            })
-        }).then(res => res.json())
+        fetch(variable.API_URL + "AdvertisingPanels/CreateAdvertisingPanel/" + this.PRID(this.state.Product) + "," + this.state.tieude + "," + this.state.noidung
+            , {
+                method: "POST",
+                headers: {
+                    'Authorization': `Bearer ${token.value}`
+                },
+                body: formData
+            }).then(res => res.json())
             .then(result => {
-                this.setState({
-                    s: result.data.advertisingPanelID
-                })
-                const token = this.getToken();
-                const response = fetch(
-                    variable.API_URL + "AdvertisingPanels/GetAdvertisingPanelById/" + result.data.advertisingPanelID, {
-                    method: "GET",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json',
-                        'Authorization': `Bearer ${token.value}`
-                    },
+                if (result == true) {
+                    message.success("Thành công")
+                    this.refreshList()
+                    document.getElementById("closeModal").click()
                 }
-                ).then((response) => response.json())
-                    .then(result => {
-                        const formData = new FormData()
-                        const token = this.getToken();
-                        var imagelName = this.state.s + ".jpg"
-                        formData.append("model", this.state.Iimage, imagelName)
-                        fetch(variable.API_URL + "AdvertisingPanels/CreateImageAdvertisingPanel", {
-                            method: "POST",
-                            body: formData
-                        }).then(res => res.json())
-                        fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + this.state.s, {
-                            method: "PUT",
-                            headers: {
-                                'Content-Type': 'application/json',
-                                Accept: 'application/json',
-                                'Authorization': `Bearer ${token.value}`
-                            },
-                            body:
-                                JSON.stringify({
-                                    image: imagelName,
-                                    status: this.state.Status == "Hiển thị" ? true : false,
-                                    link: this.state.Link,
-                                })
-                        }).then(res => res.json()).then(result => {
-                            if (result == "Thành công") {
-                                document.getElementById("closeModal").click()
-                                message.success(result)
-                                window.location.reload(false);
-                            }
-                        })
-
-                    });
-
-
             },
                 (error) => {
                     console.error(error)
@@ -171,15 +139,16 @@ class ReviewCRUD extends React.Component {
 
     }
     UpdateClick(id) {
-        if (this.state.image == "")
+        console.log(this.state.image)
+        if (this.state.Product == "")
             return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
-        if (this.state.Status == "")
+        if (this.state.tieude == "")
+            return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
+        if (this.state.noidung == "")
             return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
 
         const token = this.getToken();
-        var imagelName = id + ".jpg"
-
-        if (this.state.image == imagelName) {
+        if (this.state.image == "") {
             fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + id, {
                 method: "PUT",
                 headers: {
@@ -187,98 +156,69 @@ class ReviewCRUD extends React.Component {
                     Accept: 'application/json',
                     'Authorization': `Bearer ${token.value}`
                 },
-                body:
-
-                    JSON.stringify({
-                        image: imagelName,
-                        status: this.state.Status == "Hiển thị" ? true : false,
-                        link: this.state.Link,
-                    })
+                body: JSON.stringify({
+                    title: this.state.tieude,
+                    productId: this.PRID(this.state.Product),
+                    Content: this.state.noidung,
+                })
             }).then(res => res.json())
                 .then(result => {
-
                     if (result == "Thành công") {
-                        message.success(result)
+                        message.success("Thành công")
                         this.refreshList()
                         document.getElementById("closeModal").click()
                     }
                     else
-                        message.error(result)
-                },
-                    (error) => {
-
-                        message.error("Failed")
-                    });
+                        this.loi(result, "")
+                }, (error) => {
+                    this.loi("Đã xảy ra lỗi", "")
+                });
         }
-        else if (this.state.image == "") {
-            message.error("Chưa nhập hình ảnh")
-        } else {
-
+        else {
             const formData = new FormData()
-            var imagelName = id + ".jpg"
-
-            formData.append("model", this.state.Iimage, imagelName)
-
-            fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + id, {
-                method: "PUT",
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Authorization': `Bearer ${token.value}`
-                },
-                body:
-                    JSON.stringify({
-                        image: imagelName,
-                        status: this.state.Status == "Hiển thị" ? true : false,
-                        link: this.state.Link,
-                    })
-            }).then(res => res.json())
+            formData.append("model", this.state.Iimage)
+            fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + this.PRID(this.state.Product) + "," + this.state.tieude + "," + this.state.noidung
+                , {
+                    method: "PUT",
+                    headers: {
+                        'Authorization': `Bearer ${token.value}`
+                    },
+                    body: formData
+                }).then(res => res.json())
                 .then(result => {
-                    if (result === "Thành công") {
-                        fetch(variable.API_URL + "AdvertisingPanels/CreateImageAdvertisingPanel", {
-                            method: "POST",
-                            body: formData
-                        }).then(res => res.json())
-
-                    }
-
-                    if (result == "Thành công") {
+                    if (result == true) {
+                        message.success("Thành công")
+                        this.refreshList()
                         document.getElementById("closeModal").click()
-                        message.success(result)
-                        window.location.reload(false);
                     }
-                    else
-                        message.error(result)
                 },
                     (error) => {
                         console.error(error)
                         message.error("Failed")
                     });
-
         }
-
-
-
     }
     DeleteClick(id) {
         const token = this.getToken();
-        if (window.confirm('Are you sure?')) {
-            fetch(variable.API_URL + "AdvertisingPanels/DeleteAdvertisingPanel/" + id, {
-                method: "PUT",
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Authorization': `Bearer ${token.value}`
-                }
-            }).then(res => res.json())
-                .then(result => {
-                    message.success(result)
-                    this.refreshList();
-                }, (error) => {
-                    message.error("Failed")
-                }
-                )
-        }
+
+        fetch(variable.API_URL + "AdvertisingPanels/DeleteAdvertisingPanel/" + id, {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            }
+        }).then(res => res.json())
+            .then(result => {
+                message.success(result)
+                document.getElementById("closeModal").click()
+                this.refreshList();
+                this.setState({ open1: false })
+            }, (error) => {
+                message.error("Failed")
+            }
+            )
+
     }
     ChangeProdcutImage = (e) => {
         if (e.target.files[0] != null)
@@ -294,13 +234,14 @@ class ReviewCRUD extends React.Component {
             image: "",
             Status: "",
             Product: "",
-            ProductType: "", sanpham: ""
+            ProductType: "", sanpham: "", tieude: "", noidung: "", product: ""
         });
     }
     EditClick(dep) {
         this.setState({
+            ida:dep.advertisingPanelID,
             modelTitle: "Chỉnh sửa",
-            id: dep.advertisingPanelID,
+            id: 1,
             Name: dep.name,
             image: dep.image,
             Product: dep.product != null ? (dep.product).name : null,
@@ -308,7 +249,7 @@ class ReviewCRUD extends React.Component {
             Status:
                 dep.status == true ?
                     "Hiển thị" : "Ẩn"
-            ,
+            , tieude: dep.title, noidung: dep.content
         });
     }
     NextPage(id, npage) {
@@ -395,11 +336,11 @@ class ReviewCRUD extends React.Component {
     render() {
 
         const {
-            AdvertisingPanel,
-            modelTitle, sanpham, loaisanpham,
+            AdvertisingPanel, open1,
+            modelTitle, sanpham, loaisanpham, noidung, tieude,
             id, ProductAPI, Link,
             Name, Status,
-            currentPage,
+            currentPage, advertisingPanelID, ida,
             image, Product, ProductType, APIProductType
         } = this.state;
         const options = ['Hiển thị', 'Ẩn']
@@ -419,9 +360,31 @@ class ReviewCRUD extends React.Component {
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
         return (
             <>
-
+                <Dialog
+                    open={open1}
+                    keepMounted
+                    onClose={() => {
+                        this.setState({ open1: false })
+                    }}
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <DialogTitle>{"Bạn có chắc chắc muốn xóa"}</DialogTitle>
+                    <DialogContent>
+                        {/* <DialogContentText id="alert-dialog-slide-description">
+                            Khi hủy xong thì sẽ không thể khôi phục lại được
+                        </DialogContentText> */}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => {
+                            this.DeleteClick(this.state.advertisingPanelID)
+                        }}>Chấp nhận</Button>
+                        <Button onClick={() => {
+                            this.setState({ open1: false })
+                        }}>Quay lại</Button>
+                    </DialogActions>
+                </Dialog>
                 <div className="card" style={{ width: "135px", float: "right" }}>
-                    <div className="card-body">
+                    {/* <div className="card-body">
                         <label>Trạng thái:</label>
                         <div className>
                             <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
@@ -431,7 +394,7 @@ class ReviewCRUD extends React.Component {
                             <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />
                             <label for="False">Ẩn</label>
                         </div>
-                    </div>
+                    </div> */}
 
                     <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
                         onClick={() => this.addClick()}>
@@ -471,7 +434,7 @@ class ReviewCRUD extends React.Component {
                                         Sửa
                                     </th>
                                     <th>
-                                        Ẩn
+                                        Xóa
                                     </th>
                                 </tr>
                             </thead>
@@ -497,7 +460,7 @@ class ReviewCRUD extends React.Component {
                                                 <img style={{ width: 50 }} src={'https://localhost:7067/wwwroot/Image/AdvertisingPanel/' + dep.image} />
                                             </td>
                                             <td>
-                                                {dep.link}
+                                                {(dep.product).name}
                                             </td>
 
                                             <td>
@@ -510,7 +473,7 @@ class ReviewCRUD extends React.Component {
                                                 </button>
                                             </td>
                                             <td>
-                                                <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.advertisingPanelID)}>
+                                                <button type='button' className='btn btn-light mr-1' onClick={() => this.setState({ advertisingPanelID: dep.advertisingPanelID, open1: true })}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
                                                         <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
                                                     </svg>
@@ -533,16 +496,21 @@ class ReviewCRUD extends React.Component {
                                             <span className='input-group-text'>
                                                 Tiêu đề
                                             </span>
-                                            <input type='text' className='form-control' value={Name}
-                                                onChange={(e) => this.ChangeProdcutTypeName(e)} />
+                                            <input type='text' className='form-control' value={tieude}
+                                                onChange={(e) => this.setState({
+                                                    tieude: e.target.value
+                                                })} />
 
                                         </div>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
                                                 Nội dung
                                             </span>
-                                            <area type='text' className='form-control' value={Name}
-                                                onChange={(e) => this.ChangeProdcutTypeName(e)} />
+                                            <textarea type='text' className='form-control' value={noidung}
+                                                onChange={(e) => this.setState({
+                                                    noidung: e.target.value
+                                                })}
+                                            />
 
                                         </div>
                                         <div className='input-group mb-3'>
@@ -623,7 +591,6 @@ class ReviewCRUD extends React.Component {
                                                         Product: newValue
                                                     });
                                                 }}
-
                                                 options={optionProductType}
                                                 style={{ width: 300 }}
                                                 renderInput={(params) =>
@@ -639,7 +606,7 @@ class ReviewCRUD extends React.Component {
                                             <button type='button' className='btn btn-primary float-start' onClick={() => this.CreateClick()}>Thêm</button> : null
                                         }
                                         {id != 0 ?// eslint-disable-next-line
-                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.id)}>Sửa</button> : null
+                                            <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.ida)}>Sửa</button> : null
                                         }
                                     </div>
                                 </div>

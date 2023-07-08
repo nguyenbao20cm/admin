@@ -9,6 +9,10 @@ import { Alert, Space, message } from 'antd';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 
 import 'sweetalert2/src/sweetalert2.scss'
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -17,8 +21,11 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
-
-
+import {
+    Col, Row, Spin, Card, Badge, Empty, Input,
+    Form, Pagination, Modal, Popconfirm, notification, BackTop, Tag, Breadcrumb, Table
+} from 'antd';
+import CountUp from 'react-countup';
 class CRUDProductType extends React.Component {
     constructor(props) {
         super(props);
@@ -26,7 +33,7 @@ class CRUDProductType extends React.Component {
             ProductType: [], id1: "",
             modelTitle: "", quantity: "",
             Name: "",
-            id: 0, StatusCheck: "",
+            id: 0, StatusCheck: "", startDate: "", endDate:"",
             currentPage: 1,
             NameinputProductType: "", Status: "", Trangthai: "", open1: false, GiaNhap: "", Size: "", ProductSizeId: "",
             APIProduct: [], ProductId: "", Nhacungcap: "", APINhaCungCap: [], APIProductSize: []
@@ -74,6 +81,9 @@ class CRUDProductType extends React.Component {
                 this.setState({ APINhaCungCap: data, });
             })
     }
+    handleChange(value) {
+        console.log(`selected ${value}`);
+    }
     componentDidMount() {
         this.refreshList();
     }
@@ -86,6 +96,12 @@ class CRUDProductType extends React.Component {
         return userToken
     }
     CreateClick() {
+        if (this.state.ProductSizeId == "") return this.loi("Sản phẩm đang rỗng", "Hãy nhập dữ liệu lại")
+        if (this.state.Nhacungcap == "") return this.loi("Sản phẩm đang rỗng", "Hãy nhập dữ liệu lại")
+        if (this.state.GiaNhap == 0) return this.loi("Dữ liệu không đúng", "Hãy kiểm liệu dữ liệu nhập")
+        if (this.state.quantity == 0) return this.loi("Dữ liệu không đúng", "Hãy kiểm liệu dữ liệu nhập")
+        if (Number.isInteger(this.state.GiaNhap) || Number(this.state.GiaNhap) < 0) return this.loi("Dữ liệu không đúng", "Hãy kiểm liệu dữ liệu nhập")
+        if (Number.isInteger(this.state.quantity)|| Number(this.state.quantity) < 0) return this.loi("Dữ liệu không đúng", "Hãy kiểm liệu dữ liệu nhập")
         const token = this.getToken();
         fetch(variable.API_URL + "ImportInvoices/CreateImportInvoice", {
             method: "POST",
@@ -160,12 +176,13 @@ class CRUDProductType extends React.Component {
         this.setState({ open1: true, id1: dep })
     }
     DeleteClick1() {
-
-        fetch(variable.API_URL + "BrandProducts/DeleteBrandProducts/" + this.state.id1, {
-            method: "PUT",
+        const token = this.getToken();
+        fetch(variable.API_URL + "ImportInvoices/DeleteImportInvoice/" + this.state.id1, {
+            method: "DELETE",
             headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
             },
         }).then(res => res.json())
             .then(result => {
@@ -193,7 +210,7 @@ class CRUDProductType extends React.Component {
         this.setState({
             GiaNhap: dep.importPrice,
             quantity: dep.quantity,
-            Nhacungcap:dep.supplier,
+            Nhacungcap: dep.supplier,
             ProductSizeId: dep.productSizeId,
             StatusCheck: dep.status == true ?
                 "Hiển thị" : "Ẩn",
@@ -244,9 +261,37 @@ class CRUDProductType extends React.Component {
             currentPage: 1,
 
         });
-
+    }
+    ChangeStartDate(value) {
+        this.setState({
+            startDate: value.target.value
+        });
+    }
+    ChangeEndDate(value) {
+        this.setState({
+            endDate: value.target.value
+        });
     }
     //0 all 1 false 2 true
+    ApplyClick() {
+        const token = this.getToken();
+        if (this.state.startDate == "") return message.warning("Dữ liệu bị trống")
+        if (this.state.endDate == "") return message.warning("Dữ liệu bị trống")
+        fetch(variable.API_URL + "ImportInvoices/GetAllImportInvoice/" + this.state.startDate + "," + this.state.endDate, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ ProductType: data,  currentPage: 1 });
+            })
+
+
+    }
     CheckAll() {
 
 
@@ -340,6 +385,12 @@ class CRUDProductType extends React.Component {
         let format4 = day + month + year;
         return format4;
     }
+    onChange(value) {
+        console.log(`selected ${value}`);
+    };
+    onSearch(value) {
+        console.log('search:', value);
+    };
     render() {
 
         const {
@@ -384,7 +435,7 @@ class CRUDProductType extends React.Component {
                     }}
                     aria-describedby="alert-dialog-slide-description"
                 >
-                    <DialogTitle>{"Bạn có chắc chắc muốn hoàn tất đơn hàng"}</DialogTitle>
+                    <DialogTitle>{"Bạn có chắc chắc muốn xóa đơn"}</DialogTitle>
                     <DialogContent>
                         {/* <DialogContentText id="alert-dialog-slide-description">
                             Khi hủy xong thì sẽ không thể khôi phục lại được
@@ -399,6 +450,7 @@ class CRUDProductType extends React.Component {
                         }}>Quay lại</Button>
                     </DialogActions>
                 </Dialog>
+
                 <div style={{ display: "flex", }}>
                     <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
                         <div className="card-body" >
@@ -407,6 +459,10 @@ class CRUDProductType extends React.Component {
                                     <label>Tìm kiếm theo ID hóa đơn</label>
                                     <div><input className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="ID" />
                                     </div>
+                                    <button type='button' className='btn btn-primary m-2 float-end'
+                                        onClick={() => this.refreshList()}>
+                                        Reset Trang
+                                    </button>
                                 </div>
 
                             </div>
@@ -419,25 +475,18 @@ class CRUDProductType extends React.Component {
                                     <label>Từ ngày:</label>
                                     <div>
                                         <input id="dates-range" className="form-control flatpickr-input"
-                                            type="datetime-local" onChange={(e) => this.ChangeStartDate(e)} />
+                                            type="date" onChange={(e) => this.ChangeStartDate(e)} />
                                     </div>
                                 </div>
 
                                 <div className="form-group" >
                                     <div>
                                         <input id="dates-range" className="form-control flatpickr-input"
-                                            type="datetime-local" onChange={(e) => this.ChangeEndDate(e)} />
+                                            type="date" onChange={(e) => this.ChangeEndDate(e)} />
                                     </div>
                                 </div>
 
-                                <div className="form-group" >
-                                    <div>
-                                        <button type='button' className='btn btn-primary m-2 float-end'
-                                            onClick={() => this.refreshList1()}>
-                                            Reset Trang
-                                        </button>
-                                    </div>
-                                </div>
+
 
                                 <div className="form-group" >
                                     <div>
@@ -485,7 +534,7 @@ class CRUDProductType extends React.Component {
                                         Nhà cung cấp
                                     </th>
                                     <th>
-                                        Sửa
+                                        Xóa
                                     </th>
                                 </tr>
                             </thead>
@@ -493,7 +542,7 @@ class CRUDProductType extends React.Component {
                                 {ProductType.filter((item) => {
                                     return this.state.NameinputProductType === ""
                                         ? item
-                                        : item.name.toString().includes(this.state.NameinputProductType);
+                                        : item.id.toString().includes(this.state.NameinputProductType);
                                 }).slice(firstIndex, lastIndex)
                                     .map(dep =>
                                         <tr key={dep.id}>
@@ -510,20 +559,18 @@ class CRUDProductType extends React.Component {
                                                 {this.DatetimeFormat(dep.issuedDate)}
                                             </td>
                                             <td>
-                                                {dep.importPrice}
+                                                <CountUp delay={0.4} end={dep.importPrice} duration={0.6} /> Đồng
                                             </td>
                                             <td>
-                                                {dep.quantity}
+                                                <CountUp delay={0.4} end={dep.quantity} duration={0.6} />
                                             </td>
                                             <td>
                                                 {(dep.supplier).name}
                                             </td>
                                             <td>
-                                                <button type='button' className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#exampleModal'
-                                                    onClick={() => this.EditClick(dep)}>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
-                                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                                        <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                                <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
                                                     </svg>
                                                 </button>
                                             </td>
@@ -557,22 +604,44 @@ class CRUDProductType extends React.Component {
                             </div>
                             <div className='modal-body'>
                                 <div className='input-group mb-3'>
-                                    <span className='input-group-text'>
+                                    {/* <span className='input-group-text'>
                                         Sản phẩm
-                                    </span>
-                                    <select value={ProductId} onChange={(e) => {
+                                    </span> */}
+                                    <FormControl fullWidth>
+                                        <InputLabel id="demo-simple-select-label">Sản phẩm</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            label="Sản phẩm"
+                                            onChange={(e) => {
+                                                this.GetProductSIzeAPI(e.target.value)
+                                                this.setState({
+                                                    ProductId: e.target.value
+                                                })
+                                            }}
+                                        >
+                                            {
+                                                APIProduct.map(e =>
+                                                    <MenuItem value={e.id}>{e.name}</MenuItem>
+                                                )
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                    {/* <select value={ProductId} onChange={(e) => {
                                         this.GetProductSIzeAPI(e.target.value)
                                         this.setState({
                                             ProductId: e.target.value
                                         })
-                                    }} className="custom-select" style={{ width: 300 }}>
+                                    }} className="custom-select" style={{ width: 300, borderRadius: 0.25 }}>
                                         <option value={0}>Hãy chọn sản phẩm</option>
                                         {
                                             APIProduct.map(e =>
                                                 <option value={e.id}>{e.name}</option>
                                             )
                                         }
-                                    </select>
+                                    </select> */}
+
+
                                     {/* <Autocomplete
                                         disableClearable
                                         onChange={(event, newValue) => {
@@ -589,10 +658,31 @@ class CRUDProductType extends React.Component {
                                                 // label="Pay"
                                                 variant="outlined" />}
                                     /> */}
-                                    <span className='input-group-text'>
+                                    {/* <span className='input-group-text'>
                                         Size
-                                    </span>
-                                    <select value={ProductSizeId} onChange={(e) => {
+                                    </span> */}
+                                </div>
+                                <div className='input-group mb-3'>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="demo-simple-select-label">Size sản phẩm</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            label="Size sản phẩm"
+                                            onChange={(e) => {
+                                                this.setState({
+                                                    ProductSizeId: e.target.value
+                                                })
+                                            }}
+                                        >
+                                            {
+                                                APIProductSize.map(e =>
+                                                    <MenuItem value={e.id}>{e.name}</MenuItem>
+                                                )
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                    {/* <select value={ProductSizeId} onChange={(e) => {
 
                                         this.setState({
                                             ProductSizeId: e.target.value
@@ -604,7 +694,8 @@ class CRUDProductType extends React.Component {
                                                 <option value={e.id}>{e.name}</option>
                                             )
                                         }
-                                    </select>
+                                    </select> */}
+
                                     {/* var select = document.getElementById('language');
                                     var value = select.options[select.selectedIndex].value;
                                     console.log(value); //  */}
@@ -623,10 +714,29 @@ class CRUDProductType extends React.Component {
                                         onChange={(e) => this.setState({ GiaNhap: e.target.value })} />
                                 </div>
                                 <div className='input-group mb-3'>
-                                    <span className='input-group-text'>
+                                    {/* <span className='input-group-text'>
                                         Nhà cung cấp
-                                    </span>
-                                    <select value={Nhacungcap} onChange={(e) => {
+                                    </span> */}
+                                    <FormControl fullWidth>
+                                        <InputLabel id="demo-simple-select-label">Nhà cung cấp</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            label="Nhà cung cấp"
+                                            onChange={(e) => {
+                                                this.setState({
+                                                    Nhacungcap: e.target.value
+                                                })
+                                            }}
+                                        >
+                                            {
+                                                APINhaCungCap.map(e =>
+                                                    <MenuItem value={e.id}>{e.name}</MenuItem>
+                                                )
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                    {/* <select value={Nhacungcap} onChange={(e) => {
                                         this.setState({
                                             Nhacungcap: e.target.value
                                         })
@@ -637,7 +747,7 @@ class CRUDProductType extends React.Component {
                                                 <option value={e.id}>{e.name}</option>
                                             )
                                         }
-                                    </select>
+                                    </select> */}
                                 </div>
 
                             </div>

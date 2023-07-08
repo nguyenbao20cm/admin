@@ -17,6 +17,10 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 
 class CRUDProductType extends React.Component {
@@ -149,12 +153,13 @@ class CRUDProductType extends React.Component {
         this.setState({ open1: true, id1: dep })
     }
     DeleteClick1() {
-
+        const token = this.getToken();
         fetch(variable.API_URL + "ProductTypes/DeleteProductType/" + this.state.id1, {
             method: "PUT",
             headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
             },
         }).then(res => res.json())
             .then(result => {
@@ -346,18 +351,30 @@ class CRUDProductType extends React.Component {
                     </DialogActions>
                 </Dialog>
                 <div style={{ display: "flex", }}>
-                    <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
-                        <div className="card-body" >
-                            <div>
-                                <div className="form-group">
-                                    <label>Tìm kiếm theo % giảm giá</label>
-                                    <div><input className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="%" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card" style={{ width: "135px" }}>
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Voucher giảm giá</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            label="Voucher"
+                            onChange={(value) => {
+                                this.setState({
+                                    NameinputProductType: value.target.value
+                                })
+                            }}
+                        >
+                            <MenuItem value={10}>10%</MenuItem>
+                            <MenuItem value={20}>20%</MenuItem>
+                            <MenuItem value={30}>30%</MenuItem>
+                            <MenuItem value={40}>40%</MenuItem>
+                            <MenuItem value={50}>50%</MenuItem>
+                            <MenuItem value={60}>60%</MenuItem>
+                            <MenuItem value={70}>70%</MenuItem>
+                            <MenuItem value={80}>80%</MenuItem>
+                            <MenuItem value={90}>90%</MenuItem>
+                        </Select>
+                    </FormControl>
+                    {/* <div className="card" style={{ width: "135px" }}>
                         <div className="card-body">
                             <label>Trạng thái:</label>
                             <div className>
@@ -369,7 +386,7 @@ class CRUDProductType extends React.Component {
                                 <label for="False">Ẩn</label>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
                     onClick={() => this.addClick()}>
@@ -393,9 +410,9 @@ class CRUDProductType extends React.Component {
                                     <th>
                                         Giảm giá
                                     </th>
-                                    <th>
+                                    {/* <th>
                                         Trạng thái
-                                    </th>
+                                    </th> */}
                                     <th>
                                         Sửa
                                     </th>
@@ -425,12 +442,12 @@ class CRUDProductType extends React.Component {
                                             <td>
                                                 {dep.disscount}%
                                             </td>
-                                            <td>
+                                            {/* <td>
 
                                                 {dep.status == true ?
                                                     "Hiển thị" : "Ẩn"
                                                 }
-                                            </td>
+                                            </td> */}
                                             <td>
                                                 <button type='button' className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#exampleModal'
                                                     onClick={() => this.EditClick(dep)}>

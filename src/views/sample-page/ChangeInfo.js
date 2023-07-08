@@ -9,15 +9,24 @@ import Paper from '@mui/material/Paper';
 import { variable } from '../../Variable';
 import { useEffect } from 'react';
 import { useRef, useState } from 'react';
-import { func } from 'prop-types';
+import { func } from 'prop-types'; import { Select } from 'antd';
 import { message } from 'antd';
 import { useNavigate } from 'react-router';
+import { Alert, Space,  } from 'antd';
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+
 const ReviewList = () => {
     const getToken = (() => {
         const tokenString = localStorage.getItem('token');
         const userToken = JSON.parse(tokenString);
         return userToken
     })
+    const onChange = (value) => {
+        console.log(`selected ${value}`);
+    };
+    const onSearch = (value) => {
+        console.log('search:', value);
+    };
     const history = useNavigate()
     const input = useRef(null)
     var [ta, setta] = React.useState(0);
@@ -42,40 +51,61 @@ const ReviewList = () => {
                 setaddress(data.address)
             })
     }, [ta]);
+    const loi = ((title, text) =>{
+        return Swal.fire({
+            icon: 'error',
+            title: title,
+            text: text,
+            confirmButtonText: 'Ok',
+            confirmButtonColor: '#3085d6',
+            timer: 1500
+        })
+    })
     function Update() {
         const token = getToken();
-        fetch(variable.API_URL + "Account/UpdateAccountCustomer", {
-            method: "PUT",
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Authorization': `Bearer ${token.value}`
-            },
-            body:
-                JSON.stringify({
-                    email: email,
+        if (image != "") {
+            const formData = new FormData();
+            formData.append("model", image)
+            fetch(variable.API_URL + "Account/UpdateAccountCustomer/" + phone + "&" + address + "&" + fullname, {
+                method: "POST",
+                headers: {
+                    'Authorization': `Bearer ${token.value}`
+                },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data == true) {
+                        message.success("Thành công")
+                        window.location.reload(false)
+                    }
+                    else {
+                        message.error("Thất bại")
+                    }
+
+                })
+        } else {
+            fetch(variable.API_URL + "Account/UpdateAccountCustomer", {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                },
+                body: JSON.stringify({
                     phone: phone,
                     address: address,
                     fullName: fullname
                 })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data == "True") {
-                    if (image != "") {
-                        const formData = new FormData();
-                        formData.append("model", image, Account.username)
-                        fetch(variable.API_URL + "Account/CreateAvatarImage", {
-                            method: "POST",
-                            body: formData
-                        }).then(res => res.json())
-                    }
-                    setta(1)
-                    message.success("Thành công")
-                }
-                else
-                    message.error("Đã xảy ra lỗi")
             })
+                .then(response => response.json())
+                .then(data => {
+                    if (data === "True") {
+                        message.success("Thành công")
+                        setta(1)
+                    }
+                })
+        }
     }
     const Item = styled(Paper)(({ theme }) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -102,6 +132,7 @@ const ReviewList = () => {
                         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                             <Grid item xs={6}>
                                 <DashboardCard height="670" title="Mật khẩu" >
+
                                     <div>
                                         <div style={{ padding: 5, }}>
                                             <span >
@@ -136,7 +167,7 @@ const ReviewList = () => {
                                             <span >
                                                 Email
                                             </span>
-                                            <input type='text' onChange={(e) => { setemail(e.target.value) }} value={email} className='form-control'
+                                            <input readOnly type='text' onChange={(e) => { setemail(e.target.value) }} value={email} className='form-control'
                                             />
                                             <span >
                                                 Số điện thoại

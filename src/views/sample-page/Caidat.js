@@ -19,6 +19,8 @@ import {
 import { useRef, useState } from 'react';
 import { variable } from '../../Variable';
 import { message } from 'antd';
+import { Alert, Space, } from 'antd';
+import Swal from 'sweetalert2/dist/sweetalert2.js'
 const ReviewList = () => {
     const getToken = (() => {
         const tokenString = localStorage.getItem('token');
@@ -73,8 +75,22 @@ const ReviewList = () => {
         if (event.target.files[0] != null)
             setimage(event.target.files[0])
     })
+    const loi = ((title, text) => {
+        return Swal.fire({
+            icon: 'error',
+            title: title,
+            text: text,
+            confirmButtonText: 'Ok',
+            confirmButtonColor: '#3085d6',
+            timer: 1500
+        })
+    })
     const Update = (() => {
         const token = getToken();
+        console.log(phone.length)
+        if (phone == "") return loi("Điện thoại bị rỗng ", "Hãy nhập lại")
+        if (phone.length != 10) return loi("Điện thoại không hợp lệ", "Hãy nhập lại")
+        if (Number.isInteger(phone) || Number(phone) < 0) return loi("Số diện thoại không hợp lệ", "Hãy xem lại dư liệu nhập")
         fetch(variable.API_URL + "Footer/UpdateFooter/" + data.id, {
             method: "PUT",
             headers: {

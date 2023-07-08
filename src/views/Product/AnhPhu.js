@@ -356,19 +356,7 @@ class CRUDProductType extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="card" style={{ width: "135px" }}>
-                        <div className="card-body">
-                            <label>Trạng thái:</label>
-                            <div className>
-                                <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
-                                <label for="All">Tất cả</label><br />
-                                <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
-                                <label for="True">Hiển thị</label><br />
-                                <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />
-                                <label for="False">Ẩn</label>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
                 <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
                     onClick={() => this.addClick()}>
@@ -390,6 +378,9 @@ class CRUDProductType extends React.Component {
                                     </th>
                                     <th>
                                         Sửa
+                                    </th>
+                                    <th>
+                                        Xóa
                                     </th>
                                 </tr>
                             </thead>
@@ -421,7 +412,13 @@ class CRUDProductType extends React.Component {
                                                     </svg>
                                                 </button>
                                             </td>
-
+                                            <td>
+                                                <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                                    </svg>
+                                                </button>
+                                            </td>
                                         </tr>
                                     )}
                             </tbody>

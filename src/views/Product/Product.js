@@ -7,11 +7,14 @@ import $ from "jquery";
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { Space, message } from 'antd';
-import { PrintDisabled } from '@mui/icons-material';
+import { PrintDisabled, ThirtyFpsSelect } from '@mui/icons-material';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import CountUp from 'react-countup';
 import 'sweetalert2/src/sweetalert2.scss'
 import { colors } from '@mui/material';
+import {
+    IconSearch
+} from '@tabler/icons';
 class CRUDProduct extends React.Component {
 
     constructor(props) {
@@ -24,9 +27,9 @@ class CRUDProduct extends React.Component {
             id: 0, urlImage: 'https://localhost:7067/wwwroot/Image/Product/',
             currentPage: 1,
             NameinputProduct: "",
-            Description: "", priceSales:0,
+            Description: "", priceSales: 0,
             price: 0,
-            SKU: "",
+            SKU: "", APIProductDetails: '',
             productTypeId: "",
             image: "", StatusCheck: "",
             Iimage: "", NameCheck: "", SKUCheck: "",
@@ -203,7 +206,7 @@ class CRUDProduct extends React.Component {
                     JSON.stringify({
                         name: this.state.Name,
                         sku: this.state.SKU,
-                        priceSales:this.state.priceSales,
+                        priceSales: this.state.priceSales,
                         status: this.state.Status == "Hiển thị" ? true : false,
                         description: this.state.Description,
                         price: this.state.price,
@@ -442,7 +445,7 @@ class CRUDProduct extends React.Component {
             SKU: "",
             Description: "",
             price: 0,
-            priceSales:0,
+            priceSales: 0,
             productTypeId: "",
             image: "",
             thuonghieu: "",
@@ -462,7 +465,7 @@ class CRUDProduct extends React.Component {
                 dep.status == true ?
                     "Hiển thị" : "Ẩn"
             ,
-            thuonghieu:dep.brandProduct.name,
+            thuonghieu: dep.brandProduct.name,
             Description: dep.description,
             price: dep.price,
             SKU: dep.sku,
@@ -584,7 +587,7 @@ class CRUDProduct extends React.Component {
             ProductTypegetbyid, Disscount, ProductType1,
             Description,
             price, NameinputProduct,
-            SKU,
+            SKU, APIProductDetails,
             productTypeId,
             image, Status
         } = this.state;
@@ -663,7 +666,7 @@ class CRUDProduct extends React.Component {
                                     </th>
 
                                     <th>
-                                        Miêu tả
+                                        Mô tả
                                     </th>
                                     <th>
                                         Giá bán
@@ -710,7 +713,11 @@ class CRUDProduct extends React.Component {
                                                 {dep.name}
                                             </td>
                                             <td>
-                                                {dep.description}
+                                                <button onClick={() => { this.setState({ APIProductDetails: dep }) }} type='button' className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#data'>
+                                                    <div width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 24 24">
+                                                        <IconSearch />
+                                                    </div>
+                                                </button>
                                             </td>
                                             <td>
                                                 <CountUp delay={0.4} end={dep.price} duration={0.6} /> Đồng
@@ -755,6 +762,24 @@ class CRUDProduct extends React.Component {
                                     )}
                             </tbody>
                         </table>
+                        <div className="modal fade" id="data" tabIndex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className='modal-title'>Mô tả</h5>
+                                        <button id="closeModal1" type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
+                                        </button>
+                                    </div>
+                                    <div className='modal-body'>
+                                        {APIProductDetails.description}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type='button' data-bs-dismiss='modal' className='btn btn-primary float-start' >Thoát</button> 
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
                             <div className="modal-dialog modal-lg modal-dialog-centered">
                                 <div className="modal-content">
@@ -781,11 +806,11 @@ class CRUDProduct extends React.Component {
                                                 onChange={(e) => this.ChangeSKU(e)} />
 
                                         </div>
-                                        <div class="form-group">
+                                        <div className="form-group">
                                             <span className='input-group-text'>
                                                 Miêu tả
                                             </span>
-                                            <textarea class="form-control" id="message-text" value={Description} style={{ height: 152 }}
+                                            <textarea className="form-control" id="message-text" value={Description} style={{ height: 152 }}
                                                 onChange={(e) => this.ChangeProdcutDescription(e)}></textarea>
                                         </div>
                                         <div className='input-group mb-3'>
@@ -799,7 +824,7 @@ class CRUDProduct extends React.Component {
                                             </span>
                                             <input type='text' className='form-control' value={priceSales}
                                                 onChange={(e) => this.setState({
-                                                    priceSales:e.target.value
+                                                    priceSales: e.target.value
                                                 })} />
                                         </div>
 
@@ -879,7 +904,7 @@ class CRUDProduct extends React.Component {
                                         </div>
 
                                     </div>
-                                    <div class="modal-footer">
+                                    <div className="modal-footer">
                                         {id == 0 ?// eslint-disable-next-line
                                             <button type='button' className='btn btn-primary float-start' onClick={() => this.CreateClick()}>Thêm</button> : null
                                         }
@@ -890,7 +915,8 @@ class CRUDProduct extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div class="scrollmenu">
+
+                        <div className="scrollmenu">
                             <ul className='pagination'>
                                 {numbers.map((n, i) => (
                                     <li className={`page-item  ${currentPage === n ? 'active' : ''}`} key={i}>
@@ -901,7 +927,7 @@ class CRUDProduct extends React.Component {
                                 }
                             </ul>
                         </div>
-                       
+
                     </div>
 
                 </Paper>

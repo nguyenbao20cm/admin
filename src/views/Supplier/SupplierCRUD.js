@@ -61,9 +61,17 @@ class CRUDProductType extends React.Component {
 
     CreateClick() {
         const token = this.getToken();
-        if (this.state.Ma == null) return this.loi("Tên nhà cung cấp bị rỗng ", "Hãy nhập lại")
-        if (this.state.email == null) return this.loi("Email nhà cung cấp bị rỗng ", "Hãy nhập lại")
-        if (this.state.address == null) return this.loi("Địa chỉ nhà cung cấp bị rỗng ", "Hãy nhập lại")
+        if (this.state.Ma == "") return this.loi("Tên nhà cung cấp bị rỗng ", "Hãy nhập lại")
+        if (this.state.email == "") return this.loi("Email nhà cung cấp bị rỗng ", "Hãy nhập lại")
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(this.state.email)) {
+            return this.loi("Email không hợp lệ", "Hãy nhập lại")
+        }
+        if (this.state.address == "") return this.loi("Địa chỉ nhà cung cấp bị rỗng ", "Hãy nhập lại")
+        if (this.state.phone == "") return this.loi("Điện thoại nhà cung cấp bị rỗng ", "Hãy nhập lại")
+        if (this.state.phone.length != 10) return this.loi("Điện thoại nhà cung cấp không hợp lệ", "Hãy nhập lại")
+        if (Number.isInteger(this.state.taxcode) || Number(this.state.taxcode) < 0) return this.loi("Dữ liệu mã số thuế không hợp lệ", "Hãy xem lại dư liệu nhập")
+        if (Number.isInteger(this.state.phone) || Number(this.state.phone) < 0) return this.loi("Số diện thoại không hợp lệ", "Hãy xem lại dư liệu nhập")
         fetch(variable.API_URL + "Suppliers/CreateSupplier", {
             method: "POST",
             headers: {
@@ -73,7 +81,9 @@ class CRUDProductType extends React.Component {
             },
             body: JSON.stringify({
                 name: this.state.Ma,
-                email: this.state.email, phone: this.state.phone, taxCode: this.state.taxcode,
+                email: this.state.email,
+                phone: this.state.phone,
+                taxCode: this.state.taxcode,
                 address: this.state.address
             })
         }).then(res => res.json())
@@ -343,7 +353,7 @@ class CRUDProductType extends React.Component {
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
                 <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
                     onClick={() => this.addClick()}>

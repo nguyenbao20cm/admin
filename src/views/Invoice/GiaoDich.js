@@ -24,9 +24,9 @@ class CRUDProductType extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            ProductType: [], id1: "",
+            ProductType: [], id1: "", endDate:"",
             modelTitle: "",
-            Name: "",
+            Name: "", startDate:"",
             id: 0, StatusCheck: "",
             currentPage: 1,
             NameinputProductType: "", Status: "", Trangthai: "", open1: false
@@ -37,7 +37,7 @@ class CRUDProductType extends React.Component {
 
     refreshList() {
         const token = this.getToken();
-        fetch(variable.API_URL + "Vnpaybill/GetAllVnPayBill", {
+        fetch(variable.API_URL + "VnPayBill/GetAllVnPayBill", {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
@@ -61,83 +61,19 @@ class CRUDProductType extends React.Component {
         const userToken = JSON.parse(tokenString);
         return userToken
     }
-    CreateClick() {
-        const token = this.getToken();
-        if (this.state.Status == "" || this.state.Name == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
-        else
-            if (this.state.Name == "") return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
-            else {
-                fetch(variable.API_URL + "BrandProducts/CreateBrandProducts", {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json',
-                        'Authorization': `Bearer ${token.value}`
-                    },
-                    body: JSON.stringify({
-                        name: this.state.Name,
-                        status: this.state.Status == "Hiển thị" ? true : false,
-                    })
-                }).then(res => res.json())
-                    .then(result => {
-                        if (result == true) {
-                            message.success("Thành công")
-                            this.state.Trangthai == true ? this.CheckTrue()
-                                : this.state.Trangthai == false ? this.CheckFalse()
-                                    : this.refreshList()
-                            document.getElementById("closeModal").click()
-                        }
-                        else
-                            message.error("result")
-                    }, (error) => {
-                        message.error("Failed")
-                    });
-            }
-
-    }
-    UpdateClick(id) {
-        const token = this.getToken();
-        if (this.state.Name == "") return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
-        else
-            if (this.state.Status == "") return this.loi("Trạng thái bị rỗng ", "Hãy nhập lại")
-            else {
-                fetch(variable.API_URL + "BrandProducts/UpdateBrandProducts/" + id, {
-                    method: "PUT",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json',
-                        'Authorization': `Bearer ${token.value}`
-                    },
-                    body: JSON.stringify({
-                        name: this.state.Name,
-                        status: this.state.Status == "Hiển thị" ? true : false,
-                    })
-                }).then(res => res.json())
-                    .then(result => {
-                        if (result == "Thành công") {
-                            message.success("Thành công")
-                            this.setState({
-                                currentPage: this.state.currentPage
-                            });
-
-                            this.state.Trangthai == true ? this.CheckTrue()
-                                : this.state.Trangthai == false ? this.CheckFalse()
-                                    : this.refreshList()
-
-
-                            document.getElementById("closeModal").click()
-                        }
-                        else
-                            message.error(result)
-                    }, (error) => {
-                        message.error("Failed")
-                    }
-                    )
-            }
-
-    }
+    
     DeleteClick(dep) {
         this.setState({ open1: true, id1: dep })
+    }
+    ChangeStartDate(value) {
+        this.setState({
+            startDate: value.target.value
+        });
+    }
+    ChangeEndDate(value) {
+        this.setState({
+            endDate: value.target.value
+        });
     }
     DeleteClick1() {
 
@@ -218,6 +154,25 @@ class CRUDProductType extends React.Component {
             currentPage: 1,
 
         });
+
+    }
+    ApplyClick() {
+        const token = this.getToken();
+        if (this.state.startDate == "") return message.warning("Dữ liệu bị trống")
+        if (this.state.endDate == "") return message.warning("Dữ liệu bị trống")
+        fetch(variable.API_URL + "VnPayBill/GetVNBillFilter/" + this.state.startDate + "," + this.state.endDate, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ ProductType: data, currentPage: 1 });
+            })
+
 
     }
     //0 all 1 false 2 true
@@ -338,10 +293,38 @@ class CRUDProductType extends React.Component {
                         <div className="card-body" >
                             <div>
                                 <div className="form-group">
-                                    <label>Tìm kiếm theo tên thương hiệu</label>
-                                    <div><input className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Tên thương hiệu sản phẩm" />
+                                    <label>Từ ngày:</label>
+                                    <div>
+                                        <input id="dates-range" className="form-control flatpickr-input"
+                                            type="date" onChange={(e) => this.ChangeStartDate(e)} />
                                     </div>
                                 </div>
+
+                                <div className="form-group" >
+                                    <div>
+                                        <input id="dates-range" className="form-control flatpickr-input"
+                                            type="date" onChange={(e) => this.ChangeEndDate(e)} />
+                                    </div>
+                                </div>
+
+                                <div className="form-group" >
+                                    <div>
+                                        <button type='button' className='btn btn-primary m-2 float-end'
+                                            onClick={() => this.refreshList()}>
+                                            Reset Trang
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="form-group" >
+                                    <div>
+                                        <button type='button' className='btn btn-primary m-2 float-end'
+                                            onClick={() => this.ApplyClick()}>
+                                            Áp dụng
+                                        </button>
+                                    </div>
+                                </div>
+
 
                             </div>
                         </div>
