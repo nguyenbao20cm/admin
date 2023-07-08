@@ -426,10 +426,9 @@ class CRUDProductType extends React.Component {
                     <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
                         <div className="card-body" >
                             <div>
-                                <div className="form-group">
+                                <div className="form-group" >
                                     <label>Tìm kiếm theo Id tài khoản</label>
-                                    <div><input className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="ID Tài khoản" />
-                                    </div>
+                                    <input style={{ width: "200px" }} className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="ID Tài khoản" />
                                 </div>
 
                             </div>

@@ -1242,20 +1242,20 @@ class InvoiceCRUD extends React.Component {
                     </DialogActions>
                 </Dialog>
                 <div style={{ display: "flex", }}>
-                    <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
+                    <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "2000px" }}>
                         <div className="card-body" >
                             <div>
                                 <div className="form-group">
                                     <label>Từ ngày:</label>
                                     <div>
-                                        <input id="dates-range" className="form-control flatpickr-input"
+                                        <input style={{ width: "200px" }} id="dates-range" className="form-control flatpickr-input"
                                             type="date" onChange={(e) => this.ChangeStartDate(e)} />
                                     </div>
                                 </div>
 
                                 <div className="form-group" >
                                     <div>
-                                        <input id="dates-range" className="form-control flatpickr-input"
+                                        <input style={{ width: "200px" }} id="dates-range" className="form-control flatpickr-input"
                                             type="date" onChange={(e) => this.ChangeEndDate(e)} />
                                     </div>
                                 </div>
@@ -1317,7 +1317,9 @@ class InvoiceCRUD extends React.Component {
                         <table id="example" className='table table-striped'>
                             <thead>
                                 <tr>
-                                 
+                                    <th>
+                                       ID
+                                    </th>
                                     <th>
                                         Nội dung
                                     </th>
@@ -1334,6 +1336,9 @@ class InvoiceCRUD extends React.Component {
                                 }).slice(firstIndex, lastIndex)
                                     .map(dep =>
                                         <tr>
+                                            <td>
+                                                {dep.id}
+                                            </td>
                                             <td>
                                                 {dep.content}
                                             </td>

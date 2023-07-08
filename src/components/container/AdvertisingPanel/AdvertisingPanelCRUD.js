@@ -25,7 +25,7 @@ class ReviewCRUD extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            AdvertisingPanel: [], ida:"",
+            AdvertisingPanel: [], ida: "",
             modelTitle: "", Product: "", ProductType: "", APIProductType: [],
             Name: "", advertisingPanelID: "",
             id: 0,
@@ -177,7 +177,7 @@ class ReviewCRUD extends React.Component {
         else {
             const formData = new FormData()
             formData.append("model", this.state.Iimage)
-            fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + this.PRID(this.state.Product) + "," + this.state.tieude + "," + this.state.noidung
+            fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + this.PRID(this.state.Product) + "," + this.state.tieude + "," + this.state.noidung + "," + id
                 , {
                     method: "PUT",
                     headers: {
@@ -239,7 +239,7 @@ class ReviewCRUD extends React.Component {
     }
     EditClick(dep) {
         this.setState({
-            ida:dep.advertisingPanelID,
+            ida: dep.advertisingPanelID,
             modelTitle: "Chỉnh sửa",
             id: 1,
             Name: dep.name,

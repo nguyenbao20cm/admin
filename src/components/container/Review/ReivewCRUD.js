@@ -4,7 +4,7 @@ import { variable } from '../../../Variable';
 import Paper from '@mui/material/Paper';
 import { Alert, Space, message } from 'antd';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
-
+import { Select } from 'antd';
 import 'sweetalert2/src/sweetalert2.scss'
 class ReviewCRUD extends React.Component {
     constructor(props) {
@@ -15,7 +15,7 @@ class ReviewCRUD extends React.Component {
             Name: "",
             id: 0,
             currentPage: 1,
-            NameinputProductType: "", Trangthai: ""
+            NameinputProductType: "", Trangthai: "", APIProduct: []
 
         }
     }
@@ -49,6 +49,18 @@ class ReviewCRUD extends React.Component {
             .then(data => {
                 this.setState({ ReviewList: data });
             })
+        fetch(variable.API_URL + "Products/GetAllProduct", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ APIProduct: data });
+            })
     }
     componentDidMount() {
         this.refreshList();
@@ -66,7 +78,7 @@ class ReviewCRUD extends React.Component {
         const token = this.getToken();
 
         fetch(variable.API_URL + "Reviews/DeleteReviewByAdmin/" + id, {
-            method: "PUT",
+            method: "DELETE",
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -196,7 +208,7 @@ class ReviewCRUD extends React.Component {
     render() {
 
         const {
-            ReviewList,
+            ReviewList, APIProduct,
             modelTitle, NameinputProductType,
             id,
             Name,
@@ -209,10 +221,15 @@ class ReviewCRUD extends React.Component {
         const a = ReviewList.slice(firstIndex, lastIndex);
         const npage = Math.ceil(ReviewList.length / recordsPerPage)
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
+        const Option = []
+        APIProduct.forEach(element => {
+            Option.push(element)
+        });
+        console.log(Option)
         return (
             <>
                 <div style={{ display: "flex", }}>
-                    <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
+                    <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "500px" }}>
                         <div className="card-body" >
                             <div>
                                 <div className="form-group">
@@ -224,10 +241,8 @@ class ReviewCRUD extends React.Component {
                             </div>
                         </div>
                     </div>
-                   
 
                 </div>
-
                 {/* <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
                     onClick={() => this.addClick()}>
                     Add Review
@@ -261,7 +276,7 @@ class ReviewCRUD extends React.Component {
                                     <th>
                                         Đánh giá
                                     </th>
-                                    
+
 
                                     <th>
                                         Xóa

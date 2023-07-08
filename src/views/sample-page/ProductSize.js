@@ -4,7 +4,7 @@ import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
 
 import ProductSize from "../../components/container/ProductSize/ProductSize"
-
+import { BackTop } from 'antd';
 const ProductTypeList = () => {
 
     return (
@@ -14,7 +14,8 @@ const ProductTypeList = () => {
                     <Typography paragraph>
                         <ProductSize />
                     </Typography>
-                </DashboardCard>
+                </DashboardCard>  <BackTop />
+                <strong style={{ color: "rgba(64, 64, 64, 0.6)" }}>  </strong>
             </PageContainer>
         </>
     );

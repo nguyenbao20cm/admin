@@ -669,10 +669,10 @@ class CRUDProduct extends React.Component {
                                         Mô tả
                                     </th>
                                     <th>
-                                        Giá bán
+                                        Giá gốc
                                     </th>
                                     <th>
-                                        Giá bán sale
+                                        Giá bán
                                     </th>
                                     <th>
                                         Ảnh
@@ -808,19 +808,19 @@ class CRUDProduct extends React.Component {
                                         </div>
                                         <div className="form-group">
                                             <span className='input-group-text'>
-                                                Miêu tả
+                                                Mô tả
                                             </span>
                                             <textarea className="form-control" id="message-text" value={Description} style={{ height: 152 }}
                                                 onChange={(e) => this.ChangeProdcutDescription(e)}></textarea>
                                         </div>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>
-                                                Giá bán
+                                                Giá gốc
                                             </span>
                                             <input type='text' className='form-control' value={price}
                                                 onChange={(e) => this.ChangeProdcutPrice(e)} />
                                             <span className='input-group-text'>
-                                                Giá bán sale
+                                                Giá bán
                                             </span>
                                             <input type='text' className='form-control' value={priceSales}
                                                 onChange={(e) => this.setState({

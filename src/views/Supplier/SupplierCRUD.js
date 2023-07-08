@@ -342,7 +342,7 @@ class CRUDProductType extends React.Component {
                     </DialogActions>
                 </Dialog>
                 <div style={{ display: "flex", }}>
-                    <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
+                    <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "500px" }}>
                         <div className="card-body" >
                             <div>
                                 <div className="form-group">
@@ -353,7 +353,6 @@ class CRUDProductType extends React.Component {
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <button type='button' className='btn btn-primary m-2 float-end' data-bs-toggle='modal' data-bs-target='#exampleModal'
                     onClick={() => this.addClick()}>

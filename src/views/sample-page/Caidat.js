@@ -15,7 +15,7 @@ import {
 
     ListItemText,
     useTheme
-} from '@mui/material';
+} from '@mui/material'; import { BackTop } from 'antd';
 import { useRef, useState } from 'react';
 import { variable } from '../../Variable';
 import { message } from 'antd';
@@ -111,7 +111,7 @@ const ReviewList = () => {
         })
             .then(response => response.json())
             .then(result => {
-                if (result == true)
+                if (result == true) {
                     if (image != "") {
                         const formData = new FormData();
                         formData.append("model", image)
@@ -120,8 +120,10 @@ const ReviewList = () => {
                             body: formData
                         }).then(res => res.json())
                     }
-                message.success("Thành công")
-                settime(time + 1)
+                    message.success("Thành công")
+                    window.location.reload(false)
+                }
+
             })
     }
     )
@@ -129,7 +131,8 @@ const ReviewList = () => {
 
         <div style={{ marginLeft: 21, marginTop: 20 }}>
             <PageContainer title="Cài đặt thông tin trang web" description="this is Sample page" >
-
+                <BackTop />
+                <strong style={{ color: "rgba(64, 64, 64, 0.6)" }}>  </strong>
                 <div style={{ marginLeft: "-50px" }} className='card mb-3'>
                     <div className='card-header' style={{ backgroundColor: theme.palette.primary.main }}>
                         <h3 style={{ color: "beige" }} className='text white mb-0'>Thông tin trang web</h3>

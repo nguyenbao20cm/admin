@@ -289,7 +289,7 @@ class CRUDProductType extends React.Component {
                     </DialogActions>
                 </Dialog>
                 <div style={{ display: "flex", }}>
-                    <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
+                    <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "2000px" }}>
                         <div className="card-body" >
                             <div>
                                 <div className="form-group">

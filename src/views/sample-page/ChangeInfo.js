@@ -14,7 +14,7 @@ import { message } from 'antd';
 import { useNavigate } from 'react-router';
 import { Alert, Space,  } from 'antd';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
-
+import { BackTop } from 'antd';
 const ReviewList = () => {
     const getToken = (() => {
         const tokenString = localStorage.getItem('token');
@@ -132,20 +132,21 @@ const ReviewList = () => {
                         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                             <Grid item xs={6}>
                                 <DashboardCard height="670" title="Mật khẩu" >
-
+                                    <BackTop />
+                                    <strong style={{ color: "rgba(64, 64, 64, 0.6)" }}>  </strong>
                                     <div>
-                                        <div style={{ padding: 5, }}>
-                                            <span >
+                                        <div style={{ padding: -8, }}>
+                                            <span style={{ fontWeight: -8 }}>
                                                 Mật khẩu cũ
                                             </span>
                                             <input type='text' className='form-control'
                                             />
-                                            <span >
+                                            <span style={{ fontWeight: -8 }}>
                                                 Mật khẩu mới
                                             </span>
                                             <input type='text' className='form-control'
                                             />
-                                            <span >
+                                            <span style={{ fontWeight: -8 }}>
                                                 Xác nhận mật khẩu mới
                                             </span>
                                             <input type='text' className='form-control'
@@ -164,27 +165,27 @@ const ReviewList = () => {
                                 <DashboardCard height="670" title="Thông tin cá nhân" >
                                     <div>
                                         <div style={{ padding: 5, }}>
-                                            <span >
+                                            <span style={{ fontWeight: -8 }}>
                                                 Email
                                             </span>
                                             <input readOnly type='text' onChange={(e) => { setemail(e.target.value) }} value={email} className='form-control'
                                             />
-                                            <span >
+                                            <span style={{ fontWeight: -8 }}>
                                                 Số điện thoại
                                             </span>
                                             <input type='text' onChange={(e) => { setphone(e.target.value) }} value={phone} className='form-control'
                                             />
-                                            <span >
+                                            <span style={{ fontWeight: -8 }}>
                                                 Địa chỉ
                                             </span>
                                             <input type='text' onChange={(e) => { setaddress(e.target.value) }} value={address} className='form-control'
                                             />
-                                            <span >
+                                            <span style={{ fontWeight: -8 }}>
                                                 Tên người dùng
                                             </span>
                                             <input type='text' onChange={(e) => { setfullname(e.target.value) }} value={fullname} className='form-control'
                                             />
-                                            <span >
+                                            <span style={{ fontWeight: -8 }}>
                                                 Ảnh đại diện
                                             </span>
                                             <td>

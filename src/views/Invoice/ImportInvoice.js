@@ -457,7 +457,8 @@ class CRUDProductType extends React.Component {
                             <div>
                                 <div className="form-group">
                                     <label>Tìm kiếm theo ID hóa đơn</label>
-                                    <div><input className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="ID" />
+                                    <div>
+                                        <input style={{width:"200px"}} className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="ID" />
                                     </div>
                                     <button type='button' className='btn btn-primary m-2 float-end'
                                         onClick={() => this.refreshList()}>

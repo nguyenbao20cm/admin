@@ -26,7 +26,7 @@ class CRUDProductType extends React.Component {
         this.state = {
             ProductType: [], id1: "",
             modelTitle: "",
-            Name: "", image: "", Iimage: "",
+            Name: "", image: "", Iimage: "", image1: "",
             id: 0, StatusCheck: "",
             currentPage: 1, APIProduct: [],
             NameinputProductType: "", Status: "", Trangthai: "", open1: false, APIImageProduct: [], productId: ""
@@ -78,10 +78,12 @@ class CRUDProductType extends React.Component {
         return userToken
     }
     CreateClick() {
-        const token = this.getToken();
+        if (this.state.productId == "") return this.loi("Dữ liệu không hợp lệ ", "Hãy nhập lại")
+        if (this.state.image == "") return this.loi("Dữ liệu không hợp lệ ", "Hãy nhập lại")
+        const token = this.getToken()
         const formData = new FormData()
         formData.append("model", this.state.Iimage,)
-        fetch(variable.API_URL + "ImageProduct/CreateImagesProduct/" + this.state.productId, {
+        fetch(variable.API_URL + "ImageProduct/CreateImagesProduct/" + this.PRID(this.state.productId), {
             method: "POST",
             body: formData,
             headers: {
@@ -90,7 +92,7 @@ class CRUDProductType extends React.Component {
         }).then(res => res.json())
             .then(result => {
                 console.log(result)
-                if (result === "Thành công") {
+                if (result == true) {
                     this.refreshList();
                     message.success("Thành công")
                     document.getElementById("closeModal").click()
@@ -102,43 +104,62 @@ class CRUDProductType extends React.Component {
     }
     UpdateClick(id) {
         const token = this.getToken();
-        if (this.state.Name == "") return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
-        else
-            if (this.state.Status == "") return this.loi("Trạng thái bị rỗng ", "Hãy nhập lại")
-            else {
-                fetch(variable.API_URL + "BrandProducts/UpdateBrandProducts/" + id, {
-                    method: "PUT",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json',
-                        'Authorization': `Bearer ${token.value}`
-                    },
-                    body: JSON.stringify({
-                        name: this.state.Name,
-                        status: this.state.Status == "Hiển thị" ? true : false,
-                    })
-                }).then(res => res.json())
-                    .then(result => {
-                        if (result == "Thành công") {
-                            message.success("Thành công")
-                            this.setState({
-                                currentPage: this.state.currentPage
-                            });
-
-                            this.state.Trangthai == true ? this.CheckTrue()
-                                : this.state.Trangthai == false ? this.CheckFalse()
-                                    : this.refreshList()
-
-
-                            document.getElementById("closeModal").click()
-                        }
-                        else
-                            message.error(result)
-                    }, (error) => {
-                        message.error("Failed")
+        if (this.state.productId == "") return this.loi("Dữ liệu không hợp lệ ", "Hãy nhập lại")
+        if (this.state.image == "") return this.loi("Dữ liệu không hợp lệ ", "Hãy nhập lại")
+        if (this.state.image == this.state.image1) {
+            fetch(variable.API_URL + "ImageProduct/UpdateImageProduct/" + id + "," + this.PRID(this.state.productId), {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token.value}`
+                },
+            }).then(res => res.json())
+                .then(result => {
+                    if (result == true) {
+                        message.success("Thành công")
+                        this.setState({
+                            currentPage: this.state.currentPage
+                        });
+                        this.refreshList()
+                        document.getElementById("closeModal").click()
                     }
-                    )
-            }
+                    else
+                        message.error(result)
+                }, (error) => {
+                    message.error("Failed")
+                }
+                )
+        }
+        else {
+            const formData = new FormData()
+            formData.append("model", this.state.Iimage)
+
+            fetch(variable.API_URL + "ImageProduct/UpdateImageProductWithImage/" + id + "," + this.PRID(this.state.productId), {
+                method: "PUT",
+                headers: {
+                    'Authorization': `Bearer ${token.value}`
+                },
+                body: formData
+            }).then(res => res.json())
+                .then(result => {
+                    if (result == true) {
+                        message.success("Thành công")
+                        this.setState({
+                            currentPage: this.state.currentPage
+                        });
+                        this.refreshList()
+                        document.getElementById("closeModal").click()
+                    }
+                    else
+                        message.error(result)
+                }, (error) => {
+                    message.error("Failed")
+                }
+                )
+        }
+
+
 
     }
     DeleteClick(dep) {
@@ -170,10 +191,15 @@ class CRUDProductType extends React.Component {
             id: 0,
             Name: "",
             Status: "",
+            image: "",
+            productId: ""
         });
     }
     EditClick(dep) {
         this.setState({
+            image: dep.image,
+            image1: dep.image,
+            productId: (dep.product).name,
             StatusCheck: dep.status == true ?
                 "Hiển thị" : "Ẩn",
             modelTitle: "Sửa loại sản phẩm ",
@@ -296,6 +322,10 @@ class CRUDProductType extends React.Component {
                 })
         }
     }
+    PRID(a) {
+        var b = this.state.APIProduct.filter((item) => { return item.name == a ? item : null }).map((dep) => dep.id)
+        return b[0]
+    }
     render() {
 
         const {
@@ -307,11 +337,10 @@ class CRUDProductType extends React.Component {
             Status,
         } = this.state;
         const recordsPerPage = 5;
-        const OptionNhaCungCap = APIProduct.map((dep) => ({
-            id: dep.id,
-            nameProduct: dep.name,
-
-        }))
+        const OptionNhaCungCap = []
+        APIProduct.forEach(element => {
+            OptionNhaCungCap.push(element.name)
+        });
         const options = ['Hiển thị', 'Ẩn']
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
@@ -396,12 +425,12 @@ class CRUDProductType extends React.Component {
                                                 {dep.id}
                                             </td>
                                             <td>
-                                                {dep.name}
-                                            </td>
-                                            <td>
                                                 {
                                                     <img style={{ width: 50 }} src={"https://localhost:7067/wwwroot/Image/ImageProduct/" + dep.image} />
                                                 }
+                                            </td>
+                                            <td>
+                                                {(dep.product).name}
                                             </td>
                                             <td>
                                                 <button type='button' className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#exampleModal'
@@ -463,13 +492,14 @@ class CRUDProductType extends React.Component {
                                         Sản phẩm
                                     </span>
                                     <Autocomplete
+                                        value={productId}
                                         disableClearable
                                         onChange={(event, newValue) => {
                                             this.setState({
-                                                productId: newValue.id
+                                                productId: newValue
                                             });
                                         }}
-                                        getOptionLabel={(e) => e.nameProduct || " "}
+
                                         options={OptionNhaCungCap}
                                         style={{ width: 300 }}
                                         renderInput={(params) =>

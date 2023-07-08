@@ -4,6 +4,7 @@ import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
 import { Box } from '@mui/material';
 import ReviewCRUD from "../../components/container/Review/ReivewCRUD"
+import { BackTop } from 'antd';
 const ReviewList = () => {
     return (
         <PageContainer title="Sample Page" description="this is Sample page">
@@ -12,7 +13,8 @@ const ReviewList = () => {
                 <Typography paragraph>
                     <ReviewCRUD />
                 </Typography>
-            </DashboardCard>
+            </DashboardCard>  <BackTop />
+            <strong style={{ color: "rgba(64, 64, 64, 0.6)" }}>  </strong>
         </PageContainer>
     );
 };

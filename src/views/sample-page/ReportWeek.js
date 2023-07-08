@@ -18,6 +18,7 @@
 // };
 
 // export default SamplePage;
+import { BackTop } from 'antd';
 import React from 'react';
 import { Select, MenuItem, Container } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -243,7 +244,8 @@ const SalesOverview = () => {
                         type="bar"
                         height="445px"
                     />
-
+                    <BackTop />
+                    <strong style={{ color: "rgba(64, 64, 64, 0.6)" }}>  </strong>
                 </DashboardCard>
                 : null
             }

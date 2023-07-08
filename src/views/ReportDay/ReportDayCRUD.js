@@ -340,21 +340,21 @@ class CRUDProductType extends React.Component {
                         }}>Quay lại</Button>
                     </DialogActions>
                 </Dialog>
-                <div style={{ display: "flex", float: "right" }}>
-                    <div className="card">
-                        <div className="card-body">
+                <div style={{ display: "flex", }}>
+                    <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "2000px" }}>
+                        <div className="card-body" >
                             <div>
                                 <div className="form-group">
                                     <label>Từ ngày:</label>
                                     <div>
-                                        <input id="dates-range" className="form-control flatpickr-input"
+                                        <input style={{ width: "200px" }} id="dates-range" className="form-control flatpickr-input"
                                             type="date" onChange={(e) => this.ChangeStartDate(e)} />
                                     </div>
                                 </div>
 
                                 <div className="form-group" >
                                     <div>
-                                        <input id="dates-range" className="form-control flatpickr-input"
+                                        <input style={{ width: "200px" }} id="dates-range" className="form-control flatpickr-input"
                                             type="date" onChange={(e) => this.ChangeEndDate(e)} />
                                     </div>
                                 </div>
@@ -362,7 +362,7 @@ class CRUDProductType extends React.Component {
                                 <div className="form-group" >
                                     <div>
                                         <button type='button' className='btn btn-primary m-2 float-end'
-                                            onClick={() => this.refreshList1()}>
+                                            onClick={() => this.refreshList()}>
                                             Reset Trang
                                         </button>
                                     </div>
@@ -376,9 +376,10 @@ class CRUDProductType extends React.Component {
                                         </button>
                                     </div>
                                 </div>
+
+
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <Paper sx={{ width: '100%', overflow: 'hidden' }}>

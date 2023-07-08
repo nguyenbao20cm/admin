@@ -5,6 +5,7 @@ import DashboardCard from '../../components/shared/DashboardCard';
 import queryString from 'query-string';
 import ProductList from "../Product/Product"
 import { useLocation } from 'react-router';
+import { BackTop } from 'antd';
 const SamplePage = () => {
   const location = useLocation()
   var [ImportPrice, setImportPrice] = React.useState(() => {
@@ -21,7 +22,8 @@ const SamplePage = () => {
         <Typography paragraph>
           <ProductList />
         </Typography>
-      </DashboardCard>
+      </DashboardCard>  <BackTop />
+      <strong style={{ color: "rgba(64, 64, 64, 0.6)" }}>  </strong>
     </PageContainer>
   );
 };

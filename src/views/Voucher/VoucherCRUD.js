@@ -7,7 +7,6 @@ import Autocomplete from '@mui/material/Autocomplete';
 import $ from "jquery"
 import { Alert, Space, message } from 'antd';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
-
 import 'sweetalert2/src/sweetalert2.scss'
 
 import Button from '@mui/material/Button';
@@ -350,10 +349,11 @@ class CRUDProductType extends React.Component {
                         }}>Quay lại</Button>
                     </DialogActions>
                 </Dialog>
-                <div style={{ display: "flex", }}>
+                <div style={{ display: "flex", width:"500px"}}>
                     <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">Voucher giảm giá</InputLabel>
                         <Select
+                            showSearch
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             label="Voucher"
@@ -362,6 +362,9 @@ class CRUDProductType extends React.Component {
                                     NameinputProductType: value.target.value
                                 })
                             }}
+                            filterOption={(input, option) =>
+                                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                            }
                         >
                             <MenuItem value={10}>10%</MenuItem>
                             <MenuItem value={20}>20%</MenuItem>
