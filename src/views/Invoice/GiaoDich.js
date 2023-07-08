@@ -18,6 +18,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 
+import CountUp from 'react-countup';
 
 class CRUDProductType extends React.Component {
     constructor(props) {
@@ -36,7 +37,7 @@ class CRUDProductType extends React.Component {
 
     refreshList() {
         const token = this.getToken();
-        fetch(variable.API_URL + "ImportInvoices/GetAllImportInvoice", {
+        fetch(variable.API_URL + "Vnpaybill/GetAllVnPayBill", {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
@@ -345,8 +346,8 @@ class CRUDProductType extends React.Component {
                             </div>
                         </div>
                     </div>
-                    </div>
-                
+                </div>
+
                 <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                     <div>
                         <table id="example" className='table table-striped'>
@@ -393,7 +394,7 @@ class CRUDProductType extends React.Component {
                                                 {dep.id}
                                             </td>
                                             <td>
-                                                {dep.VNBillId}
+                                                {dep.vnBillId}
                                             </td>
                                             <td>
                                                 {dep.dateTime}
@@ -416,7 +417,7 @@ class CRUDProductType extends React.Component {
                                                 {dep.invoiceId}
                                             </td>
                                             <td>
-                                                {dep.total}
+                                                <CountUp delay={0.4} end={dep.total} duration={0.6} /> 
                                             </td>
                                             <td>
                                                 <button type='button' className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#exampleModal'
