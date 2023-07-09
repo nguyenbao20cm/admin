@@ -7,6 +7,9 @@ import Voucher from "../Voucher/VoucherCRUD"
 const SamplePage = () => {
     return (
         <PageContainer title="Voucher" description="this is Sample page">
+            <div hidden>
+                {document.documentElement.scrollTop = 0}
+            </div>
             <DashboardCard title="Quản lý Voucher">
                 <Typography paragraph>
                     <Voucher />

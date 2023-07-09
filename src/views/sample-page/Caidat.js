@@ -132,6 +132,9 @@ const ReviewList = () => {
         <div style={{ marginLeft: 21, marginTop: 20 }}>
             <PageContainer title="Cài đặt thông tin trang web" description="this is Sample page" >
                 <BackTop />
+                <div hidden>
+                    {document.documentElement.scrollTop = 0}
+                </div>
                 <strong style={{ color: "rgba(64, 64, 64, 0.6)" }}>  </strong>
                 <div style={{ marginLeft: "-50px" }} className='card mb-3'>
                     <div className='card-header' style={{ backgroundColor: theme.palette.primary.main }}>

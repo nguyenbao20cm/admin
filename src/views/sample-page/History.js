@@ -10,6 +10,9 @@ const ReviewList = () => {
         <PageContainer title="Lịch sử thao tác " description="this is Sample page">
 
             <DashboardCard title="Lịch sử thao tác người dùng">
+                <div hidden>
+                    {document.documentElement.scrollTop = 0}
+                </div>
                 <Typography paragraph>
                     <History />
                 </Typography>

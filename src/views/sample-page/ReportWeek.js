@@ -238,6 +238,9 @@ const SalesOverview = () => {
                         </Typography>
                     </div>
                 }>
+                    <div hidden>
+                        {document.documentElement.scrollTop = 0}
+                    </div>
                     <Chart
                         options={optionscolumnchart}
                         series={seriescolumnchart}

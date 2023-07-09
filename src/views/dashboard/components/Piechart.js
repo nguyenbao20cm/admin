@@ -109,8 +109,8 @@ const YearlyBreakup = () => {
                     <Typography variant="h3" fontWeight="700" >
                         <CountUp delay={0.4} end={SlSpBan} duration={0.6} />
                     </Typography>
-                    <Stack direction="row" spacing={1} mt={1} alignItems="center">
-                        <Avatar sx={{ bgcolor: successlight, width: 27, height: 27 }}>
+                    <Stack direction="row" spacing={1} mt={1} alignItems="center" >
+                        {/* <Avatar sx={{ bgcolor: successlight, width: 27, height: 27 }}>
                             <IconArrowUpLeft width={20} color="#39B69A" />
                         </Avatar>
                         <Typography variant="subtitle2" fontWeight="600">
@@ -118,7 +118,7 @@ const YearlyBreakup = () => {
                         </Typography>
                         <Typography variant="subtitle2" color="textSecondary">
                             last year
-                        </Typography>
+                        </Typography> */}
                     </Stack>
 
                 </Grid>
@@ -129,7 +129,7 @@ const YearlyBreakup = () => {
                         <CountUp delay={0.4} end={Khachhang} duration={0.6} />
                     </Typography>
                     <Stack direction="row" spacing={1} mt={1} alignItems="center">
-                        <Avatar sx={{ bgcolor: successlight, width: 27, height: 27 }}>
+                        {/* <Avatar sx={{ bgcolor: successlight, width: 27, height: 27 }}>
                             <IconArrowUpLeft width={20} color="#39B69A" />
                         </Avatar>
                         <Typography variant="subtitle2" fontWeight="600">
@@ -137,7 +137,7 @@ const YearlyBreakup = () => {
                         </Typography>
                         <Typography variant="subtitle2" color="textSecondary">
                             last year
-                        </Typography>
+                        </Typography> */}
                     </Stack>
                 </Grid>
             </Grid>

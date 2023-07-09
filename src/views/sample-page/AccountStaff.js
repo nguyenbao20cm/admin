@@ -10,6 +10,9 @@ const SamplePage = () => {
         <PageContainer title="Tài khoản nhân viên" description="this is Sample page">
 
             <DashboardCard title="Tài khoản nhân viên">
+                <div hidden>
+                    {document.documentElement.scrollTop = 0}
+                </div>
                 <Typography paragraph>
                     <Account />
                 </Typography>

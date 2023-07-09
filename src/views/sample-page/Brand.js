@@ -12,6 +12,9 @@ const ProductTypeList = () => {
             <PageContainer title="Thương hiệu sản phẩm" description="this is Sample page">
 
                 <DashboardCard title="Danh sách thương hiệu sản phẩm ">
+                    <div hidden>
+                        {document.documentElement.scrollTop = 0}
+                    </div>
                     <Typography paragraph>
                         <BrandProduts />
                     </Typography>

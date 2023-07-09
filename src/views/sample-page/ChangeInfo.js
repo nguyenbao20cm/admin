@@ -128,6 +128,9 @@ const ReviewList = () => {
         <div style={{ marginLeft: 21, marginTop: 20 }}>
             <PageContainer title="Cài đặt tài khoản" description="this is Sample page" >
                 <DashboardCard title="Cài đặt tài khoản">
+                    <div hidden>
+                        {document.documentElement.scrollTop = 0}
+                    </div>
                     <Box>
                         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                             <Grid item xs={6}>

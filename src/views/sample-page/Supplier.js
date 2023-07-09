@@ -7,7 +7,9 @@ import Supplier from "../Supplier/SupplierCRUD"
 const SamplePage = () => {
     return (
         <PageContainer title="Nhà cung cấp" description="this is Sample page">
-
+            <div hidden>
+                {document.documentElement.scrollTop = 0}
+            </div>
             <DashboardCard title="Quản lý Nhà cung cấp">
                 <Typography paragraph>
                     <Supplier />

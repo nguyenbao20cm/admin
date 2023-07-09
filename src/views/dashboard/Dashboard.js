@@ -27,7 +27,7 @@ const Dashboard = () => {
             {/* <SalesOverview /> */}
             <Card sx={{ boxShadow: "none" }}>
               <CardContent >
-                <div style={{ marginLeft: 30, padding: 10 }}>
+                <div style={{ marginTop: 30, marginLeft: 30, padding: 10 }}>
                   <PieChart />
                 </div>
                 <div style={{ marginTop: 30, marginLeft: 30, padding: 10 }}>

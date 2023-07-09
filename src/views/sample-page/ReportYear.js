@@ -7,7 +7,9 @@ import ReportYear from "../ReportYear/ReportYearCRUD"
 const SamplePage = () => {
     return (
         <PageContainer title="Sample Page" description="this is Sample page">
-
+            <div hidden>
+                {document.documentElement.scrollTop = 0}
+            </div>
             <DashboardCard title="Danh sách sản phẩm ">
                 <Typography paragraph>
                     <ReportYear />

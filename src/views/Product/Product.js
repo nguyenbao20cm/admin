@@ -774,8 +774,8 @@ class CRUDProduct extends React.Component {
                                         {APIProductDetails.description}
                                     </div>
                                     <div class="modal-footer">
-                                        <button type='button' data-bs-dismiss='modal' className='btn btn-primary float-start' >Thoát</button> 
-                                        
+                                        <button type='button' data-bs-dismiss='modal' className='btn btn-primary float-start' >Thoát</button>
+
                                     </div>
                                 </div>
                             </div>
@@ -834,8 +834,8 @@ class CRUDProduct extends React.Component {
                                             </span>
                                             <input type='text' className='form-control' value={image}
                                                 onChange={(e) => this.ChangeProdcutImage(e)} readOnly />
-                                            <input type="file" id="img" name="img" accept="image/*" onChange={(e) => this.ChangeProdcutImage(e)}></input>
-
+                                            <input hidden type="file" id="img" name="img" accept="image/*" onChange={(e) => this.ChangeProdcutImage(e)}></input>
+                                            <button style={{ float: 'right', borderRadius: "7.25px" }} onClick={() => document.getElementById("img").click()}>Thay đổi </button>
                                         </div>
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>

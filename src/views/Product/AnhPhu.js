@@ -484,8 +484,8 @@ class CRUDProductType extends React.Component {
                                     </span>
                                     <input type='text' className='form-control' value={image}
                                         onChange={(e) => this.ChangeProdcutImage(e)} readOnly />
-                                    <input type="file" onChange={(e) => this.ChangeProdcutImage(e)}></input>
-
+                                    <input hidden id="img" type="file" onChange={(e) => this.ChangeProdcutImage(e)}></input>
+                                    <button style={{ float: 'right', borderRadius: "7.25px" }} onClick={() => document.getElementById("img").click()}>Thay đổi </button>
                                 </div>
                                 <div className='input-group mb-3'>
                                     <span className='input-group-text'>

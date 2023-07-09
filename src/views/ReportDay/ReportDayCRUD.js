@@ -17,7 +17,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
-
+import CountUp from 'react-countup';
 
 class CRUDProductType extends React.Component {
     constructor(props) {
@@ -415,13 +415,13 @@ class CRUDProductType extends React.Component {
                                                         {this.DatetimeFormat(dep.dateTime)}
                                                     </td>
                                                     <td>
-                                                        {VND.format(dep.thuNhap)}
+                                                        <CountUp delay={0.4} end={dep.thuNhap} duration={0.6} /> Đồng
                                                     </td>
                                                     <td>
-                                                        {VND.format(dep.chiPhiVanChuyen)}
+                                                        <CountUp delay={0.4} end={dep.chiPhiVanChuyen} duration={0.6} /> Đồng
                                                     </td>
                                                     <td>
-                                                        {VND.format(dep.chiPhiNhap)}
+                                                        <CountUp delay={0.4} end={dep.chiPhiNhap} duration={0.6} /> Đồng
                                                     </td>
                                                 </tr>
                                         )}

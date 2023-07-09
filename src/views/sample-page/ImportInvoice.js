@@ -10,6 +10,9 @@ const ReviewList = () => {
         <PageContainer title="Nhập hàng" description="this is Sample page">
 
             <DashboardCard title="Hóa đơn nhập">
+                <div hidden>
+                    {document.documentElement.scrollTop = 0}
+                </div>
                 <Typography paragraph>
                     <ImportInvoice />
                 </Typography>

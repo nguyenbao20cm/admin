@@ -7,7 +7,9 @@ import ReportDay from "../ReportDay/ReportDayCRUD"
 const SamplePage = () => {
     return (
         <PageContainer title="Báo cáo theo ngày" description="this is Sample page">
-
+            <div hidden>
+                {document.documentElement.scrollTop = 0}
+            </div>
             <DashboardCard title="Báo cáo lợi nhuận">
                 <Typography paragraph>
                     <ReportDay />
