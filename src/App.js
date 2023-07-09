@@ -40,7 +40,7 @@ function App() {
     );
   }
   const decoded = jwt_decode(token);
-  if (decoded.RoleUser == "Admin")
+  if (decoded.RoleUser == "Admin" || decoded.RoleUser == "Staff")
     return (
       <ThemeProvider theme={theme}>
 

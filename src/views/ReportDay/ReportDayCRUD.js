@@ -28,8 +28,8 @@ class CRUDProductType extends React.Component {
             Name: "",
             id: 0, StatusCheck: "",
             currentPage: 1,
-            NameinputProductType: "", Status: "", Trangthai: "", open1: false, chiphinhap: []
-
+            NameinputProductType: "", Status: "", Trangthai: "", open1: false, chiphinhap: [],
+            startDate: "", endDate: ""
         }
 
     }
@@ -91,6 +91,23 @@ class CRUDProductType extends React.Component {
                     });
             }
 
+    }
+    ApplyClick() {
+        if (this.state.startDate == "") return message.warning("Dữ liệu bị trống")
+        if (this.state.endDate == "") return message.warning("Dữ liệu bị trống")
+        const token = this.getToken();
+        fetch(variable.API_URL + "Inovices/GetAllChiPhiFliter/" + this.state.startDate + "," + this.state.endDate, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ ProductType: data, Trangthai: null, currentPage: this.state.currentPage });
+            })
     }
     UpdateClick(id) {
         if (this.state.Name == "") return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
@@ -285,6 +302,16 @@ class CRUDProductType extends React.Component {
                     });
                 })
         }
+    }
+    ChangeStartDate(value) {
+        this.setState({
+            startDate: value.target.value
+        });
+    }
+    ChangeEndDate(value) {
+        this.setState({
+            endDate: value.target.value
+        });
     }
     DatetimeFormat(e) {
         const abc = new Date(e)

@@ -517,9 +517,10 @@ class ReviewCRUD extends React.Component {
                                             <span className='input-group-text'>
                                                 Hình ảnh
                                             </span>
-                                            <input type='text' className='form-control' value={image}
+                                            <input  type='text' className='form-control' value={image}
                                                 onChange={(e) => this.ChangeProdcutImage(e)} readOnly />
-                                            <input type="file" id="img" name="img" accept="image/*" onChange={(e) => this.ChangeProdcutImage(e)}></input>
+                                            <button style={{ float: 'right', borderRadius: "7.25px" }} onClick={() => document.getElementById("img").click()}>Chọn ảnh</button>
+                                            <input hidden type="file" id="img" name="img" accept="image/*" onChange={(e) => this.ChangeProdcutImage(e)}></input>
                                         </div>
                                         <div className='input-group mb-3'>
                                             {/* <FormControl>

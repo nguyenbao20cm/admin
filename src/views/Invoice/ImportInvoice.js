@@ -289,12 +289,8 @@ class CRUDProductType extends React.Component {
             .then(data => {
                 this.setState({ ProductType: data,  currentPage: 1 });
             })
-
-
     }
     CheckAll() {
-
-
         fetch(variable.API_URL + "ProductTypes/GetAllProductType")
             .then(response => response.json())
             .then(data => {

@@ -157,7 +157,7 @@ const ReviewList = () => {
                                     }
                                 </div>
                                 <br />
-                                <button style={{ float: 'right', borderRadius: "7.25px" }} onClick={() => document.getElementById("a").click()}>Thay đổi </button>
+                                <button style={{ float: 'right', borderRadius: "7.25px" }} onClick={() => document.getElementById("a").click()}>Chọn ảnh </button>
                             </div>
                             <div className='col-md-6 mb-3'>
                                 <label>Số điện thoại</label>

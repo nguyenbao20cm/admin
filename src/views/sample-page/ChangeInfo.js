@@ -197,7 +197,7 @@ const ReviewList = () => {
                                                 }
 
                                             </td>
-                                            <button style={{ float: 'right', borderRadius: "7.25px" }} onClick={() => input.current.click()}>Thay đổi </button>
+                                            <button style={{ float: 'right', borderRadius: "7.25px" }} onClick={() => input.current.click()}>Chọn ảnh </button>
                                             <br></br>
                                             <input onChange={(e) => ImgUp(e)} hidden ref={input} type='file' className='form-control'
                                             />

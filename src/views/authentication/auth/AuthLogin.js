@@ -86,13 +86,11 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                     setToken(result);
                     const tokenString = localStorage.getItem('token');
                     const decoded = jwt_decode(tokenString);
-                    if (decoded.RoleUser == "Admin") {
+                    if (decoded.RoleUser == "Admin" || decoded.RoleUser == "Staff") {
                         setTimeout(() => {
                             message.success("Đăng nhập thành công")
                         }, 0);
                         history('/dashboard')
-
-
                     }
                     else
                         setTimeout(() => {

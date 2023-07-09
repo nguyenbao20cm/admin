@@ -9,7 +9,9 @@ import { Alert, Space, message } from 'antd';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 
 import 'sweetalert2/src/sweetalert2.scss'
-
+import {
+    IconCheck,
+} from '@tabler/icons';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -33,6 +35,30 @@ class CRUDProductType extends React.Component {
 
         }
 
+    }
+    Check(id) {
+        const token = this.getToken();
+        fetch(variable.API_URL + "Account/ActiveAccount/" + id, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            }
+        }).then(res => res.json())
+            .then(result => {
+                if (result == true) {
+                    message.success("Thành công")
+                    this.refreshList();
+                }
+                if (result == false) {
+                    message.error("Thất bại")
+                }
+            }, (error) => {
+                console.log(error)
+                this.loi("Failed")
+            }
+            )
     }
     getToken() {
         const tokenString = localStorage.getItem('token');
@@ -230,18 +256,7 @@ class CRUDProductType extends React.Component {
     }
     //0 all 1 false 2 true
     CheckAll() {
-
-
-        fetch(variable.API_URL + "ProductTypes/GetAllProductType")
-            .then(response => response.json())
-            .then(data => {
-                this.setState({
-                    ProductType: data, currentPage: 1,
-                    Trangthai: null,
-                    NameinputProductType: ""
-                });
-            })
-
+        this.refreshList()
     }
     CheckTrue() {
         if (this.state.StatusCheck != this.state.Status) {
@@ -249,7 +264,7 @@ class CRUDProductType extends React.Component {
             const lastIndex = this.state.currentPage * recordsPerPage;
             const firstIndex = lastIndex - recordsPerPage;
             const a = this.state.ProductType.slice(firstIndex, lastIndex);
-            fetch(variable.API_URL + "ProductTypes/GetAllProductTypeStatusTrue")
+            fetch(variable.API_URL + "Account/GetAllAccountCustomerStatusTrue")
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
@@ -260,7 +275,7 @@ class CRUDProductType extends React.Component {
                 })
         }
         else {
-            fetch(variable.API_URL + "ProductTypes/GetAllProductTypeStatusTrue")
+            fetch(variable.API_URL + "Account/GetAllAccountCustomerStatusTrue")
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
@@ -327,7 +342,7 @@ class CRUDProductType extends React.Component {
             const lastIndex = this.state.currentPage * recordsPerPage;
             const firstIndex = lastIndex - recordsPerPage;
             const a = this.state.ProductType.slice(firstIndex, lastIndex);
-            fetch(variable.API_URL + "ProductTypes/GetAllProductTypeStatusFalse")
+            fetch(variable.API_URL + "Account/GetAllAccountCustomerStatusFalse")
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
@@ -338,7 +353,7 @@ class CRUDProductType extends React.Component {
                 })
         }
         else {
-            fetch(variable.API_URL + "ProductTypes/GetAllProductTypeStatusFalse")
+            fetch(variable.API_URL + "Account/GetAllAccountCustomerStatusFalse")
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
@@ -470,7 +485,7 @@ class CRUDProductType extends React.Component {
                                     </th>
 
                                     <th>
-                                        Khóa
+                                     
                                     </th>
                                 </tr>
                             </thead>
@@ -533,7 +548,9 @@ class CRUDProductType extends React.Component {
                                             </td> */}
                                             <td>
                                                 {
-                                                    dep.status == false ? null : <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
+                                                    dep.status == false ? <button width="16" height="16" type='button' className='btn btn-light mr-1' onClick={() => this.Check(dep.id)}>
+                                                        <IconCheck></IconCheck>
+                                                    </button> : <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
                                                             <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
                                                         </svg>

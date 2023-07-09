@@ -7,7 +7,9 @@ import Autocomplete from '@mui/material/Autocomplete';
 import $ from "jquery"
 import { Alert, Space, message } from 'antd';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
-
+import {
+    IconCheck,
+} from '@tabler/icons';
 import 'sweetalert2/src/sweetalert2.scss'
 
 import Button from '@mui/material/Button';
@@ -65,7 +67,41 @@ class CRUDProductType extends React.Component {
     }
 
     CreateClick() {
-        console.log(this.state.Anh)
+        if (this.state.TenNguoiDung == "") return this.loi("Bạn chưa nhập tên tài khoản!", "Hãy nhập lại")
+        const usernameRegex = /^(?=.*[A-Z])[a-zA-Z0-9]{5,}$/;
+        if (!usernameRegex.test(this.state.TenNguoiDung)) {
+            return this.loi(" Vui lòng nhập tên tài khoản có ít nhất 5 ký tự (không dùng tiếng việt có dấu) và ít nhất 1 chữ viết hoa.")
+        }
+        //email
+        if (this.state.Email == "") return this.loi("Bạn chưa nhập Email!")
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(this.state.Email)) {
+            return this.loi('Địa chỉ email không hợp lệ! Vui lòng nhập một địa chỉ email hợp lệ.');
+        }
+        //password
+        const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()])[a-zA-Z0-9!@#$%^&*()]{8,}$/;
+        if (this.state.matkhau == "") return this.loi("Bạn chưa nhập mật khẩu!")
+        if (!passwordRegex.test(this.state.matkhau)) {
+            return this.loi('Mật khẩu không hợp lệ! Vui lòng nhập mật khẩu có ít nhất 1 ký tự hoa, 1 ký tự đặc biệt và độ dài tối thiểu 8 ký tự.')
+        }
+        //số điện thoại
+        const phoneRegex = /^0\d{9}$/;
+        if (this.state.SDT == "") return this.loi("Số điện thoại không được để trống")
+
+        if (!phoneRegex.test(this.state.SDT)) {
+            return this.loi("Số điện thoại không hợp lệ! Vui lòng nhập đúng định dạng.");
+        }
+
+        //họ và tên	
+        if (this.state.FullName == "") return this.loi("Bạn chưa nhập họ và tên!")
+
+
+        if (this.state.DiaChi == "") return this.loi("Bạn chưa nhập địa chỉ!")
+        if (this.state.tenanh == "") return this.loi("Bạn chưa chọn ảnh đại diện!")
+
+        if (this.state.Status == "") return this.loi("Bạn chưa chọn trạng thái!")
+
+
         const token = this.getToken();
         fetch(variable.API_URL + "Account/register-Staff", {
             method: "POST",
@@ -83,10 +119,16 @@ class CRUDProductType extends React.Component {
                     address: this.state.DiaChi,
                     fullName: this.state.FullName,
                     image: this.state.tenanh,
-                    status: this.state.Status == "Hiển thị" ? true : false,
+                    status: this.state.Status == "Hoạt động" ? true : false,
                 })
         }).then(res => res.json())
             .then(result => {
+                if (result == "12")
+                    return this.loi("Tên đăng nhập này đã được sử dụng")
+                if (result == 2)
+                    return this.loi("Số điện thoại này đã được sử dụng")
+                if (result == 3)
+                    return this.loi("Email này đã được sử dụng")
                 const formData = new FormData()
                 var imagelName = this.state.TenNguoiDung
                 formData.append("model", this.state.Anh, imagelName)
@@ -105,7 +147,7 @@ class CRUDProductType extends React.Component {
                     this.loi("Thất bại", "Hãy nhập lại")
             }, (error) => {
                 console.log(error)
-                message.error("Failed")
+                this.loi("Failed")
 
             }
             )
@@ -134,7 +176,7 @@ class CRUDProductType extends React.Component {
                     address: this.state.DiaChi,
                     fullName: this.state.FullName,
                     image: this.state.tenanh,
-                    status: this.state.Status == "Hiển thị" ? true : false,
+                    status: this.state.Status == "Hoạt động" ? true : false,
                 })
         }).then(res => res.json())
             .then(result => {
@@ -178,12 +220,13 @@ class CRUDProductType extends React.Component {
             }
         }).then(res => res.json())
             .then(result => {
-                message.success(result)
-                this.setState({ open1: false })
-                this.refreshList();
+                    message.success(result)
+                    this.setState({ open1: false })
+                    this.refreshList();
+             
             }, (error) => {
                 console.log(error)
-                message.error("Failed")
+                this.loi("Failed")
 
             }
             )
@@ -199,13 +242,13 @@ class CRUDProductType extends React.Component {
     EditClick(dep) {
         this.setState({
             StatusCheck: dep.status == true ?
-                "Hiển thị" : "Ẩn",
+                "Hoạt động" : "Khóa",
             modelTitle: "Sửa loại sản phẩm ",
             id: dep.id,
             Name: dep.name,
             Status:
                 dep.status == true ?
-                    "Hiển thị" : "Ẩn"
+                    "Hoạt động" : "Khóa"
             ,
 
         });
@@ -253,15 +296,7 @@ class CRUDProductType extends React.Component {
     CheckAll() {
 
 
-        fetch(variable.API_URL + "ProductTypes/GetAllProductType")
-            .then(response => response.json())
-            .then(data => {
-                this.setState({
-                    ProductType: data, currentPage: 1,
-                    Trangthai: null,
-                    NameinputProductType: ""
-                });
-            })
+        this.refreshList()
 
     }
     CheckTrue() {
@@ -272,7 +307,7 @@ class CRUDProductType extends React.Component {
             const a = this.state.ProductType.slice(firstIndex, lastIndex);
 
             const token = this.getToken();
-            fetch(variable.API_URL + "Account/GetAllAccountStaff", {
+            fetch(variable.API_URL + "Account/GetAllAccountStaffStatusTrue", {
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
@@ -290,7 +325,7 @@ class CRUDProductType extends React.Component {
         }
         else {
             const token = this.getToken();
-            fetch(variable.API_URL + "Account/GetAllAccountStaff", {
+            fetch(variable.API_URL + "Account/GetAllAccountStaffStatusTrue", {
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
@@ -314,7 +349,7 @@ class CRUDProductType extends React.Component {
             const firstIndex = lastIndex - recordsPerPage;
             const a = this.state.ProductType.slice(firstIndex, lastIndex);
             const token = this.getToken();
-            fetch(variable.API_URL + "Account/GetAllAccountStaff", {
+            fetch(variable.API_URL + "Account/GetAllAccountStaffStatusFalse", {
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
@@ -332,7 +367,7 @@ class CRUDProductType extends React.Component {
         }
         else {
             const token = this.getToken();
-            fetch(variable.API_URL + "Account/GetAllAccountStaff", {
+            fetch(variable.API_URL + "Account/GetAllAccountStaffStatusFalse", {
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
@@ -365,6 +400,31 @@ class CRUDProductType extends React.Component {
             })
 
     }
+    Check(id) {
+        const token = this.getToken();
+        fetch(variable.API_URL + "Account/ActiveAccount/" + id, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            }
+        }).then(res => res.json())
+            .then(result => {
+                if (result == true)
+                {
+                    message.success("Thành công")
+                    this.refreshList();
+                }
+                if (result == false) {
+                    message.error("Thất bại")
+                }
+            }, (error) => {
+                console.log(error)
+                this.loi("Failed")
+            }
+            )
+    }
     DatetimeFormat(e) {
         const abc = new Date(e)
         var day = abc.getDate() + "/";
@@ -383,13 +443,13 @@ class CRUDProductType extends React.Component {
             currentPage, open1,
             Status, TenNguoiDung,
             Email,
-            SDT, History,
+            SDT, History, tenanh,
             DiaChi,
             FullName,
             Anh,
         } = this.state;
         const recordsPerPage = 5;
-        const options = ['Hiển thị', 'Ẩn']
+        const options = ['Hoạt động', 'Khóa']
 
 
         const lastIndex = currentPage * recordsPerPage;
@@ -491,7 +551,7 @@ class CRUDProductType extends React.Component {
                                         Xem lịch sử
                                     </th>
                                     <th>
-                                        Khóa
+                                        
                                     </th>
                                 </tr>
                             </thead>
@@ -499,7 +559,7 @@ class CRUDProductType extends React.Component {
                                 {Account.filter((item) => {
                                     return this.state.NameinputProductType === ""
                                         ? item
-                                        : item.name.toString().includes(this.state.NameinputProductType);
+                                        : item.id.toString().includes(this.state.NameinputProductType);
                                 }).slice(firstIndex, lastIndex)
                                     .map(dep =>
                                         <tr key={dep.id}>
@@ -557,11 +617,14 @@ class CRUDProductType extends React.Component {
                                             </td>
                                             <td>
                                                 {
-                                                    dep.status == false ? null : <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
-                                                        </svg>
+                                                    dep.status == false ? <button width="16" height="16" type='button' className='btn btn-light mr-1' onClick={() => this.Check(dep.id)}>
+                                                            <IconCheck></IconCheck>
                                                     </button>
+                                                        : <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                                                <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                                            </svg>
+                                                        </button>
                                                 }
                                             </td>
                                         </tr>
@@ -625,12 +688,7 @@ class CRUDProductType extends React.Component {
                                 </table>
                             </div>
                             <div class="modal-footer">
-                                {id == 0 ?// eslint-disable-next-line
-                                    <button type='button' className='btn btn-primary float-start' onClick={() => this.CreateClick()}>Thêm</button> : null
-                                }
-                                {id != 0 ?// eslint-disable-next-line
-                                    <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick(this.state.id)}>Sửa</button> : null
-                                }
+
                             </div>
                         </div>
                     </div>
@@ -648,7 +706,7 @@ class CRUDProductType extends React.Component {
 
                                 <div className='input-group mb-3'>
                                     <span className='input-group-text'>
-                                        Tên người dùng
+                                        UserName
                                     </span>
                                     <input type='text' style={{ width: '20px' }} className='form-control' value={TenNguoiDung}
                                         onChange={(e) =>
@@ -697,15 +755,6 @@ class CRUDProductType extends React.Component {
                                             })
                                         } />
                                     <span className='input-group-text'>
-                                        Ảnh
-                                    </span>
-                                    <input type="file" name="file" id="file" class="inputfile" onChange={(e) =>
-                                        this.ChangeProdcutImage(e)
-                                    } />
-
-                                </div>
-                                <div className='input-group mb-3'>
-                                    <span className='input-group-text'>
                                         Mật khẩu
                                     </span>
                                     <input type='text' className='form-control' value={matkhau}
@@ -715,6 +764,20 @@ class CRUDProductType extends React.Component {
                                             })
                                         }
                                     />
+                                </div>
+                                <div className='input-group mb-3'>
+                                    <span className='input-group-text'>
+                                        Ảnh
+                                    </span>
+                                    <input readOnly type='text' className='form-control' value={tenanh}
+                                        onChange={(e) => this.ChangeProdcutImage(e)} />
+                                    <input hidden type="file" name="file" id="file" class="inputfile" onChange={(e) =>
+                                        this.ChangeProdcutImage(e)
+                                    } />
+                                    <button style={{ float: 'right', borderRadius: "7.25px" }} onClick={() => document.getElementById("file").click()}>Thay đổi </button>
+                                </div>
+                                <div className='input-group mb-3'>
+
                                     <span className='input-group-text'>
                                         Trạng thái
                                     </span>
