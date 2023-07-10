@@ -426,6 +426,7 @@ class CRUDProductType extends React.Component {
                                     <th>
                                         Chi phí nhập sản phẩm
                                     </th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -450,6 +451,7 @@ class CRUDProductType extends React.Component {
                                                     <td>
                                                         <CountUp delay={0.4} end={dep.chiPhiNhap} duration={0.6} /> Đồng
                                                     </td>
+                                                 
                                                 </tr>
                                         )}
                             </tbody >

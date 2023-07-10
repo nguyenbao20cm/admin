@@ -33,7 +33,7 @@ class CRUDProductType extends React.Component {
             ProductType: [], id1: "",
             modelTitle: "", quantity: "",
             Name: "",
-            id: 0, StatusCheck: "", startDate: "", endDate:"",
+            id: 0, StatusCheck: "", startDate: "", endDate: "",
             currentPage: 1,
             NameinputProductType: "", Status: "", Trangthai: "", open1: false, GiaNhap: "", Size: "", ProductSizeId: "",
             APIProduct: [], ProductId: "", Nhacungcap: "", APINhaCungCap: [], APIProductSize: []
@@ -101,7 +101,7 @@ class CRUDProductType extends React.Component {
         if (this.state.GiaNhap == 0) return this.loi("Dữ liệu không đúng", "Hãy kiểm liệu dữ liệu nhập")
         if (this.state.quantity == 0) return this.loi("Dữ liệu không đúng", "Hãy kiểm liệu dữ liệu nhập")
         if (Number.isInteger(this.state.GiaNhap) || Number(this.state.GiaNhap) < 0) return this.loi("Dữ liệu không đúng", "Hãy kiểm liệu dữ liệu nhập")
-        if (Number.isInteger(this.state.quantity)|| Number(this.state.quantity) < 0) return this.loi("Dữ liệu không đúng", "Hãy kiểm liệu dữ liệu nhập")
+        if (Number.isInteger(this.state.quantity) || Number(this.state.quantity) < 0) return this.loi("Dữ liệu không đúng", "Hãy kiểm liệu dữ liệu nhập")
         const token = this.getToken();
         fetch(variable.API_URL + "ImportInvoices/CreateImportInvoice", {
             method: "POST",
@@ -186,9 +186,16 @@ class CRUDProductType extends React.Component {
             },
         }).then(res => res.json())
             .then(result => {
-                message.success(result)
-                this.setState({ open1: false })
-                this.refreshList();
+                if (result == "Thành công") {
+                    message.success("Thành công")
+                    this.setState({ open1: false })
+                    this.refreshList();
+                }
+                else {
+                    message.error(result)
+                    this.setState({ open1: false })
+                }
+
             }, (error) => {
                 message.error("Failed")
             }
@@ -287,7 +294,7 @@ class CRUDProductType extends React.Component {
         })
             .then(response => response.json())
             .then(data => {
-                this.setState({ ProductType: data,  currentPage: 1 });
+                this.setState({ ProductType: data, currentPage: 1 });
             })
     }
     CheckAll() {
@@ -454,7 +461,7 @@ class CRUDProductType extends React.Component {
                                 <div className="form-group">
                                     <label>Tìm kiếm theo ID hóa đơn</label>
                                     <div>
-                                        <input style={{width:"200px"}} className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="ID" />
+                                        <input style={{ width: "200px" }} className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="ID" />
                                     </div>
                                     <button type='button' className='btn btn-primary m-2 float-end'
                                         onClick={() => this.refreshList()}>

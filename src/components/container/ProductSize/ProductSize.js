@@ -36,6 +36,16 @@ class ReviewCRUD extends React.Component {
             timer: 1500
         })
     }
+    loi1(title, text) {
+        return Swal.fire({
+            icon: 'warning',
+            title: title,
+            text: text,
+            confirmButtonText: 'Ok',
+            confirmButtonColor: '#3085d6',
+            timer: 1500
+        })
+    }
     refreshList() {
 
         const token = this.getToken();
@@ -110,7 +120,7 @@ class ReviewCRUD extends React.Component {
                 }
                 else {
                     if (result == "Thành công, nhưng trạng thái thành Ẩn vì Size này chỉ được 1 hiện thị ") {
-                        this.loi(result, "")
+                        this.loi1(result, "")
                         document.getElementById("closeModal").click()
                         this.state.Trangthai == true ? this.CheckTrue()
                             : this.state.Trangthai == false ? this.CheckFalse()
@@ -118,8 +128,7 @@ class ReviewCRUD extends React.Component {
                         document.getElementById("closeModal").click()
                     }
                     else
-                        return this.loi(result, "")
-                    this.loi(result, "")
+                        return this.loi("Thất bại", "")
                 }
             }, (error) => {
                 return this.loi("Đã xảy ra lỗi", "")

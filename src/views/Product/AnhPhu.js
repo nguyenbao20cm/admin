@@ -166,18 +166,28 @@ class CRUDProductType extends React.Component {
         this.setState({ open1: true, id1: dep })
     }
     DeleteClick1() {
-
-        fetch(variable.API_URL + "BrandProducts/DeleteBrandProducts/" + this.state.id1, {
-            method: "PUT",
+        const token = this.getToken();
+        fetch(variable.API_URL + "ImageProduct/DeleteImageProduct/" + this.state.id1, {
+            method: "DELETE",
             headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
             },
         }).then(res => res.json())
             .then(result => {
-                message.success(result)
-                this.setState({ open1: false })
-                this.refreshList();
+                if (result == true)
+                {
+                    message.success("Thành công")
+                    this.setState({ open1: false })
+                    this.refreshList();
+                }
+                if (result == false)
+                {
+                    message.success("Thất bại")
+                    this.setState({ open1: false })
+                }
+             
             }, (error) => {
                 message.error("Failed")
             }
@@ -377,7 +387,7 @@ class CRUDProductType extends React.Component {
                         <div className="card-body" >
                             <div>
                                 <div className="form-group">
-                                    <label>Tìm kiếm theo tên thương hiệu</label>
+                                    <label>Tìm kiếm ảnh theo tên sản phẩm</label>
                                     <div><input className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Tên thương hiệu sản phẩm" />
                                     </div>
                                 </div>
@@ -417,7 +427,7 @@ class CRUDProductType extends React.Component {
                                 {APIImageProduct.filter((item) => {
                                     return this.state.NameinputProductType === ""
                                         ? item
-                                        : item.name.toString().includes(this.state.NameinputProductType);
+                                        : (item.product).name.toString().includes(this.state.NameinputProductType);
                                 }).slice(firstIndex, lastIndex)
                                     .map(dep =>
                                         <tr key={dep.id}>

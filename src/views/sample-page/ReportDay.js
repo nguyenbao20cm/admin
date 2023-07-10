@@ -10,7 +10,7 @@ const SamplePage = () => {
             <div hidden>
                 {document.documentElement.scrollTop = 0}
             </div>
-            <DashboardCard title="Báo cáo lợi nhuận">
+            <DashboardCard title="Báo cáo chi tiết">
                 <Typography paragraph>
                     <ReportDay />
                 </Typography>

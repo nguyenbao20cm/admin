@@ -48,7 +48,7 @@ class CRUDProductType extends React.Component {
         }).then(res => res.json())
             .then(result => {
                 if (result == true) {
-                    message.success("Thành công")
+                    message.success("Mở khóa thành công")
                     this.refreshList();
                 }
                 if (result == false) {

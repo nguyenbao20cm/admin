@@ -106,7 +106,7 @@ class CRUDProductType extends React.Component {
                     })
                 }).then(res => res.json())
                     .then(result => {
-                        if (result == "Thành công") {
+                        if (result == true) {
                             message.success("Thành công")
                             this.setState({
                                 currentPage: this.state.currentPage
@@ -115,8 +115,6 @@ class CRUDProductType extends React.Component {
                             this.state.Trangthai == true ? this.CheckTrue()
                                 : this.state.Trangthai == false ? this.CheckFalse()
                                     : this.refreshList()
-
-
                             document.getElementById("closeModal").click()
                         }
                         else

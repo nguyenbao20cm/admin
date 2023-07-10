@@ -85,7 +85,7 @@ class CRUDProductType extends React.Component {
                                         this.state.Giamgia == "90%" ? 90 : null,
 
                 title: this.state.tieude,
-                status: this.state.Status == "Hiển thị" ? true : false,
+                // status: this.state.Status == "Hiển thị" ? true : false,
             })
         }).then(res => res.json())
             .then(result => {
@@ -97,7 +97,10 @@ class CRUDProductType extends React.Component {
                     document.getElementById("closeModal").click()
                 }
                 else
-                    message.error(result)
+                if (result == 1)
+                    return this.loi("Mã này đã tồn tại")
+                else
+                    return this.loi("Thất bại")
             }, (error) => {
                 message.error("Failed")
             });
@@ -127,7 +130,7 @@ class CRUDProductType extends React.Component {
                                         this.state.Giamgia == "90%" ? 90 : null,
 
                 title: this.state.tieude,
-                status: this.state.Status == "Hiển thị" ? true : false,
+                // status: this.state.Status == "Hiển thị" ? true : false,
             })
         }).then(res => res.json())
             .then(result => {
@@ -141,6 +144,9 @@ class CRUDProductType extends React.Component {
                             : this.refreshList()
                     document.getElementById("closeModal").click()
                 }
+                if (result == false) {
+                    return this.loi("Thất bại")
+                }
                 else
                     message.error(result)
             }, (error) => {
@@ -153,8 +159,8 @@ class CRUDProductType extends React.Component {
     }
     DeleteClick1() {
         const token = this.getToken();
-        fetch(variable.API_URL + "ProductTypes/DeleteProductType/" + this.state.id1, {
-            method: "PUT",
+        fetch(variable.API_URL + "Vouchers/DeleteVoucher/" + this.state.id1, {
+            method: "DELETE",
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -162,9 +168,20 @@ class CRUDProductType extends React.Component {
             },
         }).then(res => res.json())
             .then(result => {
-                message.success(result)
-                this.setState({ open1: false })
-                this.refreshList();
+                if (
+                    result == true
+                ) {
+                    message.success("Thành công")
+                    this.setState({ open1: false })
+                    this.refreshList();
+                }
+                if (
+                    result == false
+                ) {
+                    message.success("Thất bại")
+                    this.setState({ open1: false })
+
+                }
             }, (error) => {
                 message.error("Failed")
             }
@@ -178,6 +195,7 @@ class CRUDProductType extends React.Component {
             id: 0,
             Name: "", Ma: "", Giamgia: "",
             Status: "",
+            tieude: ""
         });
     }
     EditClick(dep) {
@@ -349,7 +367,7 @@ class CRUDProductType extends React.Component {
                         }}>Quay lại</Button>
                     </DialogActions>
                 </Dialog>
-                <div style={{ display: "flex", width:"500px"}}>
+                <div style={{ display: "flex", width: "500px" }}>
                     <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">Voucher giảm giá</InputLabel>
                         <Select
@@ -545,7 +563,7 @@ class CRUDProductType extends React.Component {
                                                 variant="outlined" />}
                                     />
                                 </div>
-                                <div className='input-group mb-3'>
+                                {/* <div className='input-group mb-3'>
                                     <span className='input-group-text'>
                                         Trạng thái
                                     </span>
@@ -566,7 +584,7 @@ class CRUDProductType extends React.Component {
                                                 variant="outlined" />}
                                     />
 
-                                </div>
+                                </div> */}
 
                             </div>
                             <div class="modal-footer">

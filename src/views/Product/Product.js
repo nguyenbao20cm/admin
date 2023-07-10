@@ -416,12 +416,13 @@ class CRUDProduct extends React.Component {
 
     }
     DeleteClick(id) {
-
+        const token = this.getToken();
         fetch(variable.API_URL + "Products/DeleteProduct/" + id, {
             method: "PUT",
             headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
             },
         }).then(res => res.json())
             .then(result => {

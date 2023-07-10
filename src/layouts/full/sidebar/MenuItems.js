@@ -145,7 +145,7 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: 'Báo cáo chi tiết  ',
+    title: 'Sơ đồ báo cáo  ',
     icon: IconReport,
     href: '/ReportWeek',
     bbb: true

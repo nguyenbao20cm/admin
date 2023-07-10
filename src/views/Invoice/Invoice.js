@@ -58,7 +58,7 @@ class InvoiceCRUD extends React.Component {
         document.getElementById("All3").checked = false;
         document.getElementById("All4").checked = false;
         document.getElementById("All5").checked = false;
-     
+
         fetch(variable.API_URL + "Inovices/GetAllInovice", {
             method: "GET",
             headers: {
@@ -178,7 +178,7 @@ class InvoiceCRUD extends React.Component {
         if (this.state.ShippingPhone.length > 10) return this.loi("SĐT bị sai ", "Hãy nhập lại")
         if (this.state.ShippingPhone.length < 0) return this.loi("SĐT bị sai ", "Hãy nhập lại")
         if (Number.isInteger(Number(this.state.ShippingPhone)) == false) return this.loi("SĐT bị sai ", "Hãy nhập lại")
-        if (this.state.Pay == "") return this.loi("Trạng thái bị rỗng ", "Hãy nhập lại")
+        // if (this.state.Pay == "") return this.loi("Trạng thái bị rỗng ", "Hãy nhập lại")
         if (this.state.OrderStatus == "") return this.loi("Dữ liệu trạng thái bị sai", "Hãy nhập lại")
         if (this.state.OrderStatus == null) return this.loi("Dữ liệu trạng thái bị sai", "Hãy nhập lại")
         const token = this.getToken();
@@ -192,7 +192,7 @@ class InvoiceCRUD extends React.Component {
             body: JSON.stringify({
                 shippingphone: this.state.ShippingPhone,
                 shippingadress: this.state.ShippingAddress,
-                pay: this.state.Pay == "Đã thanh toán" ? true : false,
+                // pay: this.state.Pay == "Đã thanh toán" ? true : false,
                 orderStatus: this.state.OrderStatus == "Chưa xác nhận" ? 1 : this.state.OrderStatus == "Đang chuẩn bị" ? 2 : this.state.OrderStatus == "Đang giao" ? 3 : this.state.OrderStatus == "Đã hủy" ? 4 : this.state.OrderStatus == "Hoàn tất" ? 5 : this.state.OrderStatus == "Đã giao" ? 6 : null,
 
             })
@@ -235,7 +235,7 @@ class InvoiceCRUD extends React.Component {
         if (this.state.ShippingPhone.length > 10) return this.loi("SĐT bị sai ", "Hãy nhập lại")
         if (this.state.ShippingPhone.length < 0) return this.loi("SĐT bị sai ", "Hãy nhập lại")
         if (Number.isInteger(Number(this.state.ShippingPhone)) == false) return this.loi("SĐT bị sai ", "Hãy nhập lại")
-        if (this.state.Pay == "") return this.loi("Trạng thái bị rỗng ", "Hãy nhập lại")
+        // if (this.state.Pay == "") return this.loi("Trạng thái bị rỗng ", "Hãy nhập lại")
         if (this.state.OrderStatus == "") return this.loi("Dữ liệu trạng thái bị sai", "Hãy nhập lại")
         if (this.state.OrderStatus == null) return this.loi("Dữ liệu trạng thái bị sai", "Hãy nhập lại")
 
@@ -250,7 +250,7 @@ class InvoiceCRUD extends React.Component {
             body: JSON.stringify({
                 shippingphone: this.state.ShippingPhone,
                 shippingadress: this.state.ShippingAddress,
-                pay: this.state.Pay == "Đã thanh toán" ? true : false,
+                // pay: this.state.Pay == "Đã thanh toán" ? true : false,
                 orderStatus: this.state.OrderStatus == "Chưa xác nhận" ? 1 : this.state.OrderStatus == "Đang chuẩn bị" ? 2 : this.state.OrderStatus == "Đang giao" ? 3 : this.state.OrderStatus == "Đã hủy" ? 4 : this.state.OrderStatus == "Hoàn tất" ? 5 : this.state.OrderStatus == "Đã giao" ? 6 : null,
 
             })
@@ -302,10 +302,10 @@ class InvoiceCRUD extends React.Component {
             ,
             modelTitle: "Edit Invoice",
             ShippingPhone: dep.shippingPhone,
-            Pay:
-                dep.pay == true ?
-                    "Đã thanh toán" : "Chưa thanh toán"
-            ,
+            // Pay:
+            //     dep.pay == true ?
+            //         "Đã thanh toán" : "Chưa thanh toán"
+            // ,
             ID: dep.id,
             ShippingAddress: dep.shippingAddress,
             OrderStatus:
@@ -346,7 +346,7 @@ class InvoiceCRUD extends React.Component {
         this.setState({
             ChangeId: value.target.value, currentPage: 1
         });
-
+        console.log(this.state.ChangeId)
     }
     ChangeStartDate(value) {
         this.setState({
@@ -369,7 +369,6 @@ class InvoiceCRUD extends React.Component {
         document.getElementById("All3").checked = false;
         document.getElementById("All4").checked = false;
         document.getElementById("All5").checked = false;
-        document.getElementById("All6").checked = false;
         fetch(variable.API_URL + "Inovices/GetAllInoviceFilterByDate/" + this.state.startDate + "," + this.state.endDate, {
             method: "GET",
             headers: {
@@ -1225,7 +1224,7 @@ class InvoiceCRUD extends React.Component {
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
         const options = ['Đã thanh toán', 'Chưa thanh toán']
         const options2 = ['Hoàn tất',
-            'Đang giao', 'Chưa xác nhận', 'Đang chuẩn bị', ]
+            'Đang giao', 'Chưa xác nhận', 'Đang chuẩn bị',]
         {/* //1 chưa xác nhận //2 la chua đang chuẩn bị //3 đang giao//6 đã giao//4 đã hủy,//5hoàn tất */ }
         return (
             <>
@@ -1254,7 +1253,7 @@ class InvoiceCRUD extends React.Component {
                 </Dialog>
                 <div style={{ display: "flex" }}>
 
-                    <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "1000px" }}>
+                    <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "700px" }}>
                         <div className="card-body">
                             <div className="form-group">
                                 <label>Tìm kiếm theo Id Hóa đơn:</label>
@@ -1300,7 +1299,7 @@ class InvoiceCRUD extends React.Component {
                     </div>
                     <div className="card" style={{ width: "217px" }}>
                         <div className="card-body">
-                           
+
                             <label>Trạng thái:</label>
                             <div className>
                                 <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
@@ -1488,7 +1487,7 @@ class InvoiceCRUD extends React.Component {
                             <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLongTitle">Details Invoice</h5>
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Chi tiết hóa đơn</h5>
                                         <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'>
                                         </button>
 
@@ -1500,6 +1499,9 @@ class InvoiceCRUD extends React.Component {
                                                 <tr>
                                                     <th>
                                                         Tên sản phẩm
+                                                    </th>
+                                                    <th>
+                                                        Size sản phẩm
                                                     </th>
                                                     <th>
                                                         Số lượng
@@ -1519,6 +1521,9 @@ class InvoiceCRUD extends React.Component {
                                                     <tr >
                                                         <td>
                                                             {(dep.productSize.product).name}
+                                                        </td>
+                                                        <td>
+                                                            {((dep.productSize).name)}
                                                         </td>
                                                         <td>
                                                             {dep.quantity}
@@ -1563,7 +1568,7 @@ class InvoiceCRUD extends React.Component {
                                             <input type='text' className='form-control' value={this.state.ShippingPhone}
                                                 onChange={(e) => this.ChangeShippingPhone(e)} />
                                         </div>
-                                        <div className='input-group mb-3'>
+                                        {/* <div className='input-group mb-3'>
                                             <span className='input-group-text'>
                                                 Thanh toán
                                             </span>
@@ -1584,7 +1589,7 @@ class InvoiceCRUD extends React.Component {
                                                         variant="outlined" />}
                                             />
 
-                                        </div>
+                                        </div> */}
 
                                         <div className='input-group mb-3'>
                                             <span className='input-group-text'>

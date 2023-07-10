@@ -42,8 +42,9 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
         }).then(res => res.json())
             .then(result => {
                 if (result == "Thành công") {
-                    message.success("Thành công, mời bạn đăng nhập")
+                    localStorage.clear()
                     history("/")
+                    message.success("Thành công")
                 }
             }, (error) => {
                 message.error("Thất bại do lỗi hệ thống")
@@ -86,8 +87,8 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             <Box>
                 <Stack mb={3}>
                     <Typography variant="subtitle1"
-                        fontWeight={600} component="label" htmlFor='email' mb="5px" mt="25px">Mật khẩu</Typography>
-                    <CustomTextField  id="email" onChange={(e) => setPassword(e.target.value)} variant="outlined" fullWidth />
+                        fontWeight={600}  component="label" htmlFor='email' mb="5px" mt="25px">Mật khẩu</Typography>
+                    <CustomTextField type={"password"} id="email" onChange={(e) => setPassword(e.target.value)} variant="outlined" fullWidth />
                     <Typography variant="subtitle1"
                         fontWeight={600} component="label" htmlFor='email' mb="5px" mt="25px">Mật khẩu xác thực</Typography>
                     <CustomTextField type={"password"} id="email" onChange={(e) => setConfirmPassword(e.target.value)} variant="outlined" fullWidth />

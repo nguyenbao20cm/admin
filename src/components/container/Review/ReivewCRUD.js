@@ -88,9 +88,8 @@ class ReviewCRUD extends React.Component {
             .then(result => {
                 if (result == "Thành công") {
                     message.success("Thành công")
-                    this.state.Trangthai == true ? this.CheckTrue()
-                        : this.state.Trangthai == false ? this.CheckFalse()
-                            : this.refreshList()
+               
+                    this.refreshList()
                 }
                 else
                     message.error(result)
@@ -306,7 +305,7 @@ class ReviewCRUD extends React.Component {
                                             </td>
                                             <td>
                                                 {
-                                                    dep.image == null ? null : <img style={{ width: 50 }} src={'https://localhost:7067/wwwroot/Image/ReviewImage/' + dep.image} />
+                                                    dep.image == "" ? null : <img style={{ width: 50 }} src={'https://localhost:7067/wwwroot/Image/ReviewImage/' + dep.image} />
                                                 }
                                             </td>
                                             <td>
