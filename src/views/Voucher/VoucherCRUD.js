@@ -104,8 +104,6 @@ class CRUDProductType extends React.Component {
             }, (error) => {
                 message.error("Failed")
             });
-
-
     }
     UpdateClick(id) {
         const token = this.getToken();
