@@ -220,10 +220,10 @@ class CRUDProductType extends React.Component {
             }
         }).then(res => res.json())
             .then(result => {
-                    message.success(result)
-                    this.setState({ open1: false })
-                    this.refreshList();
-             
+                message.success(result)
+                this.setState({ open1: false })
+                this.refreshList();
+
             }, (error) => {
                 console.log(error)
                 this.loi("Failed")
@@ -411,8 +411,7 @@ class CRUDProductType extends React.Component {
             }
         }).then(res => res.json())
             .then(result => {
-                if (result == true)
-                {
+                if (result == true) {
                     message.success("Thành công")
                     this.refreshList();
                 }
@@ -498,7 +497,7 @@ class CRUDProductType extends React.Component {
                         <div className="card-body">
                             <label>Trạng thái:</label>
                             <div className>
-                               
+                        
                                 <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
                                 <label for="True">Hoạt động</label><br />
                                 <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />
@@ -550,7 +549,7 @@ class CRUDProductType extends React.Component {
                                         Xem lịch sử
                                     </th>
                                     <th>
-                                        
+
                                     </th>
                                 </tr>
                             </thead>
@@ -617,7 +616,7 @@ class CRUDProductType extends React.Component {
                                             <td>
                                                 {
                                                     dep.status == false ? <button width="16" height="16" type='button' className='btn btn-light mr-1' onClick={() => this.Check(dep.id)}>
-                                                            <IconCheck></IconCheck>
+                                                        <IconCheck></IconCheck>
                                                     </button>
                                                         : <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">

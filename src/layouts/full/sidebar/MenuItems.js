@@ -1,6 +1,7 @@
 import {
   IconAperture, IconCopy, IconLayoutDashboard, IconLogin, IconMoodHappy, IconTypography, IconUserPlus,
   IconUser, IconSettings, IconReport, IconFileInvoice, IconMessage, IconAd2, IconDiscount, IconTicket, IconHistory, 
+  IconBuildingWarehouse
 } from '@tabler/icons';
 
 import { uniqueId } from 'lodash';
@@ -70,7 +71,13 @@ const Menuitems = [
   },
   {
     navlabel: true,
-    subheader: 'Hóa đơn',
+    subheader: 'Kho hàng',
+  },
+  {
+    id: uniqueId(),
+    title: 'Kho hàng',
+    icon: IconBuildingWarehouse,
+    href: '/KhoHang',
   },
   {
     id: uniqueId(),
@@ -106,7 +113,7 @@ const Menuitems = [
   // },
   {
     id: uniqueId(),
-    title: 'Tài khoản khách hàng',
+    title: 'Khách hàng',
     icon: IconAperture,
     href: '/Account', taikhoan: true,
   },
@@ -131,9 +138,15 @@ const Menuitems = [
 
   {
     id: uniqueId(),
-    title: 'Tài khoản nhân viên',
+    title: 'Nhân viên bán hàng',
     icon: IconAperture,
     href: '/TaiKhoanNhanVien', taikhoan: true,
+  },
+  {
+    id: uniqueId(),
+    title: 'Nhân viên quản lý kho',
+    icon: IconAperture,
+    href: '/TaiKhoanNhanVienKho', taikhoan: true,
   },
   
   {

@@ -441,8 +441,6 @@ class ReviewCRUD extends React.Component {
                         <div className="card-body">
                             <label>Trạng thái:</label>
                             <div className>
-                                <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
-                                <label for="All">Tất cả</label><br />
                                 <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
                                 <label for="True">Hiển thị</label><br />
                                 <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />
@@ -473,9 +471,6 @@ class ReviewCRUD extends React.Component {
                                         Sản phẩm
                                     </th>
                                     <th>
-                                        Số lượng kho
-                                    </th>
-                                    <th>
                                         Trạng thái
                                     </th>
                                     <th>
@@ -504,9 +499,7 @@ class ReviewCRUD extends React.Component {
                                             <td>
                                                 {dep.product.name}
                                             </td>
-                                            <td>
-                                                {dep.stock}
-                                            </td>
+                                          
                                             <td>
 
                                                 {dep.status == true ?

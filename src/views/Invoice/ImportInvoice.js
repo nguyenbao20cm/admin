@@ -21,6 +21,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
+
+
+import { Select1 } from 'antd';
 import {
     Col, Row, Spin, Card, Badge, Empty, Input,
     Form, Pagination, Modal, Popconfirm, notification, BackTop, Tag, Breadcrumb, Table
@@ -418,7 +421,6 @@ class CRUDProductType extends React.Component {
         const OptionNhaCungCap = APINhaCungCap.map((dep) => ({
             id: dep.id,
             nameProduct: dep.name,
-
         }))
 
         const recordsPerPage = 5;
@@ -428,6 +430,10 @@ class CRUDProductType extends React.Component {
         const a = ProductType.slice(firstIndex, lastIndex);
         const npage = Math.ceil(ProductType.length / recordsPerPage)
         const numbers = Array.from({ length: npage }, (_, i) => i + 1);
+        const de = {
+            options: OPtionProduct,
+            GetOptionLabel: (options) => options.nameProduct
+        }
         return (
             <>
                 <Dialog
@@ -611,7 +617,26 @@ class CRUDProductType extends React.Component {
                                     {/* <span className='input-group-text'>
                                         Sản phẩm
                                     </span> */}
-                                    <FormControl fullWidth>
+                                    
+                                    <Autocomplete
+                                        getOptionLabel={(OPtionProduct) => OPtionProduct.nameProduct}
+                                        getOptionSelected={(option, value) => option.nameProduct === value.nameProduct}
+                                        disableClearable
+                                        // value={Nhacungcap}
+                                        onChange={(event, newValue) => {
+                                            this.setState({
+                                                ProductId: newValue.id
+                                            })
+                                            this.GetProductSIzeAPI(newValue.id)
+                                        }}
+                                        options={OPtionProduct}
+                                        style={{ width: 300 }}
+                                        renderInput={(params) =>
+                                            <TextField {...params}
+                                                // label="Pay"
+                                                variant="outlined" label="Tên sản phẩm"/>}
+                                    />
+                                    {/* <FormControl fullWidth>
                                         <InputLabel id="demo-simple-select-label">Sản phẩm</InputLabel>
                                         <Select
                                             labelId="demo-simple-select-label"
@@ -630,7 +655,7 @@ class CRUDProductType extends React.Component {
                                                 )
                                             }
                                         </Select>
-                                    </FormControl>
+                                    </FormControl> */}
                                     {/* <select value={ProductId} onChange={(e) => {
                                         this.GetProductSIzeAPI(e.target.value)
                                         this.setState({
@@ -721,6 +746,7 @@ class CRUDProductType extends React.Component {
                                     {/* <span className='input-group-text'>
                                         Nhà cung cấp
                                     </span> */}
+                                   
                                     <FormControl fullWidth>
                                         <InputLabel id="demo-simple-select-label">Nhà cung cấp</InputLabel>
                                         <Select

@@ -24,7 +24,7 @@ const AccountStaff = Loadable(lazy(() => import('../views/sample-page/AccountSta
 const Supplier = Loadable(lazy(() => import('../views/sample-page/Supplier')))
 const TaiKhoan = Loadable(lazy(() => import('../views/sample-page/ChangeInfo')))
 const History = Loadable(lazy(() => import('../views/sample-page/History')))
-const Nhanvienkho = Loadable(lazy(() => import('../views/sample-page/nhanvienkho')))
+
 const Caidat = Loadable(lazy(() => import('../views/sample-page/Caidat')))
 
 const Brand = Loadable(lazy(() => import('../views/sample-page/Brand')))
@@ -52,51 +52,38 @@ const Error = Loadable(lazy(() => import('../views/authentication/Error')));
 const Register = Loadable(lazy(() => import('../views/authentication/Register')));
 const Login = Loadable(lazy(() => import('../views/authentication/Login')));
 const Router = [
-  {
-    path: '/',
-    element: <FullLayout />,
-    children: [
-      { path: '/', element: <Navigate to="/dashboard" /> },
-      { path: '/TaiKhoanNhanVienKho', exact: true, element: <Nhanvienkho /> },
-      { path: '/dashboard', exact: true, element: <Dashboard /> },
-      { path: '/sample-page', exact: true, element: <SamplePage /> },
-      { path: '/ProductTypepage', exact: true, element: < ProductTypepage /> },
-      { path: '/InvoicePage', exact: true, element: < InvoicePage /> },
-      { path: '/ReviewPage', exact: true, element: < ReviewPage /> },
-      { path: '/AdvertisingPanel', exact: true, element: < AdvertisingPanel /> },
-      // { path: '/Disscount', exact: true, element: < Disscount /> },
-      { path: '/ProductSize', exact: true, element: < ProductSize /> },
-      { path: '/ReportWeek', exact: true, element: < ReportWeek /> },
-      { path: '/ReportYear', exact: true, element: < ReportYear /> },
-      { path: '/ReportDay', exact: true, element: < ReportDay /> },
-      { path: '/Voucher', exact: true, element: < Voucher /> },
-      { path: '/Account', exact: true, element: < Account /> },
-      { path: '/TaiKhoanNhanVien', exact: true, element: < AccountStaff /> },
-      { path: '/NhaCungCapSanPham', exact: true, element: < Supplier /> },
-      { path: '/TaiKhoan', exact: true, element: < TaiKhoan /> },
-      { path: '/Brand', exact: true, element: < Brand /> },
-      { path: '/LichSuThaoTac', exact: true, element: < History /> },
-      { path: '/HoaDonNhap', exact: true, element: < HoaDonNhap /> },
-      { path: '/Caidat', exact: true, element: < Caidat /> },
-      { path: '/GiaoDich', exact: true, element: < GiaoDichThanhToan /> },
-      { path: '/KhoHang', exact: true, element: < Kho /> },
-      { path: '/AnhPhu', exact: true, element: < AnhPhu /> },
-      { path: '*', element: <Navigate to="/auth/404" /> },
-    ],
-  },
+    {
+        path: '/',
+        element: <FullLayout />,
+        children: [
+            { path: '/', element: <Navigate to="/dashboard" /> },
+            { path: '/dashboard', exact: true, element: <Dashboard /> },
+            { path: '/sample-page', exact: true, element: <SamplePage /> },
+            { path: '/ProductTypepage', exact: true, element: < ProductTypepage /> },
+            // { path: '/Disscount', exact: true, element: < Disscount /> },
+            { path: '/ProductSize', exact: true, element: < ProductSize /> },
+            { path: '/Account', exact: true, element: < Account /> },
+            { path: '/NhaCungCapSanPham', exact: true, element: < Supplier /> },
+            { path: '/TaiKhoan', exact: true, element: < TaiKhoan /> },
+            { path: '/LichSuThaoTac', exact: true, element: < History /> },
+            { path: '/HoaDonNhap', exact: true, element: < HoaDonNhap /> },
+            { path: '/KhoHang', exact: true, element: < Kho /> },
+            { path: '*', element: <Navigate to="/auth/404" /> },
+        ],
+    },
 
-  {
-    path: '/auth',
-    element: <BlankLayout />,
-    children: [
-      { path: '404', element: <Error /> },
-      { path: '/auth/DoiMatKhau', element: <Reset /> },
-      { path: '/auth/QuenMatKhau', element: <ForgotPassword /> },
-      { path: '/auth/register', element: <Register /> },
-      { path: '/auth/DangNhap', element: <Login /> },
-      { path: '*', element: <Navigate to="/auth/404" /> },
-    ],
-  },
+    {
+        path: '/auth',
+        element: <BlankLayout />,
+        children: [
+            { path: '404', element: <Error /> },
+            { path: '/auth/DoiMatKhau', element: <Reset /> },
+            { path: '/auth/QuenMatKhau', element: <ForgotPassword /> },
+            { path: '/auth/register', element: <Register /> },
+            { path: '/auth/DangNhap', element: <Login /> },
+            { path: '*', element: <Navigate to="/auth/404" /> },
+        ],
+    },
 ];
 
 export default Router;

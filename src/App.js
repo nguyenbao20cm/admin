@@ -2,6 +2,10 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { useRoutes } from 'react-router-dom';
 import Router from './routes/Router';
 import Router1 from './routes/Router2';
+
+import RouterQLBanHang from "./routes/RouterQLBanHang"
+import RouterQLKho from './routes/RouterQLKho';
+
 import jwt_decode from "jwt-decode";
 import { baselightTheme } from "./theme/DefaultColors";
 import Loadable from './layouts/full/shared/loadable/Loadable';
@@ -13,6 +17,8 @@ import 'sweetalert2/src/sweetalert2.scss'
 function App() {
   const routing = useRoutes(Router);
   const routing1 = useRoutes(Router1);
+  const RouterQLKho1 = useRoutes(RouterQLKho);
+  const RouterQLBanHang1 = useRoutes(RouterQLBanHang);
   const theme = baselightTheme;
   const Login = Loadable(lazy(() => import('./views/authentication/Login.js')));
   function getToken() {
@@ -40,7 +46,7 @@ function App() {
     );
   }
   const decoded = jwt_decode(token);
-  if (decoded.RoleUser == "Admin" || decoded.RoleUser == "Staff")
+  if (decoded.RoleUser == "Admin")
     return (
       <ThemeProvider theme={theme}>
 
@@ -50,6 +56,26 @@ function App() {
       </ThemeProvider>
     );
   else
+    if (decoded.RoleUser == "Staff")
+      return (
+        <ThemeProvider theme={theme}>
+
+          <CssBaseline />
+          {RouterQLBanHang1}
+
+        </ThemeProvider>
+      );
+    else
+      if (decoded.RoleUser == "StaffKHO")
+        return (
+          <ThemeProvider theme={theme}>
+
+            <CssBaseline />
+            {RouterQLKho1}
+
+          </ThemeProvider>
+        );
+      else
     return (
       <ThemeProvider theme={theme}>
 

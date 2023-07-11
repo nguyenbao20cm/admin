@@ -1302,8 +1302,7 @@ class InvoiceCRUD extends React.Component {
 
                             <label>Trạng thái:</label>
                             <div className>
-                                <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
-                                <label for="All">Tất cả</label><br />
+                    
                                 <input type="radio" id="All2" name="fav_language" value="True" onClick={() => this.CheckCXN()} />
                                 <label for="True">Chưa xác nhận</label><br />
                                 <input type="radio" id="All4" name="fav_language" value="False" onClick={() => this.CheckCB()} />

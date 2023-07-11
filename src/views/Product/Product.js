@@ -635,8 +635,7 @@ class CRUDProduct extends React.Component {
                         <div className="card-body">
                             <label>Trạng thái:</label>
                             <div className>
-                                <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
-                                <label for="All">Tất cả</label><br />
+                           
                                 <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
                                 <label for="True">Hiển thị</label><br />
                                 <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />
@@ -673,7 +672,7 @@ class CRUDProduct extends React.Component {
                                         Giá gốc
                                     </th>
                                     <th>
-                                        Giá bán
+                                        Giá sale
                                     </th>
                                     <th>
                                         Ảnh
@@ -821,7 +820,7 @@ class CRUDProduct extends React.Component {
                                             <input type='text' className='form-control' value={price}
                                                 onChange={(e) => this.ChangeProdcutPrice(e)} />
                                             <span className='input-group-text'>
-                                                Giá bán
+                                                Giá sale
                                             </span>
                                             <input type='text' className='form-control' value={priceSales}
                                                 onChange={(e) => this.setState({
