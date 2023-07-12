@@ -8,17 +8,13 @@ import { uniqueId } from 'lodash';
 const Menuitems = [
   {
     navlabel: true,
-    subheader: 'Home',
+    subheader: 'Kho hàng',
   },
   {
     id: uniqueId(),
-    title: 'Trang chủ',
-    icon: IconLayoutDashboard,
-    href: '/dashboard',
-  },
-  {
-    navlabel: true,
-    subheader: 'Home',
+    title: 'Kho hàng',
+    icon: IconBuildingWarehouse,
+    href: '/KhoHang',
   },
   {
     navlabel: true,
@@ -74,14 +70,9 @@ const Menuitems = [
   },
   {
     navlabel: true,
-    subheader: 'Kho hàng',
+    subheader: 'Các chức năng khác',
   },
-  {
-    id: uniqueId(),
-    title: 'Kho hàng',
-    icon: IconBuildingWarehouse,
-    href: '/KhoHang',
-  },
+
   {
     id: uniqueId(),
     title: 'Tài khoản người dùng',

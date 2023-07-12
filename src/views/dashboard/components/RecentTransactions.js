@@ -28,7 +28,7 @@ const RecentTransactions = () => {
   var [products, setInvoiceTotalMonth] = React.useState([]);
   useEffect(() => {
     const token = getToken();
-    fetch(variable.API_URL + "HistoryAccount/GetHistoryAccountAdmin", {
+    fetch(variable.API_URL + "HistoryAccount/GetHistoryAllAccount", {
       method: "GET",
       headers: {
         'Content-Type': 'application/json',

@@ -56,8 +56,8 @@ const Router = [
         path: '/',
         element: <FullLayout />,
         children: [
-            { path: '/', element: <Navigate to="/dashboard" /> },
-            { path: '/dashboard', exact: true, element: <Dashboard /> },
+            { path: '/', element: <Navigate to="/KhoHang" /> },
+           
             { path: '/sample-page', exact: true, element: <SamplePage /> },
             { path: '/ProductTypepage', exact: true, element: < ProductTypepage /> },
             // { path: '/Disscount', exact: true, element: < Disscount /> },
@@ -69,6 +69,8 @@ const Router = [
             { path: '/HoaDonNhap', exact: true, element: < HoaDonNhap /> },
             { path: '/KhoHang', exact: true, element: < Kho /> },
             { path: '*', element: <Navigate to="/auth/404" /> },
+            { path: '/AnhPhu', exact: true, element: < AnhPhu /> },
+            { path: '/Brand', exact: true, element: < Brand /> },
         ],
     },
 

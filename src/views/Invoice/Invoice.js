@@ -52,7 +52,6 @@ class InvoiceCRUD extends React.Component {
     }
     refreshList1() {
         const token = this.getToken();
-        document.getElementById("All").checked = false;
         document.getElementById("All1").checked = false;
         document.getElementById("All2").checked = false;
         document.getElementById("All3").checked = false;
@@ -363,7 +362,6 @@ class InvoiceCRUD extends React.Component {
 
         if (this.state.startDate == "") return message.warning("Dữ liệu bị trống")
         if (this.state.endDate == "") return message.warning("Dữ liệu bị trống")
-        document.getElementById("All").checked = false;
         document.getElementById("All1").checked = false;
         document.getElementById("All2").checked = false;
         document.getElementById("All3").checked = false;
@@ -381,8 +379,6 @@ class InvoiceCRUD extends React.Component {
             .then(data => {
                 this.setState({ APdungCheck: true, Invoice: data, currentPage: 1 });
             })
-
-
     }
     ChangeShippingPhone(e) {
         this.setState({
@@ -1302,7 +1298,7 @@ class InvoiceCRUD extends React.Component {
 
                             <label>Trạng thái:</label>
                             <div className>
-                    
+
                                 <input type="radio" id="All2" name="fav_language" value="True" onClick={() => this.CheckCXN()} />
                                 <label for="True">Chưa xác nhận</label><br />
                                 <input type="radio" id="All4" name="fav_language" value="False" onClick={() => this.CheckCB()} />

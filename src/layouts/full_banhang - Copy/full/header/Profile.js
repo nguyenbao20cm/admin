@@ -10,20 +10,48 @@ import {
   ListItemIcon,
   ListItemText
 } from '@mui/material';
+import { useEffect } from 'react';
+import { variable } from '../../../../Variable';
+import { NavLink } from 'react-router-dom';
+import { IconListCheck, IconMail, IconUser, IconHistory } from '@tabler/icons';
+import { useNavigate } from 'react-router-dom';
 
-import { IconListCheck, IconMail, IconUser } from '@tabler/icons';
-
-import ProfileImg from 'src/assets/images/profile/user-1.jpg';
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
   const handleClick2 = (event) => {
     setAnchorEl2(event.currentTarget);
   };
+
+  const getToken = (() => {
+    const tokenString = localStorage.getItem('token');
+    const userToken = JSON.parse(tokenString);
+    return userToken
+  })
+  var [Account, setAccount] = React.useState([]);
+  useEffect(() => {
+    const token = getToken();
+    fetch(variable.API_URL + "Account/GetDetailAccount", {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Authorization': `Bearer ${token.value}`
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        setAccount(data)
+      })
+  }, []);
+  const history = useNavigate();
   const handleClose2 = () => {
     setAnchorEl2(null);
   };
-
+  const handleSignOut = () => {
+    localStorage.clear()
+    history("/")
+  };
   return (
     <Box>
       <IconButton
@@ -40,11 +68,11 @@ const Profile = () => {
         onClick={handleClick2}
       >
         <Avatar
-          src={ProfileImg}
-          alt={ProfileImg}
+          src={'https://localhost:7067/wwwroot/Image/Avatar/' + Account.avatar}
+          alt={'https://localhost:7067/wwwroot/Image/Avatar/' + Account.avatar}
           sx={{
-            width: 35,
-            height: 35,
+            width: 50,
+            height: 50,
           }}
         />
       </IconButton>
@@ -69,23 +97,27 @@ const Profile = () => {
           <ListItemIcon>
             <IconUser width={20} />
           </ListItemIcon>
-          <ListItemText>My Profile</ListItemText>
+          <ListItemText onClick={() => {
+            history("/TaiKhoan")
+          }}>Tài khoản</ListItemText>
         </MenuItem>
-        <MenuItem>
+        {/* <MenuItem>
           <ListItemIcon>
             <IconMail width={20} />
           </ListItemIcon>
           <ListItemText>My Account</ListItemText>
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem>
           <ListItemIcon>
-            <IconListCheck width={20} />
+            <IconHistory width={20} />
           </ListItemIcon>
-          <ListItemText>My Tasks</ListItemText>
+          <ListItemText onClick={() => {
+            history("/LichSuThaoTac")
+          }}>Lịch sử thao tác</ListItemText>
         </MenuItem>
         <Box mt={1} py={1} px={2}>
-          <Button to="/auth/login" variant="outlined" color="primary" component={Link} fullWidth>
-            Logout
+          <Button variant="outlined" color="primary" fullWidth onClick={handleSignOut}>
+            Đăng xuất
           </Button>
         </Box>
       </Menu>

@@ -12,7 +12,7 @@ import { useRef, useState } from 'react';
 import { func } from 'prop-types'; import { Select } from 'antd';
 import { message } from 'antd';
 import { useNavigate } from 'react-router';
-import { Alert, Space,  } from 'antd';
+import { Alert, Space, } from 'antd';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import { BackTop } from 'antd';
 const ReviewList = () => {
@@ -51,7 +51,7 @@ const ReviewList = () => {
                 setaddress(data.address)
             })
     }, [ta]);
-    const loi = ((title, text) =>{
+    const loi = ((title, text) => {
         return Swal.fire({
             icon: 'error',
             title: title,
@@ -62,6 +62,24 @@ const ReviewList = () => {
         })
     })
     function Update() {
+
+        //password
+        // const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()])[a-zA-Z0-9!@#$%^&*()]{8,}$/;
+        // if (this.state.matkhau == "") return this.loi("Bạn chưa nhập mật khẩu!")
+        // if (!passwordRegex.test(this.state.matkhau)) {
+        //     return this.loi('Mật khẩu không hợp lệ! Vui lòng nhập mật khẩu có ít nhất 1 ký tự hoa, 1 ký tự đặc biệt và độ dài tối thiểu 8 ký tự.')
+        // }
+        //số điện thoại
+        const phoneRegex = /^0\d{9}$/;
+        if (this.state.SDT == "") return this.loi("Số điện thoại không được để trống")
+
+        if (!phoneRegex.test(phone)) {
+            return this.loi("Số điện thoại không hợp lệ! Vui lòng nhập đúng định dạng.");
+        }
+        //họ và tên	
+        if (fullname == "") return this.loi("Bạn chưa nhập họ và tên!")
+        if (address == "") return this.loi("Bạn chưa nhập địa chỉ!")
+
         const token = getToken();
         if (image != "") {
             const formData = new FormData();
@@ -107,6 +125,29 @@ const ReviewList = () => {
                 })
         }
     }
+    const changePass = (() => {
+        const token = getToken();
+        fetch(variable.API_URL + "Account/UpdateAccountCustomer", {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+            body: JSON.stringify({
+                phone: phone,
+                address: address,
+                fullName: fullname
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data === "True") {
+                    message.success("Thành công")
+                    setta(1)
+                }
+            })
+    })
     const Item = styled(Paper)(({ theme }) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
         ...theme.typography.body2,
@@ -158,7 +199,9 @@ const ReviewList = () => {
                                                 <button type='button' onClick={() => {
                                                     history('/auth/QuenMatKhau')
                                                 }} className='btn btn-primary float-start'>Quên mật khẩu</button>
-                                                <button type='button' className='btn btn-primary float-start'>Thay đổi</button>
+                                                <button onClick={() => {
+                                                    changePass()
+                                                }} type='button' className='btn btn-primary float-start'>Thay đổi</button>
                                             </div>
                                         </div>
                                     </div>

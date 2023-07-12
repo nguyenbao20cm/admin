@@ -56,8 +56,8 @@ const Router = [
         path: '/',
         element: <FullLayout />,
         children: [
-            { path: '/', element: <Navigate to="/dashboard" /> },
-            { path: '/dashboard', exact: true, element: <Dashboard /> },
+            { path: '/', element: <Navigate to="/InvoicePage" /> },
+           
             { path: '/sample-page', exact: true, element: <SamplePage /> },
             { path: '/InvoicePage', exact: true, element: < InvoicePage /> },
             { path: '/ReviewPage', exact: true, element: < ReviewPage /> },

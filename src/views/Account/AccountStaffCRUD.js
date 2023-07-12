@@ -103,7 +103,7 @@ class CRUDProductType extends React.Component {
 
 
         const token = this.getToken();
-        fetch(variable.API_URL + "Account/register-Staff", {
+        fetch(variable.API_URL + "Account/register-Staff-BanHang", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -139,9 +139,8 @@ class CRUDProductType extends React.Component {
                 if (result == true) {
                     message.success("Thành công")
                     document.getElementById("closeModal").click()
-                    this.state.Trangthai == true ? this.CheckTrue()
-                        : this.state.Trangthai == false ? this.CheckFalse()
-                            : this.refreshList()
+               
+                             this.refreshList()
                 }
                 else
                     this.loi("Thất bại", "Hãy nhập lại")
@@ -196,9 +195,8 @@ class CRUDProductType extends React.Component {
                     })
                 message.success("Thành công")
                 document.getElementById("closeModal").click()
-                this.state.Trangthai == true ? this.CheckTrue()
-                    : this.state.Trangthai == false ? this.CheckFalse()
-                        : this.refreshList()
+             
+                         this.refreshList()
             }, (error) => {
 
                 this.loi("Đã xảy ra lỗi", "Hãy nhập lại")
@@ -220,10 +218,10 @@ class CRUDProductType extends React.Component {
             }
         }).then(res => res.json())
             .then(result => {
-                    message.success(result)
-                    this.setState({ open1: false })
-                    this.refreshList();
-             
+                message.success(result)
+                this.setState({ open1: false })
+                this.refreshList();
+
             }, (error) => {
                 console.log(error)
                 this.loi("Failed")
@@ -231,12 +229,21 @@ class CRUDProductType extends React.Component {
             }
             )
     }
+
     addClick() {
         this.setState({
             modelTitle: "Thêm loại sản phẩm",
             id: 0,
             Name: "",
             Status: "",
+            TenNguoiDung: "",
+            Email: "",
+            matkhau: "",
+            SDT: "",
+            DiaChi: "",
+            FullName: "",
+            tenanh: "",
+            
         });
     }
     EditClick(dep) {
@@ -250,7 +257,13 @@ class CRUDProductType extends React.Component {
                 dep.status == true ?
                     "Hoạt động" : "Khóa"
             ,
-
+            TenNguoiDung: dep.username,
+            Email: dep.email,
+            matkhau: dep.password,
+            SDT: dep.phone,
+            DiaChi: dep.address,
+            FullName: dep.FullName,
+            tenanh: dep.avatar,
         });
     }
     loi(title, text) {
@@ -300,54 +313,26 @@ class CRUDProductType extends React.Component {
 
     }
     CheckTrue() {
-        if (this.state.StatusCheck != this.state.Status) {
-            const recordsPerPage = 5;
-            const lastIndex = this.state.currentPage * recordsPerPage;
-            const firstIndex = lastIndex - recordsPerPage;
-            const a = this.state.ProductType.slice(firstIndex, lastIndex);
 
-            const token = this.getToken();
-            fetch(variable.API_URL + "Account/GetAllAccountStaffStatusTrue", {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Authorization': `Bearer ${token.value}`
-                }
+        const token = this.getToken();
+        fetch(variable.API_URL + "Account/GetAllAccountStaffStatusTrue", {
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({
+                    Account: data,
+                    currentPage: 1,
+                    Trangthai: true, NameinputProductType: ""
+                });
             })
-                .then(response => response.json())
-                .then(data => {
-                    this.setState({
-                        Account: data,
-                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == false ? 1 : a.length == 1 ? this.state.currentPage - 1 : this.state.currentPage,
-                        Trangthai: true, NameinputProductType: ""
-                    });
-                })
-        }
-        else {
-            const token = this.getToken();
-            fetch(variable.API_URL + "Account/GetAllAccountStaffStatusTrue", {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Authorization': `Bearer ${token.value}`
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    this.setState({
-                        Account: data,
-                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == false ? 1 : this.state.currentPage,
-                        Trangthai: true, NameinputProductType: ""
-                    });
-                })
-        }
     }
     CheckFalse() {
-        if (this.state.StatusCheck != this.state.Status) {
-            const recordsPerPage = 5;
-            const lastIndex = this.state.currentPage * recordsPerPage;
-            const firstIndex = lastIndex - recordsPerPage;
-            const a = this.state.ProductType.slice(firstIndex, lastIndex);
+      
             const token = this.getToken();
             fetch(variable.API_URL + "Account/GetAllAccountStaffStatusFalse", {
                 headers: {
@@ -360,29 +345,10 @@ class CRUDProductType extends React.Component {
                 .then(data => {
                     this.setState({
                         Account: data,
-                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : a.length == 1 ? this.state.currentPage - 1 : this.state.currentPage,
+                        currentPage:1,
                         Trangthai: false, NameinputProductType: ""
                     });
                 })
-        }
-        else {
-            const token = this.getToken();
-            fetch(variable.API_URL + "Account/GetAllAccountStaffStatusFalse", {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Authorization': `Bearer ${token.value}`
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    this.setState({
-                        Account: data,
-                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : this.state.currentPage,
-                        Trangthai: false, NameinputProductType: ""
-                    });
-                })
-        }
     }
     DetailsClick(dep) {
         const token = this.getToken();
@@ -411,8 +377,7 @@ class CRUDProductType extends React.Component {
             }
         }).then(res => res.json())
             .then(result => {
-                if (result == true)
-                {
+                if (result == true) {
                     message.success("Thành công")
                     this.refreshList();
                 }
@@ -498,7 +463,7 @@ class CRUDProductType extends React.Component {
                         <div className="card-body">
                             <label>Trạng thái:</label>
                             <div className>
-                               
+
                                 <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
                                 <label for="True">Hoạt động</label><br />
                                 <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />
@@ -550,7 +515,7 @@ class CRUDProductType extends React.Component {
                                         Xem lịch sử
                                     </th>
                                     <th>
-                                        
+
                                     </th>
                                 </tr>
                             </thead>
@@ -617,7 +582,7 @@ class CRUDProductType extends React.Component {
                                             <td>
                                                 {
                                                     dep.status == false ? <button width="16" height="16" type='button' className='btn btn-light mr-1' onClick={() => this.Check(dep.id)}>
-                                                            <IconCheck></IconCheck>
+                                                        <IconCheck></IconCheck>
                                                     </button>
                                                         : <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">

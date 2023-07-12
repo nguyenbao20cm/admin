@@ -7,7 +7,7 @@ import { BackTop } from 'antd';
 import Account from "../Account/AccountStaffCRUD"
 const SamplePage = () => {
     return (
-        <PageContainer title="Tài khoản nhân viên" description="this is Sample page">
+        <PageContainer title="Tài khoản nhân viên bán hàng" description="this is Sample page">
 
             <DashboardCard title="Tài khoản nhân viên">
                 <div hidden>

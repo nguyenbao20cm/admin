@@ -47,7 +47,7 @@ class CRUDProductType extends React.Component {
     }
     refreshList() {
         const token = this.getToken();
-        fetch(variable.API_URL + "Account/GetAllAccountStaff", {
+        fetch(variable.API_URL + "Account/GetAllAccountStaffKho", {
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -103,7 +103,7 @@ class CRUDProductType extends React.Component {
 
 
         const token = this.getToken();
-        fetch(variable.API_URL + "Account/register-Staff", {
+        fetch(variable.API_URL + "Account/register-Staff-QLKHO", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -139,9 +139,7 @@ class CRUDProductType extends React.Component {
                 if (result == true) {
                     message.success("Thành công")
                     document.getElementById("closeModal").click()
-                    this.state.Trangthai == true ? this.CheckTrue()
-                        : this.state.Trangthai == false ? this.CheckFalse()
-                            : this.refreshList()
+                     this.refreshList()
                 }
                 else
                     this.loi("Thất bại", "Hãy nhập lại")
@@ -157,7 +155,22 @@ class CRUDProductType extends React.Component {
             this.setState({ tenanh: e.target.files[0].name, Anh: e.target.files[0] });
 
     }
+    addClick() {
+        this.setState({
+            modelTitle: "Thêm loại sản phẩm",
+            id: 0,
+            Name: "",
+            Status: "",
+            TenNguoiDung: "",
+            Email: "",
+            matkhau: "",
+            SDT: "",
+            DiaChi: "",
+            FullName: "",
+            tenanh: "",
 
+        });
+    }
     UpdateClick(id) {
         const token = this.getToken();
         fetch(variable.API_URL + "Account/register-Staff", {
@@ -231,14 +244,7 @@ class CRUDProductType extends React.Component {
             }
             )
     }
-    addClick() {
-        this.setState({
-            modelTitle: "Thêm loại sản phẩm",
-            id: 0,
-            Name: "",
-            Status: "",
-        });
-    }
+   
     EditClick(dep) {
         this.setState({
             StatusCheck: dep.status == true ?
@@ -300,14 +306,9 @@ class CRUDProductType extends React.Component {
 
     }
     CheckTrue() {
-        if (this.state.StatusCheck != this.state.Status) {
-            const recordsPerPage = 5;
-            const lastIndex = this.state.currentPage * recordsPerPage;
-            const firstIndex = lastIndex - recordsPerPage;
-            const a = this.state.ProductType.slice(firstIndex, lastIndex);
-
+       
             const token = this.getToken();
-            fetch(variable.API_URL + "Account/GetAllAccountStaffStatusTrue", {
+            fetch(variable.API_URL + "Account/GetAllAccountStaffKhoStatusTrue", {
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
@@ -318,38 +319,16 @@ class CRUDProductType extends React.Component {
                 .then(data => {
                     this.setState({
                         Account: data,
-                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == false ? 1 : a.length == 1 ? this.state.currentPage - 1 : this.state.currentPage,
+                        currentPage: 1,
                         Trangthai: true, NameinputProductType: ""
                     });
                 })
-        }
-        else {
-            const token = this.getToken();
-            fetch(variable.API_URL + "Account/GetAllAccountStaffStatusTrue", {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Authorization': `Bearer ${token.value}`
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    this.setState({
-                        Account: data,
-                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == false ? 1 : this.state.currentPage,
-                        Trangthai: true, NameinputProductType: ""
-                    });
-                })
-        }
+     
     }
     CheckFalse() {
-        if (this.state.StatusCheck != this.state.Status) {
-            const recordsPerPage = 5;
-            const lastIndex = this.state.currentPage * recordsPerPage;
-            const firstIndex = lastIndex - recordsPerPage;
-            const a = this.state.ProductType.slice(firstIndex, lastIndex);
+       
             const token = this.getToken();
-            fetch(variable.API_URL + "Account/GetAllAccountStaffStatusFalse", {
+            fetch(variable.API_URL + "Account/GetAllAccountStaffKhoStatusFalse", {
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
@@ -360,29 +339,11 @@ class CRUDProductType extends React.Component {
                 .then(data => {
                     this.setState({
                         Account: data,
-                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : a.length == 1 ? this.state.currentPage - 1 : this.state.currentPage,
+                        currentPage: 1,
                         Trangthai: false, NameinputProductType: ""
                     });
                 })
-        }
-        else {
-            const token = this.getToken();
-            fetch(variable.API_URL + "Account/GetAllAccountStaffStatusFalse", {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Authorization': `Bearer ${token.value}`
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    this.setState({
-                        Account: data,
-                        currentPage: this.state.Trangthai == null ? 1 : this.state.Trangthai == true ? 1 : this.state.currentPage,
-                        Trangthai: false, NameinputProductType: ""
-                    });
-                })
-        }
+       
     }
     DetailsClick(dep) {
         const token = this.getToken();

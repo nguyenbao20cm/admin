@@ -27,9 +27,9 @@ class CRUDProductType extends React.Component {
             ProductType: [], id1: "", endDate: "",
             modelTitle: "",
             Name: "", startDate: "",
-            id: 0, StatusCheck: "", value1: "",
+            id: 0, StatusCheck: "", value1: "", TOnkho:"",
             currentPage: 1,
-            NameinputProductType: "", Status: "", Trangthai: "", open1: false, APIProduct: []
+            NameinputProductType: "", Status: "", Trangthai: "", open1: false, APIProduct: [], GetQuanlityProductImport:""
 
         }
 
@@ -60,6 +60,30 @@ class CRUDProductType extends React.Component {
             .then(response => response.json())
             .then(data => {
                 this.setState({ APIProduct: data, });
+            })
+        fetch(variable.API_URL + "ImportInvoices/GetQuanlityProductImport", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ GetQuanlityProductImport: data, });
+            })
+        fetch(variable.API_URL + "KhoHang/GEtSLTonKho", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ TOnkho: data, });
             })
     }
     componentDidMount() {
@@ -279,11 +303,11 @@ class CRUDProductType extends React.Component {
     render() {
 
         const {
-            ProductType, APIProduct,
+            ProductType, APIProduct, GetQuanlityProductImport,
             modelTitle,
             id, NameinputProductType,
             Name, value1,
-            currentPage, open1,
+            currentPage, open1, TOnkho,
             Status,
         } = this.state;
         const OPtionProduct = APIProduct.map((dep) => ({
@@ -325,8 +349,8 @@ class CRUDProductType extends React.Component {
                 </Dialog>
                 <div style={{ display: "flex", }}>
                     <div className="card" style={{ marginLeft: 0, marginRight: 0, width: "2000px" }}>
-                        <div className="card-body">
-                            <div className="form-group">
+                        <div className="card-body" style={{ display: "flex" }} >
+                            <div className="form-group" style={{ width: "40%" }}>
                                 <label>Tìm kiếm theo sản phẩm:</label>
                                 <Autocomplete
                                     getOptionLabel={(OPtionProduct) => OPtionProduct.nameProduct}
@@ -346,7 +370,19 @@ class CRUDProductType extends React.Component {
                                             variant="outlined" label="Tên sản phẩm" />}
                                 />
                             </div>
+                            <div style={{ width: "25%" }}>
+
+                                <label style={{ fontWeight: "900" }}>Số lượng tồn kho:</label>
+                                <br></br>
+                                <span>{this.state.TOnkho     }</span>
+                            </div>
+                            <div style={{ width: "25%" }}>
+                                <label style={{ fontWeight: "900" }}>Tổng số lượng nhập:</label>
+                                <br></br>
+                                <span>{this.state.GetQuanlityProductImport}</span>
+                            </div>
                         </div>
+
                     </div>
                 </div>
 

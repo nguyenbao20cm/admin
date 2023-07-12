@@ -72,21 +72,29 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             })
         }).then(res => res.json())
             .then(result => {
+                if (result == "Người dùng đã bị khóa") setTimeout(() => {
+                    message.error("Người dùng đã bị khóa")
+                    setusername(username)
+                    setpassword("")
+                }, 0);
+                else
                 if (result == "Failed") setTimeout(() => {
                     message.error("Đăng nhập thất bại")
                     setusername(username)
                     setpassword("")
                 }, 0);
+                else
                 if (result == "Chưa xác minh Email") setTimeout(() => {
                     message.error("Bạn chưa xác minh Email")
                     setusername(username)
                     setpassword("")
                 }, 0);
                 else if (result != "Failed") {
-                    setToken(result);
-                    const tokenString = localStorage.getItem('token');
+                  //  const tokenString = localStorage.getItem('token');
+                    const tokenString = result; 
                     const decoded = jwt_decode(tokenString);
-                    if (decoded.RoleUser == "Admin" || decoded.RoleUser == "Staff") {
+                    if (decoded.RoleUser == "Admin" || decoded.RoleUser == "Staff" || decoded.RoleUser == "StaffKHO") {
+                        setToken(result);
                         setTimeout(() => {
                             message.success("Đăng nhập thành công")
                         }, 0);

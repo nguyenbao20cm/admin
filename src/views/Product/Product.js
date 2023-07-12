@@ -36,6 +36,10 @@ class CRUDProduct extends React.Component {
             ProductTypegetbyid: [], SKU: "", Disscount: "", Status: "", ProductType1: [], Trangthai: "", thuonghieu: "", APIhieu: []
         }
     }
+    containsSpecialCharacters(str) {
+        var pattern = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+        return pattern.test(str);
+    }
     refreshList() {
         const token = this.getToken();
         fetch(variable.API_URL + "Products/GetAllProduct")
@@ -151,7 +155,7 @@ class CRUDProduct extends React.Component {
         if (this.state.price == "") return this.loi("Giá bán đang bị rỗng ", "Hãy nhập lại")
         if (this.state.Status == "") return this.loi("Dữ liệu trạng thái bị rỗng", "Hãy nhập lại")
         if (this.laSoNguyenDuong(Number(this.state.price)) == false) return this.loi("Giá không hợp lệ", "Hãy nhập lại")
-
+        if (this.containsSpecialCharacters(this.state.SKU) == true) return this.loi("SKU không được có ký tự đặt biệt", "Hãy nhập lại")
         if (this.state.SKU.length > 5) return this.loi("SKU không được vượt quá 5 ký tự", "Hãy nhập lại")
         if (this.state.SKU == "") return this.loi("SKU không được rỗng", "Hãy nhập lại")
 
@@ -294,7 +298,7 @@ class CRUDProduct extends React.Component {
             });
             if (ab == true) return this.loi("SKU này đã tồn tại", "Hãy nhập lại")
         }
-
+        if (this.containsSpecialCharacters(this.state.SKU) == true) return this.loi("SKU không được có ký tự đặt biệt", "Hãy nhập lại")
         if (this.state.SKU.length > 5) return this.loi("SKU không được vượt quá 5 ký tự", "Hãy nhập lại")
         if (this.state.SKU == "") return this.loi("SKU không được rỗng", "Hãy nhập lại")
         const optionProductType = []
@@ -636,7 +640,7 @@ class CRUDProduct extends React.Component {
                         <div className="card-body">
                             <label>Trạng thái:</label>
                             <div className>
-                           
+
                                 <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
                                 <label for="True">Hiển thị</label><br />
                                 <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />

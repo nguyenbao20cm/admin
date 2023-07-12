@@ -35,7 +35,6 @@ function App() {
   }
   const token = getToken();
   if (token == null) {
-
     return (
       <ThemeProvider theme={theme}>
 
@@ -81,7 +80,6 @@ function App() {
 
         <CssBaseline />
         {routing1}
-
       </ThemeProvider>
     );
 
