@@ -87,10 +87,13 @@ const ReviewList = () => {
     })
     const Update = (() => {
         const token = getToken();
-        console.log(phone.length)
+        if (title == "") return loi("Tên trang web bị rỗng ", "Hãy nhập lại")
+        if (adress == "") return loi("Địa chỉ bị rỗng ", "Hãy nhập lại")
+        if (email == "") return loi("Địa chỉ bị rỗng ", "Hãy nhập lại")
         if (phone == "") return loi("Điện thoại bị rỗng ", "Hãy nhập lại")
         if (phone.length != 10) return loi("Điện thoại không hợp lệ", "Hãy nhập lại")
         if (Number.isInteger(phone) || Number(phone) < 0) return loi("Số diện thoại không hợp lệ", "Hãy xem lại dư liệu nhập")
+
         fetch(variable.API_URL + "Footer/UpdateFooter/" + data.id, {
             method: "PUT",
             headers: {
@@ -123,7 +126,6 @@ const ReviewList = () => {
                     message.success("Thành công")
                     window.location.reload(false)
                 }
-
             })
     }
     )
@@ -147,12 +149,12 @@ const ReviewList = () => {
                                 <input onChange={(e) => {
                                     settitle(e.target.value)
                                 }} type='text' className='form-control' value={title} ></input>
-                                <label>Ảnh trang Web</label>
+                                <label>Logo trang Web</label>
                                 <div onClick={() =>
                                     input.current.click()
                                 }>
                                     <input onChange={(e) => ImgUp(e)} ref={input} hidden id="a" type='file' className='form-control'></input>
-                                    {image == "" ? <img style={{ width: 50, marginLeft: "44%", marginTop: "5px" }} src={'https://localhost:7067/wwwroot/Image/AvatarWebsite/' + data.avatar} />
+                                    {image == "" ? <img style={{ width: 50, marginLeft: "44%", marginTop: "5px" }} src={'https://localhost:7067/wwwroot/Image/Footer/' + data.avatar} />
                                         : <img style={{ width: 50, marginLeft: "44%", marginTop: "5px" }} src={URL.createObjectURL(image)} />
                                     }
                                 </div>

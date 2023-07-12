@@ -65,9 +65,19 @@ class CRUDProductType extends React.Component {
 
     CreateClick() {
         const token = this.getToken();
-        if (this.state.Ma == null) return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
-        if (this.state.Giamgia == null) return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
-        if (this.state.Status == null) return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
+        if (this.state.Ma == "") return this.loi("Mã bị rỗng ", "Hãy nhập lại")
+        if (this.state.Giamgia == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
+        if (this.state.Status == "") return this.loi("Trạng thái bị rỗng ", "Hãy nhập lại")
+        if (this.state.tieude == "") return this.loi("Tiêu đề bị rỗng", "Hãy nhập lại")
+        if (this.state.disscount == "") return this.loi("Giảm giá bị rỗng", "Hãy nhập lại")
+        if (this.state.minmoney == "") return this.loi("Mức tối thiểu bị rỗng", "Hãy nhập lại")
+        if (this.state.minmoney != 0) {
+            if (Number.isInteger(this.state.minmoney) == false) return this.loi("Dữ liệu mức tối thiệu bị sai", "Hãy nhập lại")
+        }
+        if (Number(this.state.minmoney) < 0) return this.loi("Dữ liệu mức tối thiệu bị sai", "Hãy nhập lại")
+        const day1 = new Date(this.state.endday)
+        const day2 = new Date()
+        if (day1 < day2) return this.loi("Ngày kết thúc không thể nhỏ hơn hôm nay", "Hãy nhập lại")
         fetch(variable.API_URL + "Vouchers/CreateVoucher", {
             method: "POST",
             headers: {
@@ -110,9 +120,20 @@ class CRUDProductType extends React.Component {
     }
     UpdateClick(id) {
         const token = this.getToken();
-        if (this.state.Ma == null) return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
-        if (this.state.Giamgia == null) return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
-        if (this.state.Status == null) return this.loi("Tên loại bị rỗng ", "Hãy nhập lại")
+        if (this.state.Ma == "") return this.loi("Mã bị rỗng ", "Hãy nhập lại")
+        if (this.state.Giamgia == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
+        if (this.state.Status == "") return this.loi("Trạng thái bị rỗng ", "Hãy nhập lại")
+        if (this.state.tieude == "") return this.loi("Tiêu đề bị rỗng", "Hãy nhập lại")
+        if (this.state.disscount == "") return this.loi("Giảm giá bị rỗng", "Hãy nhập lại")
+        if (this.state.minmoney == "") return this.loi("Mức tối thiểu bị rỗng", "Hãy nhập lại")
+        if (this.state.minmoney != 0) {
+            if (Number.isInteger(this.state.minmoney) == false) return this.loi("Dữ liệu mức tối thiệu bị sai", "Hãy nhập lại")
+        }
+        if (Number(this.state.minmoney) < 0) return this.loi("Dữ liệu mức tối thiệu bị sai", "Hãy nhập lại")
+        const day1 = new Date(this.state.endday)
+        const day2 = new Date()
+        if (day1<day2) return this.loi("Ngày kết thúc không thể nhỏ hơn hôm nay", "Hãy nhập lại")
+  
         fetch(variable.API_URL + "Vouchers/UpdateVoucher/" + id, {
             method: "PUT",
             headers: {
@@ -321,7 +342,7 @@ class CRUDProductType extends React.Component {
     }
     Check(id) {
         const token = this.getToken();
-        fetch(variable.API_URL + "Vouchers/DeleteVoucher/" + id, {
+        fetch(variable.API_URL + "Vouchers/ActiveVoucher/" + id, {
             method: "PUT",
             headers: {
                 'Content-Type': 'application/json',
@@ -330,9 +351,7 @@ class CRUDProductType extends React.Component {
             },
         }).then(res => res.json())
             .then(result => {
-                if (
-                    result == true
-                ) {
+                if ( result == true  ) {
                     message.success("Thành công")
                     this.setState({ open1: false })
                     this.refreshList();
@@ -406,7 +425,7 @@ class CRUDProductType extends React.Component {
                     }}
                     aria-describedby="alert-dialog-slide-description"
                 >
-                    <DialogTitle>{"Bạn có chắc chắc muốn hoàn tất đơn hàng"}</DialogTitle>
+                    <DialogTitle>{"Bạn có chắc chắc muốn khóa Voucher"}</DialogTitle>
                     <DialogContent>
                         {/* <DialogContentText id="alert-dialog-slide-description">
                             Khi hủy xong thì sẽ không thể khôi phục lại được

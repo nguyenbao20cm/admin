@@ -26,7 +26,7 @@ const Logo = () => {
    
     <LinkStyled to="/">
     
-      <img  style={{marginLeft:"66px",width:"174",height:40}} src={'https://localhost:7067/wwwroot/Image/AvatarWebsite/' + data.avatar} />
+      <img style={{ marginLeft: "66px", width: "174", height: 40 }} src={'https://localhost:7067/wwwroot/Image/Footer/' + data.avatar} />
       <h3 width="174" height="26" viewBox="0 0 174 26" fill="none" >
         {data.title}
       </h3>
