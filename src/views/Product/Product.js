@@ -306,6 +306,7 @@ class CRUDProduct extends React.Component {
             if (element == this.state.productTypeId) a = true;
         });
         if (a == false) return this.loi("Loại sản phẩm không tần tại", "Hãy nhập lại")
+        if (this.state.price < this.state.priceSales) return this.loi("Giá Sale không thể lớn hơn giá gốc", "Hãy nhập lại")
 
 
         if (this.state.NameCheck != this.state.Name) {

@@ -8,7 +8,7 @@ import $ from "jquery"
 import { Alert, Space, message } from 'antd';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import 'sweetalert2/src/sweetalert2.scss'
-
+import CountUp from 'react-countup';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -20,14 +20,15 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-
-
+import {
+    IconCheck,
+} from '@tabler/icons';
 class CRUDProductType extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             Voucher: [], id1: "",
-            modelTitle: "",
+            modelTitle: "", endday: "", minmoney: "",
             Name: "", Ma: "", Giamgia: "",
             id: 0, StatusCheck: "", noidung: "", tieude: "",
             currentPage: 1,
@@ -76,6 +77,8 @@ class CRUDProductType extends React.Component {
             },
             body: JSON.stringify({
                 name: this.state.Ma,
+                minmoney: this.state.minmoney,
+                endday: this.state.endday,
                 disscount: this.state.Giamgia == "10%" ? 10 : this.state.Giamgia == "20%" ?
                     20 : this.state.Giamgia == "30%" ? 30 : this.state.Giamgia == "40%" ?
                         40 : this.state.Giamgia == "50%" ? 50 :
@@ -85,7 +88,7 @@ class CRUDProductType extends React.Component {
                                         this.state.Giamgia == "90%" ? 90 : null,
 
                 title: this.state.tieude,
-                // status: this.state.Status == "Hiển thị" ? true : false,
+                status: this.state.Status == "Hoạt động" ? true : false,
             })
         }).then(res => res.json())
             .then(result => {
@@ -97,10 +100,10 @@ class CRUDProductType extends React.Component {
                     document.getElementById("closeModal").click()
                 }
                 else
-                if (result == 1)
-                    return this.loi("Mã này đã tồn tại")
-                else
-                    return this.loi("Thất bại")
+                    if (result == 1)
+                        return this.loi("Mã này đã tồn tại")
+                    else
+                        return this.loi("Thất bại")
             }, (error) => {
                 message.error("Failed")
             });
@@ -119,6 +122,8 @@ class CRUDProductType extends React.Component {
             },
             body: JSON.stringify({
                 name: this.state.Ma,
+                minmoney: this.state.minmoney,
+                endday: this.state.endday,
                 disscount: this.state.Giamgia == "10%" ? 10 : this.state.Giamgia == "20%" ?
                     20 : this.state.Giamgia == "30%" ? 30 : this.state.Giamgia == "40%" ?
                         40 : this.state.Giamgia == "50%" ? 50 :
@@ -126,9 +131,8 @@ class CRUDProductType extends React.Component {
                                 this.state.Giamgia == "70%" ? 70 :
                                     this.state.Giamgia == "80%" ? 80 :
                                         this.state.Giamgia == "90%" ? 90 : null,
-
                 title: this.state.tieude,
-                // status: this.state.Status == "Hiển thị" ? true : false,
+                status: this.state.Status == "Hoạt động" ? true : false,
             })
         }).then(res => res.json())
             .then(result => {
@@ -142,6 +146,7 @@ class CRUDProductType extends React.Component {
                             : this.refreshList()
                     document.getElementById("closeModal").click()
                 }
+                else
                 if (result == false) {
                     return this.loi("Thất bại")
                 }
@@ -158,7 +163,7 @@ class CRUDProductType extends React.Component {
     DeleteClick1() {
         const token = this.getToken();
         fetch(variable.API_URL + "Vouchers/DeleteVoucher/" + this.state.id1, {
-            method: "DELETE",
+            method: "PUT",
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -193,24 +198,44 @@ class CRUDProductType extends React.Component {
             id: 0,
             Name: "", Ma: "", Giamgia: "",
             Status: "",
-            tieude: ""
+            tieude: "",
+            minmoney: "",
+            endday: "",
+            status:"",
         });
     }
     EditClick(dep) {
         this.setState({
             tieude: dep.title,
             StatusCheck: dep.status == true ?
-                "Hiển thị" : "Ẩn",
+                "Hoạt động" : "Khóa",
             modelTitle: "Sửa loại sản phẩm ",
             id: dep.id,
+            minmoney: dep.minMoney,
+            endday: dep.endDay.split("T")[0],
             Name: dep.name, Ma: dep.name,
             Giamgia: dep.disscount + "%",
             Status:
                 dep.status == true ?
-                    "Hiển thị" : "Ẩn"
+                    "Hoạt động" : "Khóa"
             ,
-
         });
+    }
+    DatetimeFormat1(e) {
+        const abc = new Date(e)
+        var day = String(abc.getDate());
+        var month = String(abc.getMonth() + 1)
+        var year = String(abc.getFullYear())
+        let format4 = month + "-" + day + "-" + year;
+        return format4;
+    }
+    DatetimeFormat(e) {
+        const abc = new Date(e)
+        var day = abc.getDate() + "/";
+        var month = abc.getMonth() + 1 + "/";
+        var year = abc.getFullYear()
+        let format4 = day + month + year;
+        return format4;
     }
     loi(title, text) {
         return Swal.fire({
@@ -294,6 +319,37 @@ class CRUDProductType extends React.Component {
                 })
         }
     }
+    Check(id) {
+        const token = this.getToken();
+        fetch(variable.API_URL + "Vouchers/DeleteVoucher/" + id, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+        }).then(res => res.json())
+            .then(result => {
+                if (
+                    result == true
+                ) {
+                    message.success("Thành công")
+                    this.setState({ open1: false })
+                    this.refreshList();
+                }
+                if (
+                    result == false
+                ) {
+                    message.success("Thất bại")
+                    this.setState({ open1: false })
+
+                }
+            }, (error) => {
+                message.error("Failed")
+            }
+            )
+
+    }
     CheckFalse() {
         if (this.state.StatusCheck != this.state.Status) {
             const recordsPerPage = 5;
@@ -325,7 +381,7 @@ class CRUDProductType extends React.Component {
     render() {
 
         const {
-            Voucher, Ma, Giamgia,
+            Voucher, Ma, Giamgia, endday, minmoney,
             modelTitle, noidung, tieude,
             id, NameinputProductType,
             Name,
@@ -333,7 +389,7 @@ class CRUDProductType extends React.Component {
             Status,
         } = this.state;
         const recordsPerPage = 5;
-        const options = ['Hiển thị', 'Ẩn']
+        const options = ['Hoạt động', 'Khóa']
         const Sale = ["10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%"]
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
@@ -400,9 +456,9 @@ class CRUDProductType extends React.Component {
                                 <input type="radio" id="All" name="fav_language" value="All" onClick={() => this.CheckAll()} />
                                 <label for="All">Tất cả</label><br />
                                 <input type="radio" id="True" name="fav_language" value="True" onClick={() => this.CheckTrue()} />
-                                <label for="True">Hiển thị</label><br />
+                                <label for="True">Hoạt động</label><br />
                                 <input type="radio" id="False" name="fav_language" value="False" onClick={() => this.CheckFalse()} />
-                                <label for="False">Ẩn</label>
+                                <label for="False">Khóa</label>
                             </div>
                         </div>
                     </div> */}
@@ -429,14 +485,20 @@ class CRUDProductType extends React.Component {
                                     <th>
                                         Giảm giá
                                     </th>
-                                    {/* <th>
+                                    <th>
+                                        Ngày kết thúc
+                                    </th>
+                                    <th>
+                                        Mức tiền tối thiểu
+                                    </th>
+                                    <th>
                                         Trạng thái
-                                    </th> */}
+                                    </th>
                                     <th>
                                         Sửa
                                     </th>
                                     <th>
-                                        Xóa
+                                        
                                     </th>
                                 </tr>
                             </thead>
@@ -461,12 +523,18 @@ class CRUDProductType extends React.Component {
                                             <td>
                                                 {dep.disscount}%
                                             </td>
-                                            {/* <td>
+                                            <td>
+                                                {this.DatetimeFormat(dep.endDay)}
+                                            </td>
+                                            <td>
+                                                <CountUp delay={0.4} end={dep.minMoney} duration={0.6} /> Đồng
+                                            </td>
+                                            <td>
 
                                                 {dep.status == true ?
-                                                    "Hiển thị" : "Ẩn"
+                                                    "Hoạt động" : "Khóa"
                                                 }
-                                            </td> */}
+                                            </td>
                                             <td>
                                                 <button type='button' className='btn btn-light mr-1' data-bs-toggle='modal' data-bs-target='#exampleModal'
                                                     onClick={() => this.EditClick(dep)}>
@@ -478,7 +546,11 @@ class CRUDProductType extends React.Component {
                                             </td>
                                             <td>
                                                 {
-                                                    dep.status == false ? null : <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
+                                                    dep.status == false ? 
+                                                        <button width="16" height="16" type='button' className='btn btn-light mr-1' onClick={() => this.Check(dep.id)}>
+                                                            <IconCheck></IconCheck>
+                                                        </button>
+                                                     : <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
                                                             <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
                                                         </svg>
@@ -529,12 +601,29 @@ class CRUDProductType extends React.Component {
                                     <span className='input-group-text'>
                                         Tiêu đề
                                     </span>
-                                    <input type='text' className='form-control' value={tieude}
+                                    <textarea type='text' className='form-control' value={tieude}
                                         onChange={(e) => this.setState({
                                             tieude: e.target.value
                                         })} />
                                 </div>
-
+                                <div className='input-group mb-3'>
+                                    <span className='input-group-text'>
+                                        Ngày kết thúc
+                                    </span>
+                                    <input type='date' className='form-control' value={endday}
+                                        onChange={(e) => this.setState({
+                                            endday: e.target.value
+                                        })} />
+                                </div>
+                                <div className='input-group mb-3'>
+                                    <span className='input-group-text'>
+                                        Mức tiền tối thiểu
+                                    </span>
+                                    <input type='text' className='form-control' value={minmoney}
+                                        onChange={(e) => this.setState({
+                                            minmoney: e.target.value
+                                        })} />
+                                </div>
                                 <div className='input-group mb-3'>
                                     {/* <span className='input-group-text'>
                                                 Giảm giá
@@ -561,7 +650,7 @@ class CRUDProductType extends React.Component {
                                                 variant="outlined" />}
                                     />
                                 </div>
-                                {/* <div className='input-group mb-3'>
+                                <div className='input-group mb-3'>
                                     <span className='input-group-text'>
                                         Trạng thái
                                     </span>
@@ -582,7 +671,7 @@ class CRUDProductType extends React.Component {
                                                 variant="outlined" />}
                                     />
 
-                                </div> */}
+                                </div>
 
                             </div>
                             <div class="modal-footer">

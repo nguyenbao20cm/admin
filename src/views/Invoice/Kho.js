@@ -359,6 +359,9 @@ class CRUDProductType extends React.Component {
                                         Tên sản phẩm
                                     </th>
                                     <th>
+                                        SKU
+                                    </th>
+                                    <th>
                                         Size
                                     </th>
                                     <th>
@@ -376,6 +379,9 @@ class CRUDProductType extends React.Component {
                                         <tr key={dep.id}>
                                             <td>
                                                 {((dep.productSize).product).name}
+                                            </td>
+                                            <td>
+                                                {((dep.productSize).product).sku}
                                             </td>
                                             <td>
                                                 {(dep.productSize).name}

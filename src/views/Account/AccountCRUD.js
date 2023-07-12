@@ -315,7 +315,7 @@ class CRUDProductType extends React.Component {
             body: JSON.stringify({
                 email: this.state.data.email,
                 subject: this.state.a.title,
-                message: this.state.a.name,
+                message: this.state.a.name+", hãy sử dụng nó trước ngày: "+a.endDay,
             })
         }).then(res => res.json())
             .then(result => {
