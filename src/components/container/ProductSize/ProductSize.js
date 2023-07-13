@@ -412,7 +412,7 @@ class ReviewCRUD extends React.Component {
         ProductType1.forEach(element => {
             optionProductTyp1.push(element.name)
         });
-        const recordsPerPage = 5;
+        const recordsPerPage = 10;
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
         const a = ProductSizes.slice(firstIndex, lastIndex);

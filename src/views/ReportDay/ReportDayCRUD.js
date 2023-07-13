@@ -332,7 +332,7 @@ class CRUDProductType extends React.Component {
             currentPage, open1,
             Status,
         } = this.state;
-        const recordsPerPage = 5;
+        const recordsPerPage = 10;
         const options = ['Hiển thị', 'Ẩn']
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;

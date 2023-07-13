@@ -315,7 +315,7 @@ class CRUDProductType extends React.Component {
             nameProduct: dep.name,
 
         }))
-        const recordsPerPage = 5;
+        const recordsPerPage = 10;
         const options = ['Hiển thị', 'Ẩn']
         const lastIndex = currentPage * recordsPerPage;
         const firstIndex = lastIndex - recordsPerPage;
@@ -395,6 +395,9 @@ class CRUDProductType extends React.Component {
                                         Tên sản phẩm
                                     </th>
                                     <th>
+                                        Ảnh sản phẩm
+                                    </th>
+                                    <th>
                                         SKU
                                     </th>
                                     <th>
@@ -415,6 +418,9 @@ class CRUDProductType extends React.Component {
                                         <tr key={dep.id}>
                                             <td>
                                                 {((dep.productSize).product).name}
+                                            </td>
+                                            <td>
+                                                <img style={{ width: 50 }} src={'https://localhost:7067/wwwroot/Image/Product/' + ((dep.productSize).product).image} />
                                             </td>
                                             <td>
                                                 {((dep.productSize).product).sku}

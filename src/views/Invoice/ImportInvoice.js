@@ -21,7 +21,10 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
-
+import { saveAs } from 'file-saver';
+import {
+    IconReport,
+} from '@tabler/icons';
 
 import { Select1 } from 'antd';
 import {
@@ -43,7 +46,21 @@ class CRUDProductType extends React.Component {
         }
 
     }
-
+    ReportPDF(dep) {
+        const token = this.getToken();
+        fetch(variable.API_URL + "ImportInvoices/GeneratePDF/" + dep.id, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+            responseType: 'blob',
+        }).then(res => res.blob())
+            .then(blob => {
+                saveAs(blob, 'HoaDonNhap#' + dep.id + '.pdf');
+            })
+    }
     refreshList() {
         const token = this.getToken();
         fetch(variable.API_URL + "ImportInvoices/GetAllImportInvoice", {
@@ -546,6 +563,9 @@ class CRUDProductType extends React.Component {
                                     <th>
                                         Xóa
                                     </th>
+                                    <th>
+                                        Xuất file PDF
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -581,6 +601,15 @@ class CRUDProductType extends React.Component {
                                                 <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
                                                         <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                                    </svg>
+                                                </button>
+                                            </td>
+                                            <td>
+
+                                                <button type='button' className='btn btn-light mr-1'
+                                                    onClick={() => this.ReportPDF(dep)}>
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" >
+                                                        <IconReport />
                                                     </svg>
                                                 </button>
                                             </td>

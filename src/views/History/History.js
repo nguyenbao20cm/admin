@@ -75,7 +75,7 @@ class InvoiceCRUD extends React.Component {
     refreshList() {
         const token = this.getToken();
 
-        fetch(variable.API_URL + "HistoryAccount/GetHistoryAccountAdmin", {
+        fetch(variable.API_URL + "HistoryAccount/GetHistoryAllAccount", {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',

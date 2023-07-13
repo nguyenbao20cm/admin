@@ -126,26 +126,47 @@ const ReviewList = () => {
         }
     }
     const changePass = (() => {
+
         const token = getToken();
-        fetch(variable.API_URL + "Account/UpdateAccountCustomer", {
-            method: "PUT",
+        if (MK == "") return this.loi("Bạn chưa nhập mật khẩu cũ!");
+        if (NewMK == "") return this.loi("Bạn chưa nhập mật khẩu mới!");
+        if (ConfirmMK == "") return this.loi("Bạn chưa nhập mật khẩu xác thực!");
+        if (NewMK != ConfirmMK) return this.loi("Mật khẩu xác thực không khớp!");
+        fetch(variable.API_URL + "Account/ChangePassWord", {
+            method: "POST",
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
                 'Authorization': `Bearer ${token.value}`
             },
             body: JSON.stringify({
-                phone: phone,
-                address: address,
-                fullName: fullname
+                password: MK,
+                confirmPassword: ConfirmMK,
+                passwordNew: NewMK
             })
         })
             .then(response => response.json())
             .then(data => {
-                if (data === "True") {
-                    message.success("Thành công")
-                    setta(1)
+                if (data === "Thành công") {
+                    message.success("Thành công, mời bạn đăng nhập lại")
+                    localStorage.clear()
+                    history("/")
                 }
+                else
+                    if (data === "Mật khẩu xác thực không khớp") {
+                        message.error("Mật khẩu xác thực không khớp")
+
+                    }
+                    else
+                        if (data === "Mật khẩu không hợp lệ") {
+                            message.error("Mật khẩu không hợp lệ")
+
+                        }
+                        else
+                            if (data === "Thất bại") {
+                                message.error("Thất bại")
+
+                            }
             })
     })
     const Item = styled(Paper)(({ theme }) => ({
@@ -165,6 +186,10 @@ const ReviewList = () => {
     const [phone, setphone] = useState("")
     const [fullname, setfullname] = useState("")
     const [address, setaddress] = useState("")
+
+    const [MK, setMK] = useState("")
+    const [NewMK, SetNewMK] = useState("")
+    const [ConfirmMK, setConfirmMK] = useState("")
     return (
         <div style={{ marginLeft: 21, marginTop: 20 }}>
             <PageContainer title="Cài đặt tài khoản" description="this is Sample page" >
@@ -183,17 +208,17 @@ const ReviewList = () => {
                                             <span style={{ fontWeight: -8 }}>
                                                 Mật khẩu cũ
                                             </span>
-                                            <input type='text' className='form-control'
+                                            <input value={NewMK} onChange={(e) => { SetNewMK(e.target.value) }} type='text' className='form-control'
                                             />
                                             <span style={{ fontWeight: -8 }}>
                                                 Mật khẩu mới
                                             </span>
-                                            <input type='text' className='form-control'
+                                            <input value={ConfirmMK} onChange={(e) => { setConfirmMK(e.target.value) }} type='text' className='form-control'
                                             />
                                             <span style={{ fontWeight: -8 }}>
                                                 Xác nhận mật khẩu mới
                                             </span>
-                                            <input type='text' className='form-control'
+                                            <input value={MK} onChange={(e) => { setMK(e.target.value) }} type='text' className='form-control'
                                             />
                                             <div class="modal-footer">
                                                 <button type='button' onClick={() => {

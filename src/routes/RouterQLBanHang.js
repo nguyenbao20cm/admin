@@ -72,7 +72,7 @@ const Router = [
             // { path: '/Brand', exact: true, element: < Brand /> },
             { path: '/LichSuThaoTac', exact: true, element: < History /> },
             { path: '/GiaoDich', exact: true, element: < GiaoDichThanhToan /> },
-            { path: '/AnhPhu', exact: true, element: < AnhPhu /> },
+            // { path: '/AnhPhu', exact: true, element: < AnhPhu /> },
             { path: '*', element: <Navigate to="/auth/404" /> },
         ],
     },

@@ -71,10 +71,8 @@ class CRUDProductType extends React.Component {
         if (this.state.tieude == "") return this.loi("Tiêu đề bị rỗng", "Hãy nhập lại")
         if (this.state.disscount == "") return this.loi("Giảm giá bị rỗng", "Hãy nhập lại")
         if (this.state.minmoney == "") return this.loi("Mức tối thiểu bị rỗng", "Hãy nhập lại")
-        if (this.state.minmoney != 0) {
-            if (Number.isInteger(this.state.minmoney) == false) return this.loi("Dữ liệu mức tối thiệu bị sai", "Hãy nhập lại")
-        }
-        if (Number(this.state.minmoney) < 0) return this.loi("Dữ liệu mức tối thiệu bị sai", "Hãy nhập lại")
+        if (Number.isInteger(Number(this.state.minmoney)) == false) return this.loi("Dữ liệu mức tối thiểu bị sai", "Hãy nhập lại")
+        if (Number(this.state.minmoney) < 0) return this.loi("Dữ liệu mức tối thiểu bị sai", "Hãy nhập lại")
         const day1 = new Date(this.state.endday)
         const day2 = new Date()
         if (day1 < day2) return this.loi("Ngày kết thúc không thể nhỏ hơn hôm nay", "Hãy nhập lại")
@@ -132,8 +130,8 @@ class CRUDProductType extends React.Component {
         if (Number(this.state.minmoney) < 0) return this.loi("Dữ liệu mức tối thiệu bị sai", "Hãy nhập lại")
         const day1 = new Date(this.state.endday)
         const day2 = new Date()
-        if (day1<day2) return this.loi("Ngày kết thúc không thể nhỏ hơn hôm nay", "Hãy nhập lại")
-  
+        if (day1 < day2) return this.loi("Ngày kết thúc không thể nhỏ hơn hôm nay", "Hãy nhập lại")
+
         fetch(variable.API_URL + "Vouchers/UpdateVoucher/" + id, {
             method: "PUT",
             headers: {
@@ -168,11 +166,11 @@ class CRUDProductType extends React.Component {
                     document.getElementById("closeModal").click()
                 }
                 else
-                if (result == false) {
-                    return this.loi("Thất bại")
-                }
-                else
-                    message.error(result)
+                    if (result == false) {
+                        return this.loi("Thất bại")
+                    }
+                    else
+                        message.error(result)
             }, (error) => {
                 message.error("Failed")
             }
@@ -222,7 +220,7 @@ class CRUDProductType extends React.Component {
             tieude: "",
             minmoney: "",
             endday: "",
-            status:"",
+            status: "",
         });
     }
     EditClick(dep) {
@@ -351,7 +349,7 @@ class CRUDProductType extends React.Component {
             },
         }).then(res => res.json())
             .then(result => {
-                if ( result == true  ) {
+                if (result == true) {
                     message.success("Thành công")
                     this.setState({ open1: false })
                     this.refreshList();
@@ -517,7 +515,7 @@ class CRUDProductType extends React.Component {
                                         Sửa
                                     </th>
                                     <th>
-                                        
+
                                     </th>
                                 </tr>
                             </thead>
@@ -565,15 +563,15 @@ class CRUDProductType extends React.Component {
                                             </td>
                                             <td>
                                                 {
-                                                    dep.status == false ? 
+                                                    dep.status == false ?
                                                         <button width="16" height="16" type='button' className='btn btn-light mr-1' onClick={() => this.Check(dep.id)}>
                                                             <IconCheck></IconCheck>
                                                         </button>
-                                                     : <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
-                                                        </svg>
-                                                    </button>
+                                                        : <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                                                <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                                            </svg>
+                                                        </button>
                                                 }
                                             </td>
                                         </tr>

@@ -19,6 +19,13 @@ import Slide from '@mui/material/Slide';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { result } from 'lodash'; import { Select } from 'antd';
+import { saveAs } from 'file-saver';
+import {
+    IconReport,
+} from '@tabler/icons';
+
+
+
 class InvoiceCRUD extends React.Component {
     constructor(props) {
         super(props);
@@ -227,6 +234,21 @@ class InvoiceCRUD extends React.Component {
             confirmButtonColor: '#3085d6',
             timer: 1500
         })
+    }
+    ReportPDF(dep) {
+        const token = this.getToken();
+        fetch(variable.API_URL + "Inovices/GeneratePDF/" + dep.id, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            },
+            responseType: 'blob',
+        }).then(res => res.blob())
+            .then(blob => {
+                saveAs(blob, 'HoaDonBan#' + dep.id+'.pdf');
+            })
     }
     UpdateClick1(id) {
         if (this.state.ShippingAddress == "") return this.loi("Địa chỉ bị rỗng ", "Hãy nhập lại")
@@ -1389,7 +1411,9 @@ class InvoiceCRUD extends React.Component {
                                     <th>
                                         Xem
                                     </th>
-
+                                    <th>
+                                        Xuất file PDF
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1472,7 +1496,15 @@ class InvoiceCRUD extends React.Component {
                                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" > <path d="M2 8C2 7.44772 2.44772 7 3 7H21C21.5523 7 22 7.44772 22 8C22 8.55228 21.5523 9 21 9H3C2.44772 9 2 8.55228 2 8Z" fill="currentColor" /> <path d="M2 12C2 11.4477 2.44772 11 3 11H21C21.5523 11 22 11.4477 22 12C22 12.5523 21.5523 13 21 13H3C2.44772 13 2 12.5523 2 12Z" fill="currentColor" /> <path d="M3 15C2.44772 15 2 15.4477 2 16C2 16.5523 2.44772 17 3 17H15C15.5523 17 16 16.5523 16 16C16 15.4477 15.5523 15 15 15H3Z" fill="currentColor" /> </svg>
                                                 </button>
                                             </td>
-
+                                            <td>
+                                            
+                                                <button type='button' className='btn btn-light mr-1'
+                                                    onClick={() => this.ReportPDF(dep)}>
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" >
+                                                        <IconReport />
+                                                    </svg>
+                                                </button>
+                                            </td>
                                         </tr>
                                     )}
                             </tbody>
