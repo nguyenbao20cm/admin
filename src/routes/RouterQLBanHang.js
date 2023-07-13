@@ -58,7 +58,7 @@ const Router = [
         children: [
             { path: '/', element: <Navigate to="/InvoicePage" /> },
            
-            { path: '/sample-page', exact: true, element: <SamplePage /> },
+            // { path: '/sample-page', exact: true, element: <SamplePage /> },
             { path: '/InvoicePage', exact: true, element: < InvoicePage /> },
             { path: '/ReviewPage', exact: true, element: < ReviewPage /> },
             { path: '/AdvertisingPanel', exact: true, element: < AdvertisingPanel /> },
@@ -69,7 +69,7 @@ const Router = [
             { path: '/Voucher', exact: true, element: < Voucher /> },
             { path: '/Account', exact: true, element: < Account /> },
             { path: '/TaiKhoan', exact: true, element: < TaiKhoan /> },
-            { path: '/Brand', exact: true, element: < Brand /> },
+            // { path: '/Brand', exact: true, element: < Brand /> },
             { path: '/LichSuThaoTac', exact: true, element: < History /> },
             { path: '/GiaoDich', exact: true, element: < GiaoDichThanhToan /> },
             { path: '/AnhPhu', exact: true, element: < AnhPhu /> },

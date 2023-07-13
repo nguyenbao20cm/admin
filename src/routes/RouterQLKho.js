@@ -62,7 +62,7 @@ const Router = [
             { path: '/ProductTypepage', exact: true, element: < ProductTypepage /> },
             // { path: '/Disscount', exact: true, element: < Disscount /> },
             { path: '/ProductSize', exact: true, element: < ProductSize /> },
-            { path: '/Account', exact: true, element: < Account /> },
+            // { path: '/Account', exact: true, element: < Account /> },
             { path: '/NhaCungCapSanPham', exact: true, element: < Supplier /> },
             { path: '/TaiKhoan', exact: true, element: < TaiKhoan /> },
             { path: '/LichSuThaoTac', exact: true, element: < History /> },
