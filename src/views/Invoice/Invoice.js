@@ -1530,7 +1530,7 @@ class InvoiceCRUD extends React.Component {
                                                         Tên sản phẩm
                                                     </th>
                                                     <th>
-                                                        Size sản phẩm
+                                                        Size
                                                     </th>
                                                     <th>
                                                         Số lượng
@@ -1569,12 +1569,16 @@ class InvoiceCRUD extends React.Component {
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="modal-footer">
-                                        <h5>Phí giao hàng: {" "}  {VND.format(this.state.Giamgia.paymentMethods == true ? 35000 : 0)}</h5>  
-                                        <h5>Giảm giá: {" "}{this.state.Giamgia.voucherId == null ? 0 : this.state.Giamgia.voucher.disscount}%</h5>
-                                    </div>
+
+                                    <tr>
+                                        <h6 style={{ float: 'right' }}>Phí giao hàng: {" "}  {VND.format(this.state.Giamgia.paymentMethods == true ? 35000 : 0)}</h6>
+                                    </tr>
+                                    <tr>
+                                        <h6 style={{ float: 'right' }}>Giảm giá: {" "}{this.state.Giamgia.voucherId == null ? 0 : this.state.Giamgia.voucher.disscount}%</h6>
+                                    </tr>
+
                                     <div >
-                                        <h4 style={{ float: 'right' }}>Tổng hóa đơn: {" "}{VND.format(this.total(DetailsInvoice))}</h4>
+                                        <h4 style={{ float: 'right' }}>Tổng hóa đơn: {" "}{VND.format(this.state.Giamgia.total)}</h4>
                                     </div>
                                 </div>
                             </div>

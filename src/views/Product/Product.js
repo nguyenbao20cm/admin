@@ -373,7 +373,6 @@ class CRUDProduct extends React.Component {
         } else {
             const formData = new FormData()
             var imagelName = this.state.id + ".jpg"
-
             formData.append("model", this.state.Iimage, imagelName)
 
             fetch(variable.API_URL + "Products/UpdateProduct/" + id, {

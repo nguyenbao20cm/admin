@@ -142,8 +142,8 @@ class CRUDProductType extends React.Component {
                    
                     // this.state.Trangthai == true ? this.CheckTrue()
                     //     : this.state.Trangthai == false ? this.CheckFalse()
-                    //         : this.refreshList()
-                    window.location.reload(false)
+                     this.refreshList()
+                    // window.location.reload(false)
                     document.getElementById("closeModal").click()
                     message.success("Thành công")
                 }

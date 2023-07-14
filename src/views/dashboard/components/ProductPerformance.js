@@ -46,7 +46,6 @@ const ProductPerformance = () => {
         currency: 'VND',
     });
     return (
-
         <DashboardCard title="Các sản phẩm bán chạy">
             <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
                 <Table
@@ -63,11 +62,11 @@ const ProductPerformance = () => {
                                     Id
                                 </Typography>
                             </TableCell>
-                            <TableCell>
+                            {/* <TableCell>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     SKU
                                 </Typography>
-                            </TableCell>
+                            </TableCell> */}
                             <TableCell>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Tên
@@ -125,11 +124,11 @@ const ProductPerformance = () => {
                                         </Box>
                                     </Box>
                                 </TableCell>
-                                <TableCell>
+                                {/* <TableCell>
                                     <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
                                         {product.sku}
                                     </Typography>
-                                </TableCell>
+                                </TableCell> */}
                                 <TableCell align="inherit">
                                     <Chip
                                         sx={{
