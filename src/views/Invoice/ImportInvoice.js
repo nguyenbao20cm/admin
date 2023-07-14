@@ -38,11 +38,11 @@ class CRUDProductType extends React.Component {
         this.state = {
             ProductType: [], id1: "",
             modelTitle: "", quantity: "",
-            Name: "",
+            Name: "", valuetam:null,
             id: 0, StatusCheck: "", startDate: "", endDate: "",
             currentPage: 1,
             NameinputProductType: "", Status: "", Trangthai: "", open1: false, GiaNhap: "", Size: "", ProductSizeId: "",
-            APIProduct: [], ProductId: "", Nhacungcap: "", APINhaCungCap: [], APIProductSize: []
+            APIProduct: [], ProductId: "", Nhacungcap: "", APINhaCungCap: [], APIProductSize: [],
         }
 
     }
@@ -117,7 +117,7 @@ class CRUDProductType extends React.Component {
     }
     CreateClick() {
         if (this.state.ProductSizeId == "") return this.loi("Sản phẩm đang rỗng", "Hãy nhập dữ liệu lại")
-        if (this.state.Nhacungcap == "") return this.loi("Sản phẩm đang rỗng", "Hãy nhập dữ liệu lại")
+        if (this.state.Nhacungcap == "") return this.loi("Nhà cung cấp đang rỗng", "Hãy nhập dữ liệu lại")
         if (this.state.GiaNhap == 0) return this.loi("Dữ liệu không đúng", "Hãy kiểm liệu dữ liệu nhập")
         if (this.state.quantity == 0) return this.loi("Dữ liệu không đúng", "Hãy kiểm liệu dữ liệu nhập")
         if (Number.isInteger(this.state.GiaNhap) || Number(this.state.GiaNhap) < 0) return this.loi("Dữ liệu không đúng", "Hãy kiểm liệu dữ liệu nhập")
@@ -139,11 +139,13 @@ class CRUDProductType extends React.Component {
         }).then(res => res.json())
             .then(result => {
                 if (result == true) {
-                    message.success("Thành công")
-                    this.state.Trangthai == true ? this.CheckTrue()
-                        : this.state.Trangthai == false ? this.CheckFalse()
-                            : this.refreshList()
+                   
+                    // this.state.Trangthai == true ? this.CheckTrue()
+                    //     : this.state.Trangthai == false ? this.CheckFalse()
+                    //         : this.refreshList()
+                    window.location.reload(false)
                     document.getElementById("closeModal").click()
+                    message.success("Thành công")
                 }
                 else
                     message.error("result")
@@ -229,8 +231,12 @@ class CRUDProductType extends React.Component {
             id: 0,
             Name: "",
             Status: "",
+            ProductSizeId: "",
+            Nhacungcap: "",
             GiaNhap: 0,
             quantity: 0,
+            valuetam:null
+
         });
     }
     EditClick(dep) {
@@ -419,7 +425,7 @@ class CRUDProductType extends React.Component {
         const {
             ProductType, GiaNhap, Size, ProductSizeId, APIProductSize,
             modelTitle,
-            id, NameinputProductType,
+            id, NameinputProductType, valuetam,
             Name, Nhacungcap,
             currentPage, open1,
             Status, APIProduct, ProductId, APINhaCungCap, quantity
@@ -646,15 +652,16 @@ class CRUDProductType extends React.Component {
                                     {/* <span className='input-group-text'>
                                         Sản phẩm
                                     </span> */}
-                                    
+
                                     <Autocomplete
+                                        value={valuetam}
                                         getOptionLabel={(OPtionProduct) => OPtionProduct.nameProduct}
                                         getOptionSelected={(option, value) => option.nameProduct === value.nameProduct}
                                         disableClearable
-                                        // value={Nhacungcap}
                                         onChange={(event, newValue) => {
                                             this.setState({
-                                                ProductId: newValue.id
+                                                ProductId: newValue.id,
+                                                valuetam: newValue
                                             })
                                             this.GetProductSIzeAPI(newValue.id)
                                         }}
@@ -663,7 +670,7 @@ class CRUDProductType extends React.Component {
                                         renderInput={(params) =>
                                             <TextField {...params}
                                                 // label="Pay"
-                                                variant="outlined" label="Tên sản phẩm"/>}
+                                                variant="outlined" label="Tên sản phẩm" />}
                                     />
                                     {/* <FormControl fullWidth>
                                         <InputLabel id="demo-simple-select-label">Sản phẩm</InputLabel>
@@ -724,6 +731,7 @@ class CRUDProductType extends React.Component {
                                     <FormControl fullWidth>
                                         <InputLabel id="demo-simple-select-label">Size sản phẩm</InputLabel>
                                         <Select
+                                            value={ProductSizeId}
                                             labelId="demo-simple-select-label"
                                             id="demo-simple-select"
                                             label="Size sản phẩm"
@@ -775,10 +783,11 @@ class CRUDProductType extends React.Component {
                                     {/* <span className='input-group-text'>
                                         Nhà cung cấp
                                     </span> */}
-                                   
+
                                     <FormControl fullWidth>
                                         <InputLabel id="demo-simple-select-label">Nhà cung cấp</InputLabel>
                                         <Select
+                                            value={Nhacungcap}
                                             labelId="demo-simple-select-label"
                                             id="demo-simple-select"
                                             label="Nhà cung cấp"

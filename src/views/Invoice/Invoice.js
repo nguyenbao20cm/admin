@@ -48,7 +48,7 @@ class InvoiceCRUD extends React.Component {
             ChangeId: "",
             startDate: "",
             endDate: "",
-            value: "", value: "", ID: "", open: false, data: "", open1: false, Trangthai: ""
+            value: "", value: "", ID: "", open: false, data: "", open1: false, Trangthai: "", phiship: "", Giamgia: ""
         }
     }
 
@@ -247,7 +247,7 @@ class InvoiceCRUD extends React.Component {
             responseType: 'blob',
         }).then(res => res.blob())
             .then(blob => {
-                saveAs(blob, 'HoaDonBan#' + dep.id+'.pdf');
+                saveAs(blob, 'HoaDonBan#' + dep.id + '.pdf');
             })
     }
     UpdateClick1(id) {
@@ -301,7 +301,9 @@ class InvoiceCRUD extends React.Component {
     }
     DetailsClick(dep) {
         const token = this.getToken();
-
+        this.setState({
+            Giamgia: dep
+        })
         fetch(variable.API_URL + "InvoiceDetails/GetAllInvoiceDetails/" + dep.id, {
             method: "GET",
             headers: {
@@ -321,7 +323,7 @@ class InvoiceCRUD extends React.Component {
         this.setState({
             checkTrangthai: dep.orderStatus == 1 ? "Chưa xác nhận" : dep.orderStatus == 2 ? "Đang chuẩn bị" : dep.orderStatus == 3 ? "Đang giao" : dep.orderStatus == 4 ? "Đã hủy" : dep.orderStatus == 5 ? "Hoàn tất" : dep.orderStatus == 6 ? "Đã giao" : null
             ,
-            modelTitle: "Edit Invoice",
+            modelTitle: "Chỉnh sửa hóa đơn",
             ShippingPhone: dep.shippingPhone,
             // Pay:
             //     dep.pay == true ?
@@ -1225,7 +1227,7 @@ class InvoiceCRUD extends React.Component {
             ShippingPhone,
             Total, open,
             Status, value, ChangeId,
-            Pay, value1,
+            Pay, value1, phiship, Giamgia,
             OrderStatus, open1,
             DetailsInvoice,
             totalDetailInvoice
@@ -1459,7 +1461,7 @@ class InvoiceCRUD extends React.Component {
                                             </td>
                                             <td>
                                                 {dep.paymentMethods == true ?
-                                                    "COD" : "Chuyển khoản"
+                                                    "COD" : "Nhận hàng tại của hàng"
                                                 }
                                             </td>
                                             <td>
@@ -1497,7 +1499,7 @@ class InvoiceCRUD extends React.Component {
                                                 </button>
                                             </td>
                                             <td>
-                                            
+
                                                 <button type='button' className='btn btn-light mr-1'
                                                     onClick={() => this.ReportPDF(dep)}>
                                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" >
@@ -1556,7 +1558,7 @@ class InvoiceCRUD extends React.Component {
                                                             {dep.quantity}
                                                         </td>
                                                         <td>
-                                                            {dep.unitPrice}
+                                                            {VND.format(dep.unitPrice)}
                                                         </td>
                                                         <td>
                                                             {VND.format(dep.unitPrice * dep.quantity)}
@@ -1567,9 +1569,13 @@ class InvoiceCRUD extends React.Component {
                                             </tbody>
                                         </table>
                                     </div>
-                                    {/* <div class="modal-footer">
-                                        <h4>Tổng hóa đơn: {" "}{this.total(DetailsInvoice)}</h4>
-                                    </div> */}
+                                    <div class="modal-footer">
+                                        <h5>Phí giao hàng: {" "}  {VND.format(this.state.Giamgia.paymentMethods == true ? 35000 : 0)}</h5>  
+                                        <h5>Giảm giá: {" "}{this.state.Giamgia.voucherId == null ? 0 : this.state.Giamgia.voucher.disscount}%</h5>
+                                    </div>
+                                    <div >
+                                        <h4 style={{ float: 'right' }}>Tổng hóa đơn: {" "}{VND.format(this.total(DetailsInvoice))}</h4>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1643,8 +1649,8 @@ class InvoiceCRUD extends React.Component {
                                     <div class="modal-footer">
                                         {
                                             this.state.OrderStatus == "Hoàn tất" ?
-                                                <button type='button' className='btn btn-primary float-start' onClick={() => this.Upade(this.state.ID)}>Update</button>
-                                                : <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick1(this.state.ID)}>Update</button>
+                                                <button type='button' className='btn btn-primary float-start' onClick={() => this.Upade(this.state.ID)}>Cập nhật</button>
+                                                : <button type='button' className='btn btn-primary float-start' onClick={() => this.UpdateClick1(this.state.ID)}>Cập nhật</button>
                                         }
 
                                     </div>

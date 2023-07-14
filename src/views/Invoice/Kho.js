@@ -412,7 +412,7 @@ class CRUDProductType extends React.Component {
                                 {ProductType.filter((item) => {
                                     return this.state.value1 === ""
                                         ? item
-                                        : item.id.toString().includes(this.state.value1);
+                                        : ((item.productSize).product).id.toString().includes(this.state.value1);
                                 }).slice(firstIndex, lastIndex)
                                     .map(dep =>
                                         <tr key={dep.id}>

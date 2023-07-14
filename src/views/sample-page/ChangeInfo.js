@@ -71,7 +71,7 @@ const ReviewList = () => {
         // }
         //số điện thoại
         const phoneRegex = /^0\d{9}$/;
-        if (this.state.SDT == "") return this.loi("Số điện thoại không được để trống")
+        if (phone == "") return this.loi("Số điện thoại không được để trống")
 
         if (!phoneRegex.test(phone)) {
             return this.loi("Số điện thoại không hợp lệ! Vui lòng nhập đúng định dạng.");
