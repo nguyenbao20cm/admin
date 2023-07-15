@@ -71,14 +71,14 @@ const ReviewList = () => {
         // }
         //số điện thoại
         const phoneRegex = /^0\d{9}$/;
-        if (phone == "") return this.loi("Số điện thoại không được để trống")
+        if (phone == "") return loi("Số điện thoại không được để trống")
 
         if (!phoneRegex.test(phone)) {
-            return this.loi("Số điện thoại không hợp lệ! Vui lòng nhập đúng định dạng.");
+            return loi("Số điện thoại không hợp lệ! Vui lòng nhập đúng định dạng.");
         }
         //họ và tên	
-        if (fullname == "") return this.loi("Bạn chưa nhập họ và tên!")
-        if (address == "") return this.loi("Bạn chưa nhập địa chỉ!")
+        if (fullname == "") return loi("Bạn chưa nhập họ và tên!")
+        if (address == "") return loi("Bạn chưa nhập địa chỉ!")
 
         const token = getToken();
         if (image != "") {
@@ -128,10 +128,10 @@ const ReviewList = () => {
     const changePass = (() => {
 
         const token = getToken();
-        if (MK == "") return this.loi("Bạn chưa nhập mật khẩu cũ!");
-        if (NewMK == "") return this.loi("Bạn chưa nhập mật khẩu mới!");
-        if (ConfirmMK == "") return this.loi("Bạn chưa nhập mật khẩu xác thực!");
-        if (NewMK != ConfirmMK) return this.loi("Mật khẩu xác thực không khớp!");
+        if (MK == "") return loi("Bạn chưa nhập mật khẩu cũ!");
+        if (NewMK == "") return loi("Bạn chưa nhập mật khẩu mới!");
+        if (ConfirmMK == "") return loi("Bạn chưa nhập mật khẩu xác thực!");
+        if (NewMK != ConfirmMK) return loi("Mật khẩu xác thực không khớp!");
         fetch(variable.API_URL + "Account/ChangePassWord", {
             method: "POST",
             headers: {
@@ -158,8 +158,8 @@ const ReviewList = () => {
 
                     }
                     else
-                        if (data === "Mật khẩu không hợp lệ") {
-                            message.error("Mật khẩu không hợp lệ")
+                        if (data === "Bạn đã nhập sai mật khẩu") {
+                            message.error("Bạn đã nhập sai mật khẩu")
 
                         }
                         else
@@ -208,17 +208,17 @@ const ReviewList = () => {
                                             <span style={{ fontWeight: -8 }}>
                                                 Mật khẩu cũ
                                             </span>
-                                            <input value={NewMK} onChange={(e) => { SetNewMK(e.target.value) }} type='text' className='form-control'
+                                            <input value={MK} onChange={(e) => { setMK(e.target.value) }} type='password' className='form-control'
                                             />
                                             <span style={{ fontWeight: -8 }}>
                                                 Mật khẩu mới
                                             </span>
-                                            <input value={ConfirmMK} onChange={(e) => { setConfirmMK(e.target.value) }} type='text' className='form-control'
+                                            <input value={NewMK} onChange={(e) => { SetNewMK(e.target.value) }} type='password' className='form-control'
                                             />
                                             <span style={{ fontWeight: -8 }}>
                                                 Xác nhận mật khẩu mới
                                             </span>
-                                            <input value={MK} onChange={(e) => { setMK(e.target.value) }} type='text' className='form-control'
+                                            <input value={ConfirmMK} onChange={(e) => { setConfirmMK(e.target.value) }} type='password' className='form-control'
                                             />
                                             <div class="modal-footer">
                                                 <button type='button' onClick={() => {
