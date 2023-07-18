@@ -7,11 +7,11 @@ import ReviewCRUD from "../../components/container/Review/ReivewCRUD"
 import { BackTop } from 'antd';
 const ReviewList = () => {
     return (
-        <PageContainer title="Sample Page" description="this is Sample page">
+        <PageContainer title="Đánh giá sản phẩm" description="this is Sample page">
             <div hidden>
                 {document.documentElement.scrollTop = 0}
             </div>
-            <DashboardCard title="Danh sách bình luận">
+            <DashboardCard title="Danh sách các đánh giá">
                 <Typography paragraph>
                     <ReviewCRUD />
                 </Typography>

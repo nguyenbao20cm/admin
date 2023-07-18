@@ -72,6 +72,12 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             })
         }).then(res => res.json())
             .then(result => {
+                if (result == "Thất bại") setTimeout(() => {
+                    message.error("Sai thông tin đăng nhập")
+                    setusername(username)
+                    setpassword("")
+                }, 0);
+                else
                 if (result == "Người dùng đã bị khóa") setTimeout(() => {
                     message.error("Người dùng đã bị khóa")
                     setusername(username)

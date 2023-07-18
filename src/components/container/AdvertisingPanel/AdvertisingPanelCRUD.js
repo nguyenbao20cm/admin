@@ -148,7 +148,7 @@ class ReviewCRUD extends React.Component {
             return this.loi("Dữ liệu bị trống", "Hãy nhập lại")
 
         const token = this.getToken();
-        if (this.state.image == "") {
+        if (this.state.Iimage == "") {
             fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + id, {
                 method: "PUT",
                 headers: {
@@ -177,7 +177,8 @@ class ReviewCRUD extends React.Component {
         else {
             const formData = new FormData()
             formData.append("model", this.state.Iimage)
-            fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + this.PRID(this.state.Product) + "," + this.state.tieude + "," + this.state.noidung + "," + id
+            console.log(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/" + this.PRID(this.state.Product) + ", " + this.state.tieude + "," + this.state.noidung + "," + id)
+            fetch(variable.API_URL + "AdvertisingPanels/UpdateAdvertisingPanel/ " + this.PRID(this.state.Product) + "," + this.state.tieude + "," + this.state.noidung + "," + id
                 , {
                     method: "PUT",
                     headers: {
@@ -517,7 +518,7 @@ class ReviewCRUD extends React.Component {
                                             <span className='input-group-text'>
                                                 Hình ảnh
                                             </span>
-                                            <input  type='text' className='form-control' value={image}
+                                            <input type='text' className='form-control' value={image}
                                                 onChange={(e) => this.ChangeProdcutImage(e)} readOnly />
                                             <button style={{ float: 'right', borderRadius: "7.25px" }} onClick={() => document.getElementById("img").click()}>Chọn ảnh</button>
                                             <input hidden type="file" id="img" name="img" accept="image/*" onChange={(e) => this.ChangeProdcutImage(e)}></input>

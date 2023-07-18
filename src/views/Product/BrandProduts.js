@@ -36,7 +36,7 @@ class CRUDProductType extends React.Component {
 
     refreshList() {
 
-        fetch(variable.API_URL + "BrandProducts/GetAllBrandProducts")
+        fetch(variable.API_URL + "BrandProducts/GetAllBrandProductsAdmin")
             .then(response => response.json())
             .then(data => {
                 this.setState({ ProductType: data, Trangthai: null, currentPage: this.state.currentPage });
@@ -370,9 +370,9 @@ class CRUDProductType extends React.Component {
                                     <th>
                                         Sửa
                                     </th>
-                                    <th>
+                                    {/* <th>
                                         Xóa
-                                    </th>
+                                    </th> */}
                                 </tr>
                             </thead>
                             <tbody>
@@ -404,7 +404,7 @@ class CRUDProductType extends React.Component {
                                                     </svg>
                                                 </button>
                                             </td>
-                                            <td>
+                                            {/* <td>
                                                 {
                                                     dep.status == false ? null : <button type='button' className='btn btn-light mr-1' onClick={() => this.DeleteClick(dep.id)}>
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3-fill" viewBox="0 0 16 16">
@@ -412,7 +412,7 @@ class CRUDProductType extends React.Component {
                                                         </svg>
                                                     </button>
                                                 }
-                                            </td>
+                                            </td> */}
                                         </tr>
                                     )}
                             </tbody>

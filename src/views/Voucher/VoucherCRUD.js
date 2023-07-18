@@ -69,10 +69,20 @@ class CRUDProductType extends React.Component {
         if (this.state.Giamgia == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
         if (this.state.Status == "") return this.loi("Trạng thái bị rỗng ", "Hãy nhập lại")
         if (this.state.tieude == "") return this.loi("Tiêu đề bị rỗng", "Hãy nhập lại")
-        if (this.state.disscount == "") return this.loi("Giảm giá bị rỗng", "Hãy nhập lại")
-        if (this.state.minmoney == "") return this.loi("Mức tối thiểu bị rỗng", "Hãy nhập lại")
-        if (Number.isInteger(Number(this.state.minmoney)) == false) return this.loi("Dữ liệu mức tối thiểu bị sai", "Hãy nhập lại")
+        // if (this.state.disscount == "") return this.loi("Giảm giá bị rỗng", "Hãy nhập lại")
+
+        if (this.state.minmoney != 0) {
+            if (this.state.minmoney == "") return this.loi("Mức tối thiểu bị rỗng", "Hãy nhập lại")
+            if (Number.isInteger(Number(this.state.minmoney)) == false) return this.loi("Dữ liệu mức tối thiểu bị sai", "Hãy nhập lại")
+        }
         if (Number(this.state.minmoney) < 0) return this.loi("Dữ liệu mức tối thiểu bị sai", "Hãy nhập lại")
+
+        if (this.state.Giamgia <= 0) return this.loi("Giảm giá phải lớn hơn 0%", "Hãy nhập lại")
+        if (this.state.Giamgia > 50) return this.loi("Giảm giá phải nhỏ hơn hoặc bằng 50%", "Hãy nhập lại")
+        if (this.state.Giamgia != 0) {
+            if (Number.isInteger(Number(this.state.Giamgia)) == false) return this.loi("Dữ liệu giảm giá bị sai", "Hãy nhập lại")
+        }
+
         const day1 = new Date(this.state.endday)
         const day2 = new Date()
         if (day1 < day2) return this.loi("Ngày kết thúc không thể nhỏ hơn hôm nay", "Hãy nhập lại")
@@ -87,14 +97,14 @@ class CRUDProductType extends React.Component {
                 name: this.state.Ma,
                 minmoney: this.state.minmoney,
                 endday: this.state.endday,
-                disscount: this.state.Giamgia == "10%" ? 10 : this.state.Giamgia == "20%" ?
-                    20 : this.state.Giamgia == "30%" ? 30 : this.state.Giamgia == "40%" ?
-                        40 : this.state.Giamgia == "50%" ? 50 :
-                            this.state.Giamgia == "60%" ? 60 :
-                                this.state.Giamgia == "70%" ? 70 :
-                                    this.state.Giamgia == "80%" ? 80 :
-                                        this.state.Giamgia == "90%" ? 90 : null,
-
+                // disscount: this.state.Giamgia == "10%" ? 10 : this.state.Giamgia == "20%" ?
+                //     20 : this.state.Giamgia == "30%" ? 30 : this.state.Giamgia == "40%" ?
+                //         40 : this.state.Giamgia == "50%" ? 50 :
+                //             this.state.Giamgia == "60%" ? 60 :
+                //                 this.state.Giamgia == "70%" ? 70 :
+                //                     this.state.Giamgia == "80%" ? 80 :
+                //                         this.state.Giamgia == "90%" ? 90 : null,
+                disscount: this.state.Giamgia,
                 title: this.state.tieude,
                 status: this.state.Status == "Hoạt động" ? true : false,
             })
@@ -122,12 +132,18 @@ class CRUDProductType extends React.Component {
         if (this.state.Giamgia == "") return this.loi("Dữ liệu bị rỗng ", "Hãy nhập lại")
         if (this.state.Status == "") return this.loi("Trạng thái bị rỗng ", "Hãy nhập lại")
         if (this.state.tieude == "") return this.loi("Tiêu đề bị rỗng", "Hãy nhập lại")
-        if (this.state.disscount == "") return this.loi("Giảm giá bị rỗng", "Hãy nhập lại")
-        if (this.state.minmoney == "") return this.loi("Mức tối thiểu bị rỗng", "Hãy nhập lại")
+        // if (this.state.disscount == "") return this.loi("Giảm giá bị rỗng", "Hãy nhập lại")
         if (this.state.minmoney != 0) {
-            if (Number.isInteger(this.state.minmoney) == false) return this.loi("Dữ liệu mức tối thiệu bị sai", "Hãy nhập lại")
+            if (this.state.minmoney == "") return this.loi("Mức tối thiểu bị rỗng", "Hãy nhập lại")
+            if (Number.isInteger(Number(this.state.minmoney)) == false) return this.loi("Dữ liệu mức tối thiểu bị sai", "Hãy nhập lại")
         }
-        if (Number(this.state.minmoney) < 0) return this.loi("Dữ liệu mức tối thiệu bị sai", "Hãy nhập lại")
+        if (Number(this.state.minmoney) < 0) return this.loi("Dữ liệu mức tối thiểu bị sai", "Hãy nhập lại")
+
+        if (this.state.Giamgia <= 0) return this.loi("Giảm giá phải lớn hơn 0%", "Hãy nhập lại")
+        if (this.state.Giamgia > 50) return this.loi("Giảm giá phải nhỏ hơn hoặc bằng 50%", "Hãy nhập lại")
+        if (this.state.Giamgia != 0) {
+            if (Number.isInteger(Number(this.state.Giamgia)) == false) return this.loi("Dữ liệu giảm giá bị sai", "Hãy nhập lại")
+        }
         const day1 = new Date(this.state.endday)
         const day2 = new Date()
         if (day1 < day2) return this.loi("Ngày kết thúc không thể nhỏ hơn hôm nay", "Hãy nhập lại")
@@ -143,13 +159,14 @@ class CRUDProductType extends React.Component {
                 name: this.state.Ma,
                 minmoney: this.state.minmoney,
                 endday: this.state.endday,
-                disscount: this.state.Giamgia == "10%" ? 10 : this.state.Giamgia == "20%" ?
-                    20 : this.state.Giamgia == "30%" ? 30 : this.state.Giamgia == "40%" ?
-                        40 : this.state.Giamgia == "50%" ? 50 :
-                            this.state.Giamgia == "60%" ? 60 :
-                                this.state.Giamgia == "70%" ? 70 :
-                                    this.state.Giamgia == "80%" ? 80 :
-                                        this.state.Giamgia == "90%" ? 90 : null,
+                // disscount: this.state.Giamgia == "10%" ? 10 : this.state.Giamgia == "20%" ?
+                //     20 : this.state.Giamgia == "30%" ? 30 : this.state.Giamgia == "40%" ?
+                //         40 : this.state.Giamgia == "50%" ? 50 :
+                //             this.state.Giamgia == "60%" ? 60 :
+                //                 this.state.Giamgia == "70%" ? 70 :
+                //                     this.state.Giamgia == "80%" ? 80 :
+                //                         this.state.Giamgia == "90%" ? 90 : null,
+                disscount: this.state.Giamgia,
                 title: this.state.tieude,
                 status: this.state.Status == "Hoạt động" ? true : false,
             })
@@ -233,7 +250,7 @@ class CRUDProductType extends React.Component {
             minmoney: dep.minMoney,
             endday: dep.endDay.split("T")[0],
             Name: dep.name, Ma: dep.name,
-            Giamgia: dep.disscount + "%",
+            Giamgia: dep.disscount,
             Status:
                 dep.status == true ?
                     "Hoạt động" : "Khóa"
@@ -514,9 +531,9 @@ class CRUDProductType extends React.Component {
                                     <th>
                                         Sửa
                                     </th>
-                                    <th>
+                                    {/* <th>
 
-                                    </th>
+                                    </th> */}
                                 </tr>
                             </thead>
                             <tbody>
@@ -561,7 +578,7 @@ class CRUDProductType extends React.Component {
                                                     </svg>
                                                 </button>
                                             </td>
-                                            <td>
+                                            {/* <td>
                                                 {
                                                     dep.status == false ?
                                                         <button width="16" height="16" type='button' className='btn btn-light mr-1' onClick={() => this.Check(dep.id)}>
@@ -573,7 +590,7 @@ class CRUDProductType extends React.Component {
                                                             </svg>
                                                         </button>
                                                 }
-                                            </td>
+                                            </td> */}
                                         </tr>
                                     )}
                             </tbody>
@@ -648,9 +665,13 @@ class CRUDProductType extends React.Component {
                                             <input type='text' className='form-control' value={DisscountEdit}
                                                 onChange={(e) => this.ChangeDisscountEdit(e)} /> */}
                                     <span className='input-group-text'>
-                                        Giảm giá
+                                        Giảm giá { "(%)"}
                                     </span>
-                                    <Autocomplete
+                                    <input type='text' className='form-control' value={Giamgia}
+                                        onChange={(e) => this.setState({
+                                            Giamgia: e.target.value
+                                        })} />
+                                    {/* <Autocomplete
                                         value={Giamgia}
                                         disableClearable
                                         onChange={(event, newValue) => {
@@ -665,7 +686,7 @@ class CRUDProductType extends React.Component {
                                             <TextField {...params}
                                                 // label="Pay"
                                                 variant="outlined" />}
-                                    />
+                                    /> */}
                                 </div>
                                 <div className='input-group mb-3'>
                                     <span className='input-group-text'>

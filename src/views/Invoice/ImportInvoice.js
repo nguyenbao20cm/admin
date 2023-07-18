@@ -120,8 +120,8 @@ class CRUDProductType extends React.Component {
         if (this.state.Nhacungcap == "") return this.loi("Nhà cung cấp đang rỗng", "Hãy nhập dữ liệu lại")
         if (this.state.GiaNhap == 0) return this.loi("Dữ liệu không đúng", "Hãy kiểm liệu dữ liệu nhập")
         if (this.state.quantity == 0) return this.loi("Dữ liệu không đúng", "Hãy kiểm liệu dữ liệu nhập")
-        if (Number.isInteger(this.state.GiaNhap) || Number(this.state.GiaNhap) < 0) return this.loi("Dữ liệu không đúng", "Hãy kiểm liệu dữ liệu nhập")
-        if (Number.isInteger(this.state.quantity) || Number(this.state.quantity) < 0) return this.loi("Dữ liệu không đúng", "Hãy kiểm liệu dữ liệu nhập")
+        if (Number.isInteger(Number(this.state.GiaNhap)) ==false|| Number(Number(this.state.GiaNhap)) < 0) return this.loi("Dữ liệu không đúng", "Hãy kiểm liệu dữ liệu nhập")
+        if (Number.isInteger(Number(this.state.quantity)) ==false|| Number(Number(this.state.quantity)) < 0) return this.loi("Dữ liệu không đúng", "Hãy kiểm liệu dữ liệu nhập")
         const token = this.getToken();
         fetch(variable.API_URL + "ImportInvoices/CreateImportInvoice", {
             method: "POST",
@@ -561,6 +561,9 @@ class CRUDProductType extends React.Component {
                                         Giá nhập
                                     </th>
                                     <th>
+                                        Tổng tiền
+                                    </th>
+                                    <th>
                                         Số lượng
                                     </th>
                                     <th>
@@ -596,6 +599,9 @@ class CRUDProductType extends React.Component {
                                             </td>
                                             <td>
                                                 <CountUp delay={0.4} end={dep.importPrice} duration={0.6} /> Đồng
+                                            </td>
+                                            <td>
+                                                <CountUp delay={0.4} end={dep.importPrice*dep.quantity} duration={0.6} /> Đồng
                                             </td>
                                             <td>
                                                 <CountUp delay={0.4} end={dep.quantity} duration={0.6} />

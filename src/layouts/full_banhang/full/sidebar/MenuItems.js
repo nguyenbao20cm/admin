@@ -69,7 +69,7 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: 'Pannel',
+    title: 'Banner',
     icon: IconAd2,
     href: '/AdvertisingPanel', aaa: true,
   },

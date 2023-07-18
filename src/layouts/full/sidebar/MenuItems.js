@@ -29,6 +29,12 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+    title: 'Nhà cung cấp',
+    icon: IconAperture, bbb: false,
+    href: '/NhaCungCapSanPham',
+  },
+  {
+    id: uniqueId(),
     title: 'Sản phẩm', bbb: false,
     icon: IconAperture,
     href: '/ProductTypepage',
@@ -63,12 +69,7 @@ const Menuitems = [
     icon: IconAperture, bbb: false,
     href: '/Brand',
   },
-  {
-    id: uniqueId(),
-    title: 'Nhà cung cấp',
-    icon: IconAperture, ccc: false,
-    href: '/NhaCungCapSanPham',
-  },
+
   {
     navlabel: true,
     subheader: 'Kho hàng',
@@ -93,14 +94,14 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: 'Bình luận',
+    title: 'Đánh giá',
     icon: IconMessage,
     href: '/ReviewPage',
     aaa: true,
   },
   {
     id: uniqueId(),
-    title: 'Pannel',
+    title: 'Banner',
     icon: IconAd2,
     href: '/AdvertisingPanel', aaa: true,
   },

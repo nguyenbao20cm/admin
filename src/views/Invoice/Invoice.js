@@ -6,9 +6,10 @@ import Loadable from '../../layouts/full/shared/loadable/Loadable';
 import { ConstructionOutlined, Login } from '@mui/icons-material';
 import { Alert, Space, message } from 'antd';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
+import 'sweetalert2/src/sweetalert2.scss'
 import "./Invoice.css"
 import CountUp from 'react-countup';
-import 'sweetalert2/src/sweetalert2.scss'
+
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -251,15 +252,37 @@ class InvoiceCRUD extends React.Component {
             })
     }
     UpdateClick1(id) {
-        if (this.state.ShippingAddress == "") return this.loi("Địa chỉ bị rỗng ", "Hãy nhập lại")
-        if (this.state.ShippingPhone == "") return this.loi("SĐT bị rỗng ", "Hãy nhập lại")
-        if (this.state.ShippingPhone.length > 10) return this.loi("SĐT bị sai ", "Hãy nhập lại")
-        if (this.state.ShippingPhone.length < 0) return this.loi("SĐT bị sai ", "Hãy nhập lại")
-        if (Number.isInteger(Number(this.state.ShippingPhone)) == false) return this.loi("SĐT bị sai ", "Hãy nhập lại")
-        // if (this.state.Pay == "") return this.loi("Trạng thái bị rỗng ", "Hãy nhập lại")
-        if (this.state.OrderStatus == "") return this.loi("Dữ liệu trạng thái bị sai", "Hãy nhập lại")
-        if (this.state.OrderStatus == null) return this.loi("Dữ liệu trạng thái bị sai", "Hãy nhập lại")
+        if (this.state.ShippingAddress == "") {
+            this.setState({ open: false })
+            return this.loi("Địa chỉ bị rỗng ", "Hãy nhập lại")
+        }
+        if (this.state.ShippingPhone == "") {
+            this.setState({ open: false })
+            return this.loi("SĐT bị rỗng ", "Hãy nhập lại")
+        }
+        if (this.state.ShippingPhone.length > 10) {
+            this.setState({ open: false })
+            return this.loi("SĐT bị sai ", "Hãy nhập lại")
+        }
+        if (this.state.ShippingPhone.length < 0) {
+            this.setState({ open: false })
+            return this.loi("SĐT bị sai ", "Hãy nhập lại")
 
+        }
+        if (Number.isInteger(Number(this.state.ShippingPhone)) == false) {
+            this.setState({ open: false })
+            return this.loi("SĐT bị sai ", "Hãy nhập lại")
+        }
+
+        // if (this.state.Pay == "") return this.loi("Trạng thái bị rỗng ", "Hãy nhập lại")
+        if (this.state.OrderStatus == "") {
+            this.setState({ open: false })
+            return this.loi("Dữ liệu trạng thái bị sai", "Hãy nhập lại")
+        }
+        if (this.state.OrderStatus == null) {
+            this.setState({ open: false })
+            return this.loi("Dữ liệu trạng thái bị sai", "Hãy nhập lại")
+        }
         const token = this.getToken();
         fetch(variable.API_URL + "Inovices/UpdateInovice/" + id, {
             method: "PUT",

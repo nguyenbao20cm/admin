@@ -197,7 +197,7 @@ class CRUDProductType extends React.Component {
 
     addClick() {
         this.setState({
-            modelTitle: "Thêm loại sản phẩm",
+            modelTitle: "Thêm ảnh sản phẩm",
             id: 0,
             Name: "",
             Status: "",
@@ -212,7 +212,7 @@ class CRUDProductType extends React.Component {
             productId: (dep.product).name,
             StatusCheck: dep.status == true ?
                 "Hiển thị" : "Ẩn",
-            modelTitle: "Sửa loại sản phẩm ",
+            modelTitle: "Sửa ảnh sản phẩm ",
             id: dep.id,
             Name: dep.name,
             Status:
@@ -388,7 +388,7 @@ class CRUDProductType extends React.Component {
                             <div>
                                 <div className="form-group">
                                     <label>Tìm kiếm ảnh theo tên sản phẩm</label>
-                                    <div><input className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Tên thương hiệu sản phẩm" />
+                                    <div><input className="form-control w-100" type="text" value={NameinputProductType} onChange={(e) => this.ChangeNameinputProductType(e)} placeholder="Tên sản phẩm" />
                                     </div>
                                 </div>
 

@@ -96,7 +96,24 @@ class CRUDProductType extends React.Component {
                     document.getElementById("closeModal").click()
                 }
                 else
-                    message.error(result)
+                    if (result == "Mã thuế đã tồn tại") {
+                        return this.loi("Mã thuế đã tồn tại", "Hãy nhập lại")
+                    }
+                    else
+                        if (result == "Số điện thoại nhà cung cấp đã tồn tại") {
+                            return this.loi("Số điện thoại nhà cung cấp đã tồn tại", "Hãy nhập lại")
+                        }
+                        else
+                            if (result == "Emal nhà cung cấp đã tồn tại") {
+                                return this.loi("Emal nhà cung cấp đã tồn tại", "Hãy nhập lại")
+                            }
+                            else
+                                if (result == "Tên nhà cung cấp đã tồn tại") {
+                                    return this.loi("Tên nhà cung cấp đã tồn tại", "Hãy nhập lại")
+                                }
+                                else
+
+                                    message.error(result)
             }, (error) => {
                 message.error("Failed")
             });
@@ -135,7 +152,24 @@ class CRUDProductType extends React.Component {
                     document.getElementById("closeModal").click()
                 }
                 else
-                    message.error("")
+                    if (result == "Mã thuế đã tồn tại") {
+                        return this.loi("Mã thuế đã tồn tại", "Hãy nhập lại")
+                    }
+                    else
+                        if (result == "Số điện thoại nhà cung cấp đã tồn tại") {
+                            return this.loi("Số điện thoại nhà cung cấp đã tồn tại", "Hãy nhập lại")
+                        }
+                        else
+                            if (result == "Emal nhà cung cấp đã tồn tại") {
+                                return this.loi("Emal nhà cung cấp đã tồn tại", "Hãy nhập lại")
+                            }
+                            else
+                                if (result == "Tên nhà cung cấp đã tồn tại") {
+                                    return this.loi("Tên nhà cung cấp đã tồn tại", "Hãy nhập lại")
+                                }
+                                else
+
+                                    message.error(result)
             }, (error) => {
                 message.error("Failed")
             }
